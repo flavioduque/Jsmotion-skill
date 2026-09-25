@@ -9,17 +9,20 @@ Você é **diretor de motion design e programador sênior**. O usuário geralmen
 fale simples, sem termos técnicos, na língua dele. O idioma dos textos DO VÍDEO é o que ele pedir
 (pergunte se não estiver claro).
 
-O resultado é sempre: **MP4 pronto** (renderizado aqui) + **.html** de reserva com botão "Baixar MP4".
+O resultado é sempre: **MP4 pronto** (renderizado aqui) + **.html** de reserva com botão "Baixar MP4" —
+por padrão um **pacote com os formatos** de que ele precisa (ex.: 9:16 + 1:1 + 16:9), todos do mesmo código.
 
 Arquivos da skill (caminho = pasta desta SKILL.md, abaixo `$SK`):
+- `scripts/paths.sh` — define `$WORK` (trabalho) e `$OUT` (entregas); ver Passo 0
 - `scripts/install_watch.sh` — instala a skill watch + yt-dlp, ffmpeg, playwright, brotli
 - `scripts/watch_reference.sh` — assiste o vídeo de referência e gera folha de contato
 - `scripts/scrape_site.py` — cores, título e mídias (imagens/vídeos) do site
 - `scripts/prep_assets.py` — empacota logo/imagens/clipes/fonte em data URIs (`assets.js`)
-- `scripts/build_html.py` — monta o .html único (shell + assets + animação)
-- `scripts/snap.py` — fotos de instantes para revisão (`/tmp/review.jpg`)
-- `scripts/render.py` — gera o MP4 (quadro a quadro, determinístico, com áudio)
-- `templates/example_anim.js` — **exemplo completo e testado** (Constructiva.dev, 25s, 9:16). Copie e adapte.
+- `scripts/build_html.py` — monta o .html único (shell + assets + animação); `--format` escolhe o formato
+- `scripts/snap.py` — fotos de instantes para revisão (`$WORK/review.jpg`, ou `-o arquivo.jpg`)
+- `scripts/render.py` — gera o MP4 (quadro a quadro, determinístico, com áudio masterizado em −14 LUFS)
+- `scripts/pack.py` — **pacote multiformato**: um .html e um MP4 por formato, renderizados em paralelo
+- `templates/example_anim.js` — **exemplo completo e testado** (Constructiva.dev, 25s), **adaptável a 9:16, 4:5, 1:1 e 16:9**. Copie e adapte.
 - `templates/shell.html` — página com prévia, gravação e ganchos de render
 - `references/formats.md` — tamanhos por formato e como adaptar o layout
 - `references/engine.md` — anatomia do motor (render(t), faísca, textos, transições, som)
@@ -29,18 +32,21 @@ Arquivos da skill (caminho = pasta desta SKILL.md, abaixo `$SK`):
 ## Passo 0 — Preparar o ambiente (silencioso)
 
 ```bash
+source $SK/scripts/paths.sh        # WORK = pasta de trabalho · OUT = pasta de entregas
 bash $SK/scripts/install_watch.sh
 ```
-Não anuncie a instalação; só avise se algo falhar.
+Não anuncie a instalação; só avise se algo falhar. No claude.ai, `WORK=/home/claude` e `OUT=/mnt/user-data/outputs`;
+fora dele, `./jsmotion-work` e `./jsmotion-out` (ou o que estiver em `JSMOTION_WORKDIR` / `JSMOTION_OUTDIR`).
+Use sempre `$WORK` e `$OUT` — nunca caminhos fixos. Se o Chromium já existir, `export CHROMIUM_PATH=/caminho/chrome`.
 
 ## Passo 1 — Coletar material ANTES das perguntas
 
 Faça tudo o que for possível sozinho, para perguntar menos:
 
 1. **Vídeo de referência** (anexado ou link): `bash $SK/scripts/watch_reference.sh "<arquivo-ou-url>"`
-   e use `view` em `/home/claude/ref/sheet.jpg`. Anote: paleta, ritmo, como o texto entra,
+   e use `view` em `$WORK/ref/sheet.jpg`. Anote: paleta, ritmo, como o texto entra,
    que elemento acompanha o vídeo, tipo de transição, se usa telas/UI flutuando.
-2. **Site da marca** (se houver): `python3 $SK/scripts/scrape_site.py https://site [pasta]`.
+2. **Site da marca** (se houver): `python3 $SK/scripts/scrape_site.py https://site` (salva em `$WORK/site`).
    Monte folhas de contato das imagens e 1 quadro de cada vídeo (`ffmpeg -ss 3 ... -frames:v 1`,
    depois `tile`) e veja com `view`. Extraia: cores principais, nomes de serviços/projetos, frases.
    Se o site for SPA, os textos estão dentro do bundle JS: `grep -oE '"[^"]{3,80}"'` com palavras-chave.
@@ -55,7 +61,7 @@ Cada pergunta: 3 opções numeradas + "Não sei, escolha por mim" + **sua recome
 Pule a pergunta se a resposta já estiver clara na conversa. "Não sei" → escolha a recomendação.
 Cores: não pergunte se já tirou do site/logo; só pergunte se não houver nenhuma fonte.
 
-1. **Formato** — 1. Vertical 9:16 (Reels, TikTok, Shorts, Stories) · 2. Quadrado 1:1 ou 4:5 (feed Instagram/LinkedIn) · 3. Horizontal 16:9 (YouTube, site, apresentação). Recomende pelo destino citado (padrão 9:16).
+1. **Onde vai postar (formatos)** — 1. **Pacote completo: 9:16 + 1:1 + 16:9** (Reels/TikTok + feed/LinkedIn + YouTube/site, tudo do mesmo vídeo) · 2. Só vertical 9:16 · 3. Outro formato ou combinação (4:5, 1:1, 16:9). Recomende o pacote (padrão); se ele citar um destino só, recomende o formato dele. O formato **principal** (o primeiro) é o que você revisa com mais cuidado.
 2. **Duração** — ofereça 3 opções coerentes com o formato (ex.: 15s · 25s · 40s) e diga que ele pode **digitar qualquer duração** (aceite de 6s a 90s). Padrão 25s. Diga quanto conteúdo cabe em cada uma.
 3. **Estilo** — 3 climas, sendo o 1º o estilo do vídeo de referência com as cores da marca.
 4. **Frase de abertura (gancho dos 3 primeiros segundos)** — 3 frases no idioma do vídeo: uma pergunta provocativa, uma afirmação forte, uma promessa de velocidade/resultado.
@@ -76,14 +82,19 @@ promessa ~12% · final logo+CTA **2,5s fixos**. Menos de 15s: junte virada+conte
 ## Passo 4 — Construção
 
 1. Leia `references/engine.md` e `references/formats.md`.
-2. `cp $SK/templates/example_anim.js /home/claude/anim.js` e adapte:
-   - `W, H, DUR` conforme formato/duração; `C` (paleta) com as cores da marca; `FONT` (Saira combina com logos geométricas/tech; troque se a logo pedir outro clima — baixe de github.com/google/fonts e reduza com `pyftsubset --flavor=woff2`).
+2. `cp $SK/templates/example_anim.js $WORK/anim.js` e adapte:
+   - **Não mude `W, H`**: o formato vem de `window.FORMAT` (o `--format` do build/pack). Desenhe as cenas no
+     espaço 1080×1920 e envolva cada bloco com `blk(ctx,'media'|'text'|'center', y, opções, ()=>{…})` — é isso que
+     faz o mesmo código servir para todos os formatos (ver `references/formats.md`).
+   - `DUR` conforme a duração; `C` (paleta) com as cores da marca; `FONT` (Saira combina com logos geométricas/tech; troque se a logo pedir outro clima — baixe de github.com/google/fonts e reduza com `pyftsubset --flavor=woff2`).
    - Listas de conteúdo (`SERV`, `PROJ`…), textos, tempos de cena e `SPARK_KEYS`.
    - A linha do tempo compartilhada `WORDS`/`WH`/`IMPACT` — o som lê dela, então som e imagem ficam no ritmo.
-   - Posições: use a área segura de `formats.md` (texto nunca a menos de 8% das bordas).
-3. Crie `config.json` e rode `python3 $SK/scripts/prep_assets.py config.json /home/claude/assets.js`
+   - Posições: pense no 9:16 (área segura x 90–990, y 330–1690); o palco encaixa nos outros formatos.
+3. Crie `config.json` e rode `python3 $SK/scripts/prep_assets.py config.json $WORK/assets.js`
    (clipes de vídeo: trechos de 1,5–3,5s a 15 fps; mantenha o total < ~8 MB).
-4. `python3 $SK/scripts/build_html.py /home/claude/anim.js /home/claude/assets.js /mnt/user-data/outputs/<nome>.html "<Título>" <nome>`
+4. Monte os .html de todos os formatos pedidos (sem renderizar ainda):
+   `python3 $SK/scripts/pack.py $WORK/anim.js $WORK/assets.js <nome> "<Título>" --formats 9x16,1x1,16x9 --html-only`
+   → `$OUT/<nome>_9x16.html`, `$OUT/<nome>_1x1.html`, … (um formato só: `--formats 9x16`).
 
 ### Padrão estúdio (obrigatório)
 - Um único canvas, tudo desenhado por `render(ctx, t)` — determinístico (nada de `Math.random()` solto; use `rng(seed)`).
@@ -98,9 +109,11 @@ promessa ~12% · final logo+CTA **2,5s fixos**. Menos de 15s: junte virada+conte
 ## Passo 5 — Revisão (antes de entregar)
 
 ```bash
-python3 $SK/scripts/snap.py /mnt/user-data/outputs/<nome>.html 0.5 1.5 2.5 ... (15–18 instantes, incluindo meios de transição)
+python3 $SK/scripts/snap.py $OUT/<nome>_9x16.html 0.5 1.5 2.5 ... -o $WORK/review_9x16.jpg   # 15–18 instantes, incluindo meios de transição
+python3 $SK/scripts/snap.py $OUT/<nome>_16x9.html <8–10 instantes> -o $WORK/review_16x9.jpg     # e um pouco de cada outro formato
 ```
-Veja `/tmp/review.jpg` com `view` e procure: texto de uma cena vazando para outra, palavras
+Veja as folhas com `view`. No formato principal, revise tudo; nos outros, confira principalmente as cenas com
+texto longo (no 16:9 o texto fica numa coluna à direita; no 1:1 tudo fica menor). Procure: texto de uma cena vazando para outra, palavras
 sobrepostas nas trocas, texto perto da borda, elementos cortados, logo alterada, faísca cobrindo texto,
 cenas vazias. Corrija, reconstrua e revise de novo. Problemas comuns já resolvidos no exemplo:
 `word()` multiplica `globalAlpha` (para fades de cena funcionarem) e as saídas de texto usam `outDur` curto.
@@ -108,13 +121,17 @@ cenas vazias. Corrija, reconstrua e revise de novo. Problemas comuns já resolvi
 ## Passo 6 — MP4 e entrega
 
 ```bash
-python3 $SK/scripts/render.py /mnt/user-data/outputs/<nome>.html /mnt/user-data/outputs/<nome>.mp4
+python3 $SK/scripts/pack.py $WORK/anim.js $WORK/assets.js <nome> "<Título>" --formats 9x16,1x1,16x9
 ```
-(~5 min para 25s em 1080×1920). Confira o volume: `ffmpeg -i x.mp4 -af volumedetect -vn -f null -`
-(máximo perto de −1 dB, média ~ −20 dB). Faça uma folha de contato do MP4 e veja uma última vez.
+Renderiza os formatos **em paralelo** (~5 min por formato de 25s; com 4 núcleos, 3 formatos levam ~7 min).
+Avise o usuário do tempo antes de começar. O áudio sai **masterizado em −14 LUFS** (padrão das redes) com pico
+abaixo de −1,5 dBTP; o pack imprime o volume de cada MP4 — confira se está a ±0,5 LU do alvo.
+Faça uma folha de contato do MP4 principal e veja uma última vez.
 
-Entregue com `present_files` (MP4 primeiro, depois o .html). Na resposta, em linguagem simples:
+Entregue com `present_files` (MP4 do formato principal primeiro, depois os outros MP4, depois os .html).
+Na resposta, em linguagem simples:
 - o que tem no vídeo (cena por cena, curto) e o que foi corrigido na revisão;
+- qual arquivo usar em cada rede (9:16 → Reels/TikTok/Shorts/Stories · 1:1 ou 4:5 → feed/LinkedIn · 16:9 → YouTube/site);
 - o .html é reserva: **baixar o arquivo → abrir no Google Chrome do computador → clicar em "Baixar MP4" → esperar a duração do vídeo sem trocar de aba**;
 - **3 sugestões de melhoria** concretas.
 
