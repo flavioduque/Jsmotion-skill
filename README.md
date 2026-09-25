@@ -7,13 +7,15 @@
 ### Seu vídeo de marca nível estúdio, feito pelo Claude, em **uma conversa**.
 
 **Sem After Effects. Sem Premiere. Sem template genérico. Sem editor.**<br>
-Você manda a logo e o site — o Claude estuda, pergunta, escreve o roteiro, anima em JavaScript, compõe a trilha e entrega o **MP4 pronto**.
+Você manda a logo e o site — o Claude estuda, pergunta, escreve o roteiro, anima em JavaScript, compõe a trilha e entrega o **MP4 pronto**.<br>
+Funciona no **Claude**, **Codex**, **Gemini CLI**, **Hermes Agent**, **Cursor** e **GitHub Copilot**.
 
 [![Claude Skill](https://img.shields.io/badge/Claude-Skill-D97757?style=for-the-badge&logo=anthropic&logoColor=white)](#-instalar-em-1-minuto)
 [![JavaScript](https://img.shields.io/badge/Canvas-JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](references/engine.md)
 [![Web Audio](https://img.shields.io/badge/Trilha-Web%20Audio%20API-7C3AED?style=for-the-badge&logo=googlechrome&logoColor=white)](references/engine.md#som-buildaudio)
 [![MP4](https://img.shields.io/badge/Sa%C3%ADda-MP4%20H.264%20%2B%20AAC-5B8CFF?style=for-the-badge&logo=ffmpeg&logoColor=white)](scripts/render.py)
 [![License: MIT](https://img.shields.io/badge/Licen%C3%A7a-MIT-22E0C8?style=for-the-badge)](LICENSE)
+[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-Claude%20%C2%B7%20Codex%20%C2%B7%20Gemini%20%C2%B7%20Hermes%20%C2%B7%20Cursor%20%C2%B7%20Copilot-111827?style=for-the-badge)](#-em-qualquer-agente)
 
 [![GitHub stars](https://img.shields.io/github/stars/flavioduque/Jsmotion-skill?style=social)](https://github.com/flavioduque/Jsmotion-skill/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/flavioduque/Jsmotion-skill?style=social)](https://github.com/flavioduque/Jsmotion-skill/network/members)
@@ -27,7 +29,7 @@ Você manda a logo e o site — o Claude estuda, pergunta, escreve o roteiro, an
 
 <br><br>
 
-**[⚡ Instalar](#-instalar-em-1-minuto)** · **[🎥 Como funciona](#-como-funciona)** · **[✨ Recursos](#-o-que-deixa-o-vídeo-com-cara-de-estúdio)** · **[🧠 Por dentro](#-por-dentro-do-motor)** · **[❓ FAQ](#-faq)**
+**[⚡ Instalar](#-instalar-em-1-minuto)** · **[🤖 Outros agentes](#-em-qualquer-agente)** · **[🎥 Como funciona](#-como-funciona)** · **[✨ Recursos](#-o-que-deixa-o-vídeo-com-cara-de-estúdio)** · **[🧠 Por dentro](#-por-dentro-do-motor)** · **[❓ FAQ](#-faq)**
 
 </div>
 
@@ -80,6 +82,137 @@ git clone https://github.com/flavioduque/Jsmotion-skill.git ~/.claude/skills/jsm
 
 > [!NOTE]
 > A skill foi desenhada para o ambiente do claude.ai (pastas `/home/claude` e `/mnt/user-data/outputs`). No Claude Code ela também funciona — o Claude usa a sua pasta de trabalho no lugar dessas. É preciso ter **Python 3**, **ffmpeg** e **Chromium/Playwright** (o `install_watch.sh` instala o que faltar). Já tem um Chromium? Aponte com `CHROMIUM_PATH=/caminho/chrome`. Os arquivos vão para `./jsmotion-work` (trabalho) e `./jsmotion-out` (entregas) — ou para onde você apontar com `JSMOTION_WORKDIR` e `JSMOTION_OUTDIR`.
+
+### Opção C — Codex, Gemini CLI, Hermes Agent, Cursor, Copilot…
+
+```bash
+git clone https://github.com/flavioduque/Jsmotion-skill.git && cd Jsmotion-skill
+./install.sh codex      # ou: gemini · hermes · cursor · copilot · universal · claude
+```
+Cada agente tem a sua variante e a sua pasta. Os detalhes estão em [🤖 Em qualquer agente](#-em-qualquer-agente).
+
+---
+
+## 🤖 Em qualquer agente
+
+A jsmotion segue o padrão aberto **[Agent Skills](https://agentskills.io)** (`SKILL.md`), adotado por Claude, Codex,
+Gemini CLI, Hermes Agent, Cursor e GitHub Copilot. O fluxo e os scripts são **os mesmos em todos**. O que muda é
+**como o agente pergunta, vê imagens e entrega arquivos**, e cada variante já vem ajustada para isso
+([`agents/`](agents)).
+
+| Agente | Variante | Instalar (clone + 1 comando) | Pasta | Como chamar |
+|---|---|---|---|---|
+| **Claude** (claude.ai) | raiz | upload do [`dist/jsmotion.skill`](dist/jsmotion.skill) | — | peça um vídeo animado |
+| **Claude Code** | raiz | `./install.sh claude` | `~/.claude/skills/jsmotion` | peça ou `/jsmotion` |
+| **OpenAI Codex** | [`codex`](agents/codex/jsmotion) | `./install.sh codex` | `~/.agents/skills/jsmotion` | `$jsmotion` ou peça |
+| **Gemini CLI** | [`gemini`](agents/gemini/jsmotion) | `./install.sh gemini` | `~/.gemini/skills/jsmotion` | peça (o Gemini ativa sozinho) |
+| **Hermes Agent** | [`hermes`](agents/hermes/jsmotion) | `./install.sh hermes` | `~/.hermes/skills/creative/jsmotion` | `/jsmotion` ou peça |
+| **Cursor** | [`universal`](agents/universal/jsmotion) | `./install.sh cursor` | `~/.cursor/skills/jsmotion` | peça no modo Agent |
+| **GitHub Copilot** | [`universal`](agents/universal/jsmotion) | `./install.sh copilot` | `~/.copilot/skills/jsmotion` | peça no modo agente |
+| **Outros** (OpenCode…) | [`universal`](agents/universal/jsmotion) | `./install.sh universal` | `~/.agents/skills/jsmotion` | peça |
+
+`--project` instala só no projeto atual (ex.: `./install.sh copilot --project` → `.github/skills/jsmotion`).
+Sem clonar: `curl -fsSL https://raw.githubusercontent.com/flavioduque/Jsmotion-skill/main/install.sh | bash -s -- codex`.
+
+**Requisitos em todos:** Linux ou macOS (no Windows, use o WSL), **Python 3**, **git** e **internet** na primeira
+vez. O `install_watch.sh` instala ffmpeg, Playwright e yt-dlp se faltarem. Com Chromium já instalado, use
+`CHROMIUM_PATH=/caminho/chrome`. Os arquivos vão para `./jsmotion-work` e `./jsmotion-out` na pasta em que o
+agente estiver (ou `JSMOTION_WORKDIR` / `JSMOTION_OUTDIR`).
+
+<details>
+<summary><b>🟠 Claude — claude.ai e Claude Code</b></summary>
+
+<br>
+
+- **Aplicação:** a versão principal. No **claude.ai** é a experiência mais simples: perguntas com botões tocáveis,
+  prévia dos arquivos e download direto. No **Claude Code** roda no seu computador, com os arquivos na pasta do projeto.
+- **Instalar:** claude.ai → upload do `dist/jsmotion.skill` ([passo a passo](#opção-a--claudeai-recomendado-zero-terminal)).
+  Claude Code → `./install.sh claude` (ou `git clone … ~/.claude/skills/jsmotion`).
+- **Usar:** *"Quero um vídeo jsmotion da minha marca, site www.exemplo.com"* e anexe a logo.
+- **Implementação:** perguntas com `ask_user_input_v0`/`AskUserQuestion`, revisão visual com `view`/`Read` e entrega com `present_files`.
+</details>
+
+<details>
+<summary><b>⚫ OpenAI Codex — CLI, IDE e app</b></summary>
+
+<br>
+
+- **Aplicação:** para quem já usa o Codex no terminal ou no editor. O vídeo sai na pasta do projeto, pronto para versionar.
+- **Instalar:** `./install.sh codex` → `~/.agents/skills/jsmotion` (projeto: `--project` → `.agents/skills`).
+  Nativo, dentro do Codex:
+  ```text
+  $skill-installer install https://github.com/flavioduque/Jsmotion-skill/tree/main/agents/codex/jsmotion
+  ```
+  Reinicie o Codex depois de instalar.
+- **Usar:** `$jsmotion quero um vídeo da minha marca, site www.exemplo.com` ou só peça. A skill aparece em `/skills`.
+- **Implementação:** o Codex não tem botões, então a skill faz **uma pergunta numerada por vez e espera**. Revisa as
+  imagens com `view_image` e termina listando os arquivos. Inclui `agents/openai.yaml` com nome e descrição para o app.
+- **Cuidados:** o **sandbox padrão bloqueia a internet**, e a primeira execução precisa dela para instalar
+  dependências, baixar a referência e ler o site. Aprove quando o Codex pedir, ou libere a rede do sandbox nas
+  configurações. O render leva minutos, então a skill roda o `pack.py` em segundo plano e acompanha o log.
+</details>
+
+<details>
+<summary><b>🔵 Gemini CLI</b></summary>
+
+<br>
+
+- **Aplicação:** para quem usa o Gemini no terminal, com modelos Gemini 3.x (que enxergam as folhas de revisão).
+- **Instalar:** `./install.sh gemini` → `~/.gemini/skills/jsmotion` (projeto: `--project` → `.gemini/skills`).
+  Nativo:
+  ```bash
+  gemini skills install https://github.com/flavioduque/Jsmotion-skill.git --path agents/gemini/jsmotion
+  ```
+  Numa sessão aberta: `/skills reload`. Para conferir: `gemini skills list`.
+- **Usar:** peça o vídeo. O Gemini ativa a skill (`activate_skill`) e **pede a sua confirmação**.
+- **Implementação:** perguntas com `ask_user` (tipo `choice`, cabeçalho curto), imagens com `read_file` e comandos
+  com `run_shell_command`, com o render em segundo plano.
+- **Cuidados:** o Gemini pede confirmação para cada comando novo. A skill explica antes que vai instalar ffmpeg e
+  Playwright e baixar a referência.
+</details>
+
+<details>
+<summary><b>🟣 Hermes Agent (Nous Research)</b></summary>
+
+<br>
+
+- **Aplicação:** o Hermes roda num servidor e conversa com você pelo **Telegram, Discord, WhatsApp ou Slack**.
+  Você pede o vídeo pelo celular e recebe o MP4 no chat.
+- **Instalar:** `./install.sh hermes` → `~/.hermes/skills/creative/jsmotion`. Nativo:
+  ```bash
+  hermes skills install flavioduque/Jsmotion-skill/agents/hermes/jsmotion --category creative
+  ```
+  A variante passa no scanner de segurança do Hermes (veredito `SAFE`). Depois: `/reset` ou uma nova sessão.
+- **Usar:** `/jsmotion` ou só peça *"faz um vídeo animado da minha marca"* e mande a logo no chat.
+- **Implementação:** usa o frontmatter do Hermes (versão, autor, `platforms`, `category: creative`) e
+  `${HERMES_SKILL_DIR}` para achar os scripts. Pergunta com `clarify`, revisa com `vision_analyze` e entrega
+  escrevendo o caminho do arquivo numa linha, que o gateway manda como mídia (`[[as_document]]` para enviar o MP4 sem recompressão).
+- **Cuidados:** o servidor precisa de Python 3, git e internet; ffmpeg e Playwright são instalados na primeira vez.
+  No celular, a skill faz uma pergunta por mensagem.
+</details>
+
+<details>
+<summary><b>⚪ Cursor, GitHub Copilot, OpenCode e outros</b></summary>
+
+<br>
+
+- **Aplicação:** gerar o vídeo sem sair do editor, direto na pasta do projeto (ex.: o vídeo de lançamento do seu app).
+- **Instalar:**
+  - Cursor: `./install.sh cursor` → `~/.cursor/skills/jsmotion` (projeto: `.cursor/skills`).
+  - Copilot (VS Code, Copilot CLI, agente na nuvem): `./install.sh copilot` → `~/.copilot/skills/jsmotion`
+    (projeto: `--project` → `.github/skills`).
+  - Qualquer agente que leia `~/.agents/skills`: `./install.sh universal`.
+- **Usar:** no modo agente, peça o vídeo. A skill é ativada pela descrição.
+- **Implementação:** instruções neutras, com a tabela de ferramentas de todos os agentes. Usa a ferramenta de
+  perguntas do agente se existir; senão, pergunta numerada e espera. A revisão visual exige um modelo com visão;
+  sem isso, a skill pede para você abrir `review.jpg`.
+- **Cuidados:** o terminal do agente precisa de internet na primeira vez. Se ele tiver limite de tempo, a skill roda
+  o render em segundo plano e acompanha o log.
+</details>
+
+**Verificado de verdade:** a descoberta da skill foi testada no **Codex CLI 0.157**, no **Gemini CLI 0.61** e no
+**Hermes Agent** reais. Os cabeçalhos passam no validador oficial do padrão (`agentskills validate`), e as quatro
+variantes passam como `SAFE` no scanner de segurança do Hermes. Detalhes em [`agents/`](agents).
 
 ---
 
@@ -269,7 +402,11 @@ jsmotion/
 ├── references/
 │   ├── engine.md            🧠 anatomia do motor
 │   └── formats.md           📐 tamanhos, áreas seguras e como adaptar o layout
+├── agents/                  🤖 variantes prontas: codex · gemini · hermes · universal (geradas, não editar)
+├── tools/build_agents.py    🛠️ gera as variantes a partir da raiz (--check confere se estão em dia)
+├── install.sh               ⚡ instala no agente escolhido: ./install.sh <agente> [--project]
 ├── dist/jsmotion.skill      📦 pacote pronto para upload no claude.ai
+├── dist/jsmotion-<agente>.zip 📦 pacote de cada variante
 └── docs/                    🖼️ demos 16:9 e 9:16 em GIF e MP4 (PT/EN) · preview.jpg
 ```
 
@@ -362,6 +499,7 @@ Sim. Saira é o padrão (combina com logos geométricas/tech). Para outro clima,
 - [ ] Revisão automática de layout (texto fora da área segura)
 - [x] README em inglês ([`README.en.md`](README.en.md))
 - [ ] Versão em inglês do `SKILL.md`
+- [x] Variantes para Codex, Gemini CLI, Hermes Agent, Cursor e Copilot ([`agents/`](agents))
 
 Tem uma ideia? [Abra uma issue](https://github.com/flavioduque/Jsmotion-skill/issues) 💡
 
@@ -375,6 +513,8 @@ PRs são muito bem-vindos! Os que mais ajudam:
 2. **Novos sons** no `buildAudio` (lo-fi, trap, corporativo…).
 3. **Melhorias no `scrape_site.py`** para mais tipos de site.
 4. **Traduções** das instruções e referências da skill.
+
+> **Editou o `SKILL.md`, os `scripts/`, os `templates/` ou as `references/`?** Rode `python3 tools/build_agents.py` para atualizar as variantes em `agents/` (o `--check` confere se estão em dia).
 
 Mostre o vídeo que você fez! Poste com **#jsmotion** e marque o repositório — os melhores entram na galeria.
 
