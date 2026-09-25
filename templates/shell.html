@@ -1,0 +1,96 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>/*TITLE*/</title>
+<style>
+:root{--bg:#070510;--ink:#F4F1FF;--v:#7C3AED;--b:#5B8CFF}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:system-ui,sans-serif}
+.wrap{min-height:100%;display:flex;gap:32px;align-items:center;justify-content:center;padding:24px;flex-wrap:wrap}
+canvas{max-height:88vh;max-width:92vw;border-radius:18px;box-shadow:0 0 80px rgba(124,58,237,.35);background:#000}
+.panel{max-width:340px}
+h1{font-size:22px;margin:0 0 6px}p{color:#B9B0D6;font-size:14px;line-height:1.5;margin:0 0 16px}
+button{display:block;width:100%;padding:16px 18px;margin:0 0 12px;border:0;border-radius:14px;font-size:17px;font-weight:700;cursor:pointer;color:#fff;background:linear-gradient(90deg,var(--v),var(--b))}
+button.sec{background:#1b1130;border:1px solid #3a2a60}
+button:disabled{opacity:.5;cursor:wait}button:focus-visible{outline:3px solid #C084FC;outline-offset:3px}
+.bar{height:10px;background:#1b1130;border-radius:6px;overflow:hidden;margin:6px 0 10px}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--v),var(--b))}
+#msg{font-size:14px;color:#C084FC;min-height:20px}
+</style></head><body>
+<div class="wrap">
+  <canvas id="c"></canvas>
+  <div class="panel">
+    <h1>/*TITLE*/</h1>
+    <p id="info"></p>
+    <button id="rec" disabled>⬇️ Baixar MP4</button>
+    <button id="play" class="sec" disabled>▶️ Ver prévia com som</button>
+    <div class="bar"><i id="prog"></i></div>
+    <div id="msg">Carregando…</div>
+  </div>
+</div>
+<script>/*ASSETS*/</script>
+<script>/*ANIM*/</script>
+<script>
+const cv=document.getElementById('c'); cv.width=W; cv.height=H; const ctx=cv.getContext('2d');
+document.getElementById('info').textContent=`${W}×${H} · ${DUR}s · ${FPS} fps · com trilha e efeitos sonoros`;
+if(W>=H){cv.style.width='min(92vw,1100px)';}else{cv.style.height='88vh';}
+const $=id=>document.getElementById(id), msg=t=>$('msg').textContent=t;
+let busy=false;
+function runRealtime(record){
+  return new Promise(async resolve=>{
+    $('rec').disabled=$('play').disabled=true;
+    const ac=new AudioContext({sampleRate:48000}); await ac.resume();
+    const src=ac.createBufferSource(); src.buffer=AUDIO_BUF; src.connect(ac.destination);
+    let rec,chunks=[],mime='';
+    const done=()=>{$('rec').disabled=$('play').disabled=false;resolve();};
+    if(record){
+      const md=ac.createMediaStreamDestination(); src.connect(md);
+      const vs=cv.captureStream(30);
+      const stream=new MediaStream([...vs.getVideoTracks(),...md.stream.getAudioTracks()]);
+      const types=['video/mp4;codecs=avc1.640028,mp4a.40.2','video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4;codecs=avc1,mp4a.40.2','video/mp4','video/webm;codecs=vp9,opus','video/webm'];
+      mime=types.find(x=>window.MediaRecorder&&MediaRecorder.isTypeSupported(x))||'';
+      rec=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:16000000,audioBitsPerSecond:192000});
+      rec.ondataavailable=e=>e.data.size&&chunks.push(e.data);
+      rec.onstop=()=>{const isMp4=mime.includes('mp4');const blob=new Blob(chunks,{type:isMp4?'video/mp4':'video/webm'});
+        const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(window.OUT_NAME||'video')+'.'+(isMp4?'mp4':'webm');
+        document.body.appendChild(a);a.click();a.remove();
+        msg(isMp4?'✅ Pronto! O MP4 foi baixado.':'✅ Pronto! Seu Chrome gravou em .webm (atualize o Chrome para gerar .mp4).');
+        done();};
+    }
+    render(ctx,0);
+    const start=ac.currentTime+0.35;
+    if(record) rec.start(250);
+    src.start(start);
+    msg(record?`🎥 Gravando… não mude de aba (${DUR}s)`:'▶️ Tocando prévia…');
+    const loop=()=>{const t=ac.currentTime-start;
+      render(ctx,Math.max(0,t)); $('prog').style.width=(clamp(t/DUR)*100)+'%';
+      if(t<DUR+0.1) requestAnimationFrame(loop);
+      else { if(record) rec.stop(); else {msg('Prévia terminada.');done();} setTimeout(()=>ac.close(),600);} };
+    requestAnimationFrame(loop);
+  });
+}
+$('rec').onclick=()=>runRealtime(true);
+$('play').onclick=()=>runRealtime(false);
+window.renderFrame=t=>{render(ctx,t);return cv.toDataURL('image/jpeg',0.93);};
+window.getWav=()=>wavB64(AUDIO_BUF);
+async function renderAudioBuffer(){
+  const oac=new OfflineAudioContext(2,Math.ceil(48000*DUR),48000);
+  buildAudio(oac,oac.destination);
+  return await oac.startRendering();
+}
+let AUDIO_BUF=null;
+function wavB64(buf){
+  const n=buf.length,ch=2,data=new DataView(new ArrayBuffer(44+n*ch*2));let p=0;
+  const s=str=>{for(const c of str)data.setUint8(p++,c.charCodeAt(0));},u32=v=>{data.setUint32(p,v,true);p+=4},u16=v=>{data.setUint16(p,v,true);p+=2};
+  s('RIFF');u32(36+n*ch*2);s('WAVE');s('fmt ');u32(16);u16(1);u16(ch);u32(48000);u32(48000*ch*2);u16(ch*2);u16(16);s('data');u32(n*ch*2);
+  const L=buf.getChannelData(0),R=buf.getChannelData(1);
+  for(let i=0;i<n;i++){for(const x of [L[i],R[i]]){data.setInt16(p,Math.max(-1,Math.min(1,x))*32767,true);p+=2;}}
+  let bin='';const u8=new Uint8Array(data.buffer);for(let i=0;i<u8.length;i+=32768)bin+=String.fromCharCode.apply(null,u8.subarray(i,i+32768));
+  return btoa(bin);
+}
+(async()=>{
+  await loadAssets();
+  AUDIO_BUF=await renderAudioBuffer();
+  render(ctx,1.9);
+  window.READY=true;
+  $('rec').disabled=$('play').disabled=false; msg('Pronto. Clique em "Baixar MP4".');
+})();
+</script>
+</body></html>
