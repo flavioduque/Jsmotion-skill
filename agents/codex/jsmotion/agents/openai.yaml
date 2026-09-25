@@ -1,0 +1,4 @@
+interface:
+  display_name: "jsmotion — motion video"
+  short_description: "Studio-quality brand videos in JS: MP4 in 9:16, 1:1 and 16:9"
+  default_prompt: "Use $jsmotion to make a motion-design video of my brand. I will attach my logo and give you my website."
