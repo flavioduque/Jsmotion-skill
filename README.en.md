@@ -8,14 +8,14 @@
 
 **No After Effects. No Premiere. No generic templates. No editor.**<br>
 Send your logo and website — Claude studies them, asks a few questions, writes the script, animates it in JavaScript, composes the soundtrack and hands you a **ready-to-post MP4**.<br>
-Works with **Claude**, **Codex**, **Gemini CLI**, **Hermes Agent**, **Cursor** and **GitHub Copilot**.
+Works with **Claude**, **Codex**, **Gemini CLI**, **Hermes Agent**, **OpenClaw**, **Cursor** and **GitHub Copilot**.
 
 [![Claude Skill](https://img.shields.io/badge/Claude-Skill-D97757?style=for-the-badge&logo=anthropic&logoColor=white)](#-install-in-1-minute)
 [![JavaScript](https://img.shields.io/badge/Canvas-JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](references/engine.md)
 [![Web Audio](https://img.shields.io/badge/Soundtrack-Web%20Audio%20API-7C3AED?style=for-the-badge&logo=googlechrome&logoColor=white)](references/engine.md)
 [![MP4](https://img.shields.io/badge/Output-MP4%20H.264%20%2B%20AAC-5B8CFF?style=for-the-badge&logo=ffmpeg&logoColor=white)](scripts/render.py)
 [![License: MIT](https://img.shields.io/badge/License-MIT-22E0C8?style=for-the-badge)](LICENSE)
-[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-Claude%20%C2%B7%20Codex%20%C2%B7%20Gemini%20%C2%B7%20Hermes%20%C2%B7%20Cursor%20%C2%B7%20Copilot-111827?style=for-the-badge)](#-any-agent)
+[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-Claude%20%C2%B7%20Codex%20%C2%B7%20Gemini%20%C2%B7%20Hermes%20%C2%B7%20OpenClaw%20%C2%B7%20Cursor%20%C2%B7%20Copilot-111827?style=for-the-badge)](#-any-agent)
 
 [![GitHub stars](https://img.shields.io/github/stars/flavioduque/Jsmotion-skill?style=social)](https://github.com/flavioduque/Jsmotion-skill/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/flavioduque/Jsmotion-skill?style=social)](https://github.com/flavioduque/Jsmotion-skill/network/members)
@@ -85,11 +85,11 @@ git clone https://github.com/flavioduque/Jsmotion-skill.git ~/.claude/skills/jsm
 > [!TIP]
 > The skill's instructions are written in Portuguese, but **Claude talks to you in your language** and writes the on-screen copy in whatever language you ask for.
 
-### Option C — Codex, Gemini CLI, Hermes Agent, Cursor, Copilot…
+### Option C — Codex, Gemini CLI, Hermes Agent, OpenClaw, Cursor, Copilot…
 
 ```bash
 git clone https://github.com/flavioduque/Jsmotion-skill.git && cd Jsmotion-skill
-./install.sh codex      # or: gemini · hermes · cursor · copilot · universal · claude
+./install.sh codex      # or: gemini · hermes · openclaw · cursor · copilot · universal · claude
 ```
 Each agent gets its own variant and folder. Details are in [🤖 Any agent](#-any-agent).
 
@@ -98,7 +98,7 @@ Each agent gets its own variant and folder. Details are in [🤖 Any agent](#-an
 ## 🤖 Any agent
 
 jsmotion follows the open **[Agent Skills](https://agentskills.io)** standard (`SKILL.md`), adopted by Claude,
-Codex, Gemini CLI, Hermes Agent, Cursor and GitHub Copilot. The workflow and the scripts are **the same everywhere**.
+Codex, Gemini CLI, Hermes Agent, OpenClaw, Cursor and GitHub Copilot. The workflow and the scripts are **the same everywhere**.
 What changes is **how the agent asks questions, looks at images and delivers files**, and each variant is already
 tuned for that ([`agents/`](agents)).
 
@@ -109,6 +109,7 @@ tuned for that ([`agents/`](agents)).
 | **OpenAI Codex** | [`codex`](agents/codex/jsmotion) | `./install.sh codex` | `~/.agents/skills/jsmotion` | `$jsmotion` or ask |
 | **Gemini CLI** | [`gemini`](agents/gemini/jsmotion) | `./install.sh gemini` | `~/.gemini/skills/jsmotion` | ask (Gemini activates it) |
 | **Hermes Agent** | [`hermes`](agents/hermes/jsmotion) | `./install.sh hermes` | `~/.hermes/skills/creative/jsmotion` | `/jsmotion` or ask |
+| **OpenClaw** | [`openclaw`](agents/openclaw/jsmotion) | `./install.sh openclaw` | `~/.openclaw/skills/jsmotion` | `/jsmotion` or ask in chat |
 | **Cursor** | [`universal`](agents/universal/jsmotion) | `./install.sh cursor` | `~/.cursor/skills/jsmotion` | ask in Agent mode |
 | **GitHub Copilot** | [`universal`](agents/universal/jsmotion) | `./install.sh copilot` | `~/.copilot/skills/jsmotion` | ask in agent mode |
 | **Others** (OpenCode…) | [`universal`](agents/universal/jsmotion) | `./install.sh universal` | `~/.agents/skills/jsmotion` | ask |
@@ -194,6 +195,32 @@ working folder (or `JSMOTION_WORKDIR` / `JSMOTION_OUTDIR`).
 </details>
 
 <details>
+<summary><b>🦞 OpenClaw</b></summary>
+
+<br>
+
+- **Use case:** OpenClaw is a personal assistant that runs on your machine or server and talks to you over
+  **WhatsApp, Telegram, Discord, Slack or iMessage**. Send your logo in the chat, answer the questions from your
+  phone and get the MP4 right in the conversation.
+- **Install:** `./install.sh openclaw` → `~/.openclaw/skills/jsmotion` (project/workspace: `--project` → `skills/`).
+  Natively, from the clone:
+  ```bash
+  openclaw skills install ./agents/openclaw/jsmotion --global
+  ```
+  Then: `/new` in the chat (or `openclaw gateway restart`). To check: `openclaw skills info jsmotion`
+  (should show `🎬 jsmotion ✓ Ready`).
+- **Use:** `/jsmotion`, or just say *"make an animated video of my brand"* and send your logo.
+- **Implementation:** declares in `metadata.openclaw` the 🎬 emoji, the project homepage, the supported systems
+  (Linux and macOS) and the required binaries (`python3`, `git`); without them OpenClaw hides the skill instead of
+  failing halfway. Asks one numbered question per message, reviews with the `image` tool, runs the scripts with
+  `exec`, and delivers with the `message` tool (`media`/`filePath`) or a `MEDIA:/path` line. If the channel rejects
+  the MP4 for size, it renders a lighter version with ffmpeg and sends that.
+- **Watch out:** OpenClaw **doesn't substitute variables** in the skill text; it shows the path to `SKILL.md`, and
+  the variant tells the agent to use that real path. If `~/.agents/skills/jsmotion` also exists (e.g. the Codex
+  variant), OpenClaw gives it priority. It works, but with the Codex instructions.
+</details>
+
+<details>
 <summary><b>⚪ Cursor, GitHub Copilot, OpenCode and others</b></summary>
 
 <br>
@@ -212,8 +239,8 @@ working folder (or `JSMOTION_WORKDIR` / `JSMOTION_OUTDIR`).
   render in the background and follows the log.
 </details>
 
-**Actually verified:** skill discovery was tested on the real **Codex CLI 0.157**, **Gemini CLI 0.61** and
-**Hermes Agent**. The frontmatter passes the standard's official validator (`agentskills validate`), and all four
+**Actually verified:** skill discovery was tested on the real **Codex CLI 0.157**, **Gemini CLI 0.61**,
+**Hermes Agent** and **OpenClaw 2026.6**. The frontmatter passes the standard's official validator (`agentskills validate`), and all four
 variants pass as `SAFE` in Hermes' security scanner. Details in [`agents/`](agents).
 
 ---
@@ -404,7 +431,7 @@ jsmotion/
 ├── references/
 │   ├── engine.md            🧠 engine anatomy
 │   └── formats.md           📐 sizes, safe areas and how to adapt the layout
-├── agents/                  🤖 ready-made variants: codex · gemini · hermes · universal (generated, don't edit)
+├── agents/                  🤖 ready-made variants: codex · gemini · hermes · openclaw · universal (generated, don't edit)
 ├── tools/build_agents.py    🛠️ builds the variants from the root (--check verifies they're up to date)
 ├── install.sh               ⚡ installs into the chosen agent: ./install.sh <agent> [--project]
 ├── dist/jsmotion.skill      📦 package ready to upload to claude.ai
@@ -500,7 +527,7 @@ Yes. Saira is the default (it suits geometric/tech logos). For a different mood,
 - [ ] In-browser MP4 export with WebCodecs (no real-time wait)
 - [ ] Automatic layout review (text outside the safe area)
 - [ ] English version of `SKILL.md`
-- [x] Variants for Codex, Gemini CLI, Hermes Agent, Cursor and Copilot ([`agents/`](agents))
+- [x] Variants for Codex, Gemini CLI, Hermes Agent, OpenClaw, Cursor and Copilot ([`agents/`](agents))
 
 Got an idea? [Open an issue](https://github.com/flavioduque/Jsmotion-skill/issues) 💡
 

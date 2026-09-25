@@ -3,8 +3,16 @@ name: jsmotion
 description: "Creates studio-quality motion-design videos in JavaScript (canvas + Web Audio): company, brand, product and app promos, launches, Reels/TikTok/Shorts/YouTube/LinkedIn. Delivers ready MP4s (9:16, 1:1, 4:5 and 16:9 from the same code) with a soundtrack mastered to -14 LUFS, plus an .html with a \"Download MP4\" button. Studies a reference video and the brand website (colors, projects, images), asks a few multiple-choice questions, shows the script, then produces and reviews it. Use whenever the user asks for an animated or motion video, a video of their company/brand/app, a video with their logo, a Reels/TikTok video, \"jsmotion\", or attaches a reference video asking for something similar. PT: vídeo animado, motion, vídeo da minha empresa/marca/app, vídeo para Reels/TikTok, vídeo com minha logo."
 license: MIT
 metadata:
-  version: "1.1.0"
-  author: Flavio Duque
+  openclaw:
+    emoji: "🎬"
+    homepage: https://github.com/flavioduque/Jsmotion-skill
+    os:
+      - linux
+      - darwin
+    requires:
+      bins:
+        - python3
+        - git
 ---
 <!-- GERADO por tools/build_agents.py a partir do SKILL.md — não edite aqui. -->
 
@@ -34,17 +42,19 @@ Arquivos da skill (abaixo `$SK` — ver "Neste agente"):
 
 ---
 
-## Neste agente: Gemini CLI
+## Neste agente: OpenClaw
 
-- **`$SK`** = a pasta desta skill — o Gemini mostra o caminho ao ativá-la (ex.: `~/.gemini/skills/jsmotion`). Rode `export SK=<pasta>` no primeiro comando.
-- **Perguntas**: `ask_user` com uma pergunta do tipo `choice` por vez (3 opções + "Não sei, escolha por mim";
-  cabeçalho curto, até 16 caracteres, ex.: "Formato").
-- **Imagens**: `read_file` no .jpg (folhas de contato e revisão).
-- **Comandos**: `run_shell_command`. Para o `pack.py` (leva minutos), rode em segundo plano e acompanhe o log
-  (`nohup python3 … > $WORK/pack.log 2>&1 &`) até aparecer `total:`.
-- **Permissões**: o Gemini pede confirmação ao ativar a skill e ao rodar comandos; explique ao usuário que a
-  skill instala ffmpeg/Playwright e baixa o vídeo de referência.
-- **Entregar**: termine com a lista de arquivos (caminhos absolutos em `$OUT`), MP4 principal primeiro.
+- **`$SK`** = a pasta desta SKILL.md — o OpenClaw mostra o caminho em `<location>` na lista de skills (ex.: `~/.openclaw/skills/jsmotion/SKILL.md` → pasta `~/.openclaw/skills/jsmotion`). Rode `export SK=<pasta>` com o caminho real no primeiro comando (o OpenClaw não troca variáveis no texto da skill).
+- **Onde o usuário está**: normalmente num mensageiro (WhatsApp, Telegram, Discord, Slack…). Mensagens curtas,
+  **uma pergunta por mensagem**, com as opções numeradas, a sua recomendação e "Não sei, escolha por mim"; espere a resposta.
+- **Logo e referência**: o usuário manda pelo chat; use o arquivo recebido (caminho da mídia) no Passo 1.
+- **Imagens**: ferramenta `image` no .jpg (folhas de contato e revisão).
+- **Comandos**: ferramenta `exec`. O `pack.py` leva minutos: avise o usuário do tempo e, se precisar, rode em
+  segundo plano (`nohup python3 … > $WORK/pack.log 2>&1 &`) e acompanhe o log até aparecer `total:`.
+- **Entregar**: ferramenta `message` com `media`/`filePath` apontando para o MP4 (ou uma linha `MEDIA:/caminho/absoluto`).
+  Mande primeiro o MP4 do formato principal. Para o app não recomprimir o vídeo, envie como documento se o canal permitir.
+- **Tamanho**: se o canal recusar o arquivo pelo tamanho, gere uma versão leve e mande essa:
+  `ffmpeg -i x.mp4 -c:v libx264 -crf 24 -preset slow -c:a copy x_leve.mp4`.
 - **Idioma**: converse no idioma do usuário; estas instruções estão em português.
 
 ## Ferramentas por agente

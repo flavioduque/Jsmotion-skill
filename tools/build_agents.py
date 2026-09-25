@@ -28,12 +28,12 @@ TOOLS = """## Ferramentas por agente
 
 Os passos abaixo falam em "perguntar com opções", "ver a imagem" e "entregar". Use a ferramenta do seu agente:
 
-| Ação | Claude | Codex | Gemini CLI | Hermes Agent | Cursor · Copilot · outros |
-|---|---|---|---|---|---|
-| Perguntar com opções | `ask_user_input_v0` / `AskUserQuestion` | pergunta com opções numeradas; pare e espere | `ask_user` (tipo `choice`) | `clarify` | ferramenta de perguntas, se houver; senão numeradas |
-| Ver imagem (folhas de revisão) | `view` / `Read` | `view_image` | `read_file` | `vision_analyze` | leitura de arquivo (modelo com visão) |
-| Rodar comandos | `bash` | shell | `run_shell_command` | `terminal` | terminal |
-| Entregar arquivos | `present_files` | caminhos absolutos na resposta final | caminhos absolutos | caminho absoluto sozinho na linha | caminhos absolutos |
+| Ação | Claude | Codex | Gemini CLI | Hermes Agent | OpenClaw | Cursor · Copilot · outros |
+|---|---|---|---|---|---|---|
+| Perguntar com opções | `ask_user_input_v0` / `AskUserQuestion` | pergunta com opções numeradas; pare e espere | `ask_user` (tipo `choice`) | `clarify` | mensagem com opções numeradas; espere | ferramenta de perguntas, se houver; senão numeradas |
+| Ver imagem (folhas de revisão) | `view` / `Read` | `view_image` | `read_file` | `vision_analyze` | `image` | leitura de arquivo (modelo com visão) |
+| Rodar comandos | `bash` | shell | `run_shell_command` | `terminal` | `exec` | terminal |
+| Entregar arquivos | `present_files` | caminhos absolutos na resposta final | caminhos absolutos | caminho absoluto sozinho na linha | `message` com `media`/`filePath` (ou linha `MEDIA:/caminho`) | caminhos absolutos |
 
 Se o seu modelo não enxerga imagens, peça ao usuário para abrir `$WORK/review.jpg` e dizer se algo está errado.
 """
@@ -76,6 +76,21 @@ AGENTS = {
   WhatsApp, Slack…) envia como mídia. Para mandar o MP4 como arquivo, sem recompressão do app, use `[[as_document]]`.
 - **Mensageiros**: o usuário pode estar no celular — mensagens curtas, uma pergunta por vez, e mande primeiro o
   MP4 do formato principal."""),
+    'openclaw': dict(
+        title='OpenClaw',
+        sk='a pasta desta SKILL.md — o OpenClaw mostra o caminho em `<location>` na lista de skills (ex.: '
+           '`~/.openclaw/skills/jsmotion/SKILL.md` → pasta `~/.openclaw/skills/jsmotion`). Rode `export SK=<pasta>` com o '
+           'caminho real no primeiro comando (o OpenClaw não troca variáveis no texto da skill)',
+        extra="""- **Onde o usuário está**: normalmente num mensageiro (WhatsApp, Telegram, Discord, Slack…). Mensagens curtas,
+  **uma pergunta por mensagem**, com as opções numeradas, a sua recomendação e "Não sei, escolha por mim"; espere a resposta.
+- **Logo e referência**: o usuário manda pelo chat; use o arquivo recebido (caminho da mídia) no Passo 1.
+- **Imagens**: ferramenta `image` no .jpg (folhas de contato e revisão).
+- **Comandos**: ferramenta `exec`. O `pack.py` leva minutos: avise o usuário do tempo e, se precisar, rode em
+  segundo plano (`nohup python3 … > $WORK/pack.log 2>&1 &`) e acompanhe o log até aparecer `total:`.
+- **Entregar**: ferramenta `message` com `media`/`filePath` apontando para o MP4 (ou uma linha `MEDIA:/caminho/absoluto`).
+  Mande primeiro o MP4 do formato principal. Para o app não recomprimir o vídeo, envie como documento se o canal permitir.
+- **Tamanho**: se o canal recusar o arquivo pelo tamanho, gere uma versão leve e mande essa:
+  `ffmpeg -i x.mp4 -c:v libx264 -crf 24 -preset slow -c:a copy x_leve.mp4`."""),
     'universal': dict(
         title='Cursor, GitHub Copilot, OpenCode e outros (padrão Agent Skills)',
         sk='a pasta desta SKILL.md (ex.: `~/.agents/skills/jsmotion`, `~/.cursor/skills/jsmotion`, '
@@ -117,6 +132,23 @@ metadata:
     tags: [video, motion-design, animation, marketing, social-media, javascript]
     category: creative
     homepage: https://github.com/flavioduque/Jsmotion-skill
+---'''
+    if agent == 'openclaw':  # metadata.openclaw: dependências e UI (docs.openclaw.ai/clawhub/skill-format)
+        return f'''---
+name: jsmotion
+description: "{q}"
+license: MIT
+metadata:
+  openclaw:
+    emoji: "🎬"
+    homepage: https://github.com/flavioduque/Jsmotion-skill
+    os:
+      - linux
+      - darwin
+    requires:
+      bins:
+        - python3
+        - git
 ---'''
     return f'---\nname: jsmotion\ndescription: "{q}"\nlicense: MIT\nmetadata:\n  version: "{VERSION}"\n  author: Flavio Duque\n---'
 

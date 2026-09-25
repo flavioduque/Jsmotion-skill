@@ -52,12 +52,12 @@ Arquivos da skill (abaixo `$SK` — ver "Neste agente"):
 
 Os passos abaixo falam em "perguntar com opções", "ver a imagem" e "entregar". Use a ferramenta do seu agente:
 
-| Ação | Claude | Codex | Gemini CLI | Hermes Agent | Cursor · Copilot · outros |
-|---|---|---|---|---|---|
-| Perguntar com opções | `ask_user_input_v0` / `AskUserQuestion` | pergunta com opções numeradas; pare e espere | `ask_user` (tipo `choice`) | `clarify` | ferramenta de perguntas, se houver; senão numeradas |
-| Ver imagem (folhas de revisão) | `view` / `Read` | `view_image` | `read_file` | `vision_analyze` | leitura de arquivo (modelo com visão) |
-| Rodar comandos | `bash` | shell | `run_shell_command` | `terminal` | terminal |
-| Entregar arquivos | `present_files` | caminhos absolutos na resposta final | caminhos absolutos | caminho absoluto sozinho na linha | caminhos absolutos |
+| Ação | Claude | Codex | Gemini CLI | Hermes Agent | OpenClaw | Cursor · Copilot · outros |
+|---|---|---|---|---|---|---|
+| Perguntar com opções | `ask_user_input_v0` / `AskUserQuestion` | pergunta com opções numeradas; pare e espere | `ask_user` (tipo `choice`) | `clarify` | mensagem com opções numeradas; espere | ferramenta de perguntas, se houver; senão numeradas |
+| Ver imagem (folhas de revisão) | `view` / `Read` | `view_image` | `read_file` | `vision_analyze` | `image` | leitura de arquivo (modelo com visão) |
+| Rodar comandos | `bash` | shell | `run_shell_command` | `terminal` | `exec` | terminal |
+| Entregar arquivos | `present_files` | caminhos absolutos na resposta final | caminhos absolutos | caminho absoluto sozinho na linha | `message` com `media`/`filePath` (ou linha `MEDIA:/caminho`) | caminhos absolutos |
 
 Se o seu modelo não enxerga imagens, peça ao usuário para abrir `$WORK/review.jpg` e dizer se algo está errado.
 
