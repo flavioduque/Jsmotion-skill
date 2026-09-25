@@ -2,7 +2,7 @@
 
 **🇧🇷 Português** · [🇺🇸 English](README.en.md)
 
-# 🎬 jsmotion
+# 🎬 JSmotion-skill
 
 ### Seu vídeo de marca nível estúdio, feito pelo Claude, em **uma conversa**.
 
