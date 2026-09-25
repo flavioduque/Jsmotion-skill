@@ -1,8 +1,21 @@
-// ===== jsmotion — vídeo de apresentação da própria skill · 12s · 1280x720 =====
+// ===== jsmotion — vídeo de apresentação da própria skill · 12s · 1280x720 · PT/EN =====
 const W = 1280, H = 720, DUR = 12, FPS = 30, BEAT = 0.5;
 const C = { bg0:'#070510', bg1:'#130c22', violet:'#7C3AED', lilac:'#A855F7', lilac2:'#C084FC',
   blue:'#5B8CFF', teal:'#22E0C8', ink:'#F4F1FF', soft:'#B9B0D6' };
 const FONT = 'Saira';
+
+// ---------- textos (window.LANG = 'pt' | 'en') ----------
+const TXT = {
+  pt: { hook:'Seu vídeo de marca', big:['nível','estúdio'], by:'feito pelo Claude.',
+        no:['Sem After Effects.','Sem editor.','Sem template.'], only:'Só uma', conv:'conversa.',
+        steps:['Logo + site','Roteiro','Animação','Trilha sonora','MP4 pronto'],
+        tag:['Skill para Claude','do briefing ao MP4'] },
+  en: { hook:'Your brand video', big:['studio','quality'], by:'made by Claude.',
+        no:['No After Effects.','No editor.','No templates.'], only:'Just one', conv:'conversation.',
+        steps:['Logo + website','Script','Animation','Soundtrack','MP4 ready'],
+        tag:['Claude Skill','from brief to MP4'] },
+};
+const L = TXT[(typeof window!=='undefined'&&window.LANG)||'pt'] || TXT.pt;
 
 // ---------- utilidades ----------
 const clamp = (x,a=0,b=1)=>Math.max(a,Math.min(b,x));
@@ -18,7 +31,7 @@ const beatPulse = t=>{const p=(t%BEAT)/BEAT;return Math.exp(-p*6);};
 // ---------- linha do tempo compartilhada (visual + som) ----------
 const T2 = 2.8, T3 = 5.45, T4 = 9.6;              // trocas de cena
 const WORDS = [0.3,0.75,1.05,1.6, 3.0,3.3,3.6, 4.5,4.75];
-const STEPS = ['Logo + site','Roteiro','Animação','Trilha sonora','MP4 pronto'];
+const STEPS = L.steps;
 const ST0 = 5.75, STD = 0.62;
 STEPS.forEach((s,i)=>WORDS.push(ST0+i*STD));
 [10.0,10.35,10.7].forEach(t=>WORDS.push(t));
@@ -75,8 +88,9 @@ function drawGrid(ctx,t){
   ctx.stroke(); ctx.restore();
 }
 function drawNoise(ctx,t){
-  ctx.save(); ctx.globalAlpha=0.05; ctx.globalCompositeOperation='overlay';
-  const o=Math.floor(t*30)%4; ctx.drawImage(IMG.noise,-o*20,-o*13,W+80,H+52); ctx.restore();
+  if(!window.NOGRAIN){ // granulação (desligada na versão GIF: muda a cada quadro e triplica o tamanho)
+    ctx.save(); ctx.globalAlpha=0.05; ctx.globalCompositeOperation='overlay';
+    const o=Math.floor(t*30)%4; ctx.drawImage(IMG.noise,-o*20,-o*13,W+80,H+52); ctx.restore(); }
   const v=ctx.createRadialGradient(640,360,330,640,360,820);
   v.addColorStop(0,'rgba(0,0,0,0)'); v.addColorStop(1,'rgba(3,2,10,0.65)'); ctx.fillStyle=v; ctx.fillRect(0,0,W,H);
 }
@@ -110,6 +124,16 @@ function ring(ctx,x,y,r,a,col=C.lilac,w=2.5){
   ctx.beginPath(); ctx.arc(x,y,r,0,6.2832); ctx.stroke(); ctx.restore();
 }
 function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);}
+// centros x de palavras lado a lado, centradas na tela (funciona em qualquer idioma)
+function row(ctx,ws,size,weight,gap){
+  ctx.save(); ctx.font=`${weight} ${size}px ${FONT}`; const m=ws.map(w=>ctx.measureText(w).width); ctx.restore();
+  let x=640-(m.reduce((a,b)=>a+b,0)+gap*(ws.length-1))/2; return m.map(w=>{const c=x+w/2; x+=w+gap; return c;});
+}
+// maior tamanho de fonte (até max) em que o texto cabe na largura
+function fit(ctx,txt,max,width,weight){
+  ctx.save(); ctx.font=`${weight} ${max}px ${FONT}`; const w=ctx.measureText(txt).width; ctx.restore();
+  return Math.min(max,Math.floor(max*width/w));
+}
 
 // ---------- faísca condutora ----------
 const SPARK_KEYS = [
@@ -168,23 +192,22 @@ function scene1(ctx,t){ // 0–2.8 gancho
   const z=1+eIn(inv(2.35,2.85,t))*1.5, fade=1-inv(2.55,2.85,t);
   ctx.save(); ctx.globalAlpha=fade; ctx.translate(640,380); ctx.scale(z,z); ctx.translate(-640,-380);
   for(let i=0;i<3;i++){const s=0.4+i*0.5; const p=inv(s,s+1.4,t); ring(ctx,640,380,90+p*460,(1-p)*0.5,i%2?C.blue:C.lilac,2.5);}
-  word(ctx,'Seu vídeo de marca',640,250,t,0.3,{size:62,weight:600,color:C.soft});
-  word(ctx,'nível',330,420,t,0.75,{size:150,fromScale:1.5});
-  word(ctx,'estúdio',848,420,t,1.05,{size:150,hl:true,fromScale:1.6});
-  word(ctx,'feito pelo Claude.',640,530,t,1.6,{size:62,weight:600});
+  word(ctx,L.hook,640,250,t,0.3,{size:62,weight:600,color:C.soft});
+  const [xa,xb]=row(ctx,L.big,150,700,48);
+  word(ctx,L.big[0],xa,420,t,0.75,{size:150,fromScale:1.5});
+  word(ctx,L.big[1],xb,420,t,1.05,{size:150,hl:true,fromScale:1.6});
+  word(ctx,L.by,640,530,t,1.6,{size:62,weight:600});
   ctx.restore();
 }
 function scene2(ctx,t){ // 2.8–5.45 sem editor
   if(t<T2-0.1||t>T3+0.3) return;
   const out=4.3;
-  word(ctx,'Sem After Effects.',640,230,t,3.0,{size:76,color:C.soft,out,strike:3.35});
-  word(ctx,'Sem editor.',640,340,t,3.3,{size:76,color:C.soft,out,strike:3.65});
-  word(ctx,'Sem template.',640,450,t,3.6,{size:76,color:C.soft,out,strike:3.95});
+  L.no.forEach((s,i)=>word(ctx,s,640,230+i*110,t,3.0+i*0.3,{size:76,color:C.soft,out,strike:3.35+i*0.3}));
   const z=1+eIn(inv(5.05,5.5,t))*0.6;
   ctx.save(); ctx.translate(640,380); ctx.scale(z,z); ctx.translate(-640,-380);
   [4.5,4.75].forEach((s,i)=>{const p=inv(s,s+0.9,t); ring(ctx,640,[300,440][i],60+p*420,(1-p)*0.4*(p>0),i?C.teal:C.lilac,2.5);});
-  word(ctx,'Só uma',640,300,t,4.5,{size:100,fromScale:1.8,out:5.1});
-  word(ctx,'conversa.',640,470,t,4.75,{size:170,hl:true,fromScale:2,out:5.1});
+  word(ctx,L.only,640,300,t,4.5,{size:100,fromScale:1.8,out:5.1});
+  word(ctx,L.conv,640,470,t,4.75,{size:fit(ctx,L.conv,170,1060,800),hl:true,fromScale:2,out:5.1});
   ctx.restore();
 }
 function scene3(ctx,t){ // 5.45–9.6 passos + vídeos reais
@@ -229,9 +252,10 @@ function scene4(ctx,t){ // 9.6–12 logo + chamada
   g2.addColorStop(0,C.lilac2); g2.addColorStop(1,C.blue); ctx.fillStyle=g2; ctx.fillText('motion',-170+jw,6);
   ctx.restore();
   ctx.save(); ctx.globalAlpha=fo;
-  word(ctx,'Skill para Claude',470,450,t,10.0,{size:46,weight:600,color:C.soft});
-  word(ctx,'·',668,450,t,10.2,{size:46,color:C.lilac});
-  word(ctx,'do briefing ao MP4',866,450,t,10.35,{size:46,weight:700,hl:true});
+  const [xt,xd,xs]=row(ctx,[L.tag[0],'·',L.tag[1]],46,700,18);
+  word(ctx,L.tag[0],xt,450,t,10.0,{size:46,weight:600,color:C.soft});
+  word(ctx,'·',xd,450,t,10.2,{size:46,color:C.lilac});
+  word(ctx,L.tag[1],xs,450,t,10.35,{size:46,weight:700,hl:true});
   const bp=inv(10.7,11.05,t); if(bp>0){
     const e=eBack(bp), pulse=1+beatPulse(t)*0.03;
     ctx.save(); ctx.globalAlpha*=clamp(bp*1.5); ctx.translate(640,565); ctx.scale(e*pulse,e*pulse);

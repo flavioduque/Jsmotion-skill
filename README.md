@@ -20,7 +20,8 @@ Você manda a logo e o site — o Claude estuda, pergunta, escreve o roteiro, an
 
 <img src="docs/demo.gif" alt="Animação do jsmotion: gancho 'Seu vídeo de marca nível estúdio', 'Sem After Effects, sem editor, só uma conversa', passos até o MP4 com celulares mostrando vídeos reais, e logo final" width="100%">
 
-<sub>🤯 <b>Este GIF foi feito pelo próprio jsmotion</b> — mesmo motor, mesmo fluxo. <a href="docs/demo.mp4">▶️ Ver com trilha sonora (MP4)</a> · <a href="examples/promo-16x9">🧑‍💻 Ver o código</a></sub>
+<sub>🤯 <b>Este GIF foi feito pelo próprio jsmotion</b> — mesmo motor, mesmo fluxo. <a href="docs/demo.mp4">▶️ Ver com trilha sonora (MP4)</a> · <a href="examples/promo-16x9">🧑‍💻 Ver o código</a><br>
+🇺🇸 <b>English version:</b> <a href="docs/demo-en.gif">GIF</a> · <a href="docs/demo-en.mp4">MP4 with soundtrack</a></sub>
 
 <br><br>
 
@@ -256,12 +257,12 @@ jsmotion/
 │   ├── shell.html           ▶️ página com prévia, botão "Baixar MP4" e ganchos de render
 │   └── saira.woff2          🔤 fonte padrão (Saira)
 ├── examples/
-│   └── promo-16x9/          🎞️ exemplo 16:9 — o vídeo de apresentação do próprio jsmotion (docs/demo.gif)
+│   └── promo-16x9/          🎞️ exemplo 16:9 bilíngue (PT/EN) — o vídeo de apresentação do próprio jsmotion
 ├── references/
 │   ├── engine.md            🧠 anatomia do motor
 │   └── formats.md           📐 tamanhos, áreas seguras e como adaptar o layout
 ├── dist/jsmotion.skill      📦 pacote pronto para upload no claude.ai
-└── docs/                    🖼️ demo.gif · demo.mp4 · preview.jpg
+└── docs/                    🖼️ demo.gif/.mp4 (PT) · demo-en.gif/.mp4 (EN) · preview.jpg
 ```
 
 ---
