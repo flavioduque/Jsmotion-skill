@@ -18,9 +18,9 @@ Você manda a logo e o site — o Claude estuda, pergunta, escreve o roteiro, an
 
 <br>
 
-<img src="docs/preview.jpg" alt="Quadros de um vídeo gerado pelo jsmotion: gancho, cubo 3D, serviços, projetos reais, promessa e logo final com chamada" width="100%">
+<img src="docs/demo.gif" alt="Animação do jsmotion: gancho 'Seu vídeo de marca nível estúdio', 'Sem After Effects, sem editor, só uma conversa', passos até o MP4 com celulares mostrando vídeos reais, e logo final" width="100%">
 
-<sub>👆 Quadros reais de um vídeo de 25s em 9:16 gerado pela skill para a <a href="https://www.constructiva.dev">Constructiva.dev</a> — do gancho à chamada final.</sub>
+<sub>🤯 <b>Este GIF foi feito pelo próprio jsmotion</b> — mesmo motor, mesmo fluxo. <a href="docs/demo.mp4">▶️ Ver com trilha sonora (MP4)</a> · <a href="examples/promo-16x9">🧑‍💻 Ver o código</a></sub>
 
 <br><br>
 
@@ -36,7 +36,11 @@ Você manda a logo e o site — o Claude estuda, pergunta, escreve o roteiro, an
 >
 > **O Claude devolve:** um **MP4 1080p com trilha e efeitos sonoros**, um **.html** de reserva com botão *"Baixar MP4"* e **3 sugestões** para deixar o próximo ainda melhor.
 
-Um único arquivo de conversa. Zero timeline. Zero keyframe manual.
+Uma conversa. Zero timeline. Zero keyframe manual.
+
+<img src="docs/preview.jpg" alt="Quadros de um vídeo 9:16 gerado pelo jsmotion para a Constructiva.dev: gancho, cubo 3D, serviços, projetos reais, promessa e logo final com chamada" width="100%">
+
+<sub>👆 Quadros reais de um vídeo de 25s em 9:16 feito pela skill para a <a href="https://www.constructiva.dev">Constructiva.dev</a> — do gancho à chamada final.</sub>
 
 ---
 
@@ -71,7 +75,7 @@ git clone https://github.com/flavioduque/Jsmotion-skill.git ~/.claude/skills/jsm
 ```
 
 > [!NOTE]
-> A skill foi desenhada para o ambiente do claude.ai (pastas `/home/claude` e `/mnt/user-data/outputs`). No Claude Code ela também funciona — o Claude usa a sua pasta de trabalho no lugar dessas. É preciso ter **Python 3**, **ffmpeg** e **Chromium/Playwright** (o `install_watch.sh` instala o que faltar).
+> A skill foi desenhada para o ambiente do claude.ai (pastas `/home/claude` e `/mnt/user-data/outputs`). No Claude Code ela também funciona — o Claude usa a sua pasta de trabalho no lugar dessas. É preciso ter **Python 3**, **ffmpeg** e **Chromium/Playwright** (o `install_watch.sh` instala o que faltar). Já tem um Chromium? Aponte com `CHROMIUM_PATH=/caminho/chrome`.
 
 ---
 
@@ -251,11 +255,13 @@ jsmotion/
 │   ├── example_anim.js      ⭐ exemplo completo e testado (Constructiva.dev · 25s · 9:16)
 │   ├── shell.html           ▶️ página com prévia, botão "Baixar MP4" e ganchos de render
 │   └── saira.woff2          🔤 fonte padrão (Saira)
+├── examples/
+│   └── promo-16x9/          🎞️ exemplo 16:9 — o vídeo de apresentação do próprio jsmotion (docs/demo.gif)
 ├── references/
 │   ├── engine.md            🧠 anatomia do motor
 │   └── formats.md           📐 tamanhos, áreas seguras e como adaptar o layout
 ├── dist/jsmotion.skill      📦 pacote pronto para upload no claude.ai
-└── docs/preview.jpg         🖼️ prévia
+└── docs/                    🖼️ demo.gif · demo.mp4 · preview.jpg
 ```
 
 ---
@@ -340,7 +346,8 @@ Sim. Saira é o padrão (combina com logos geométricas/tech). Para outro clima,
 - [ ] Presets de estilo prontos (neon, corporativo, minimalista, retrô)
 - [ ] Legendas automáticas queimadas no vídeo
 - [ ] Narração por voz sintetizada
-- [ ] Layouts nativos por formato no exemplo (hoje o exemplo é 9:16 e o Claude adapta)
+- [x] Exemplo nativo em 16:9 ([`examples/promo-16x9`](examples/promo-16x9))
+- [ ] Exemplos nativos em 1:1 e 4:5
 
 Tem uma ideia? [Abra uma issue](https://github.com/flavioduque/Jsmotion-skill/issues) 💡
 

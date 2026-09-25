@@ -4,7 +4,7 @@ from playwright.sync_api import sync_playwright
 page=sys.argv[1]; ts=[float(x) for x in sys.argv[2:]]
 for f in glob.glob('/tmp/snap_*.jpg'): os.remove(f)
 with sync_playwright() as p:
-    b=p.chromium.launch(); pg=b.new_page(); errs=[]
+    b=p.chromium.launch(executable_path=os.environ.get('CHROMIUM_PATH') or None); pg=b.new_page(); errs=[]
     pg.on('pageerror',lambda e:errs.append(str(e))); pg.on('console',lambda m: m.type=='error' and errs.append(m.text))
     pg.goto('file://'+os.path.abspath(page)); pg.wait_for_function('window.READY===true',timeout=180000)
     W,H=pg.evaluate('[W,H]')
