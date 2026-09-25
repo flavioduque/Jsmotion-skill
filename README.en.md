@@ -36,7 +36,7 @@ Send your logo and website — Claude studies them, asks a few questions, writes
 
 > **You say:** *"Make me a jsmotion video for my brand, website www.mycompany.com"* — and attach your logo.
 >
-> **Claude delivers:** a **1080p MP4 with music and sound effects**, a backup **.html** with a *"Download MP4"* button, and **3 suggestions** to make the next one even better.
+> **Claude delivers:** a **pack of 1080p MP4s with music and sound effects — 9:16, 1:1 and 16:9 of the same video** —, backup **.html** files with a *"Download MP4"* button, and **3 suggestions** to make the next one even better.
 
 One conversation. Zero timeline. Zero manual keyframes.
 
@@ -54,8 +54,9 @@ One conversation. Zero timeline. Zero manual keyframes.
 | Studies your site and pulls colors/projects | ✅ | ❌ | ✅ **automatic** |
 | Copies the style of a reference video | ✅ | ❌ | ✅ **automatic** |
 | Soundtrack synced to every word | sometimes | ❌ | ✅ **generated in code** |
-| Same animation in 9:16, 1:1, 4:5 and 16:9 | 💸 extra fee | partial | ✅ |
+| Same animation in 9:16, 1:1, 4:5 and 16:9 | 💸 extra fee | partial | ✅ **one request, every format** |
 | You own the video's "source code" | ❌ | ❌ | ✅ **open, editable JS** |
+| Platform-standard loudness (−14 LUFS) | ✅ | ❌ | ✅ **mastered at render** |
 | Cost of a new version | 💸💸💸 | subscription | **one message** |
 
 ---
@@ -77,7 +78,7 @@ git clone https://github.com/flavioduque/Jsmotion-skill.git ~/.claude/skills/jsm
 ```
 
 > [!NOTE]
-> The skill was designed for the claude.ai environment (`/home/claude` and `/mnt/user-data/outputs` folders). It also works in Claude Code — Claude uses your working folder instead. You need **Python 3**, **ffmpeg** and **Chromium/Playwright** (`install_watch.sh` installs whatever is missing). Already have Chromium? Point to it with `CHROMIUM_PATH=/path/to/chrome`.
+> The skill was designed for the claude.ai environment (`/home/claude` and `/mnt/user-data/outputs` folders). It also works in Claude Code — Claude uses your working folder instead. You need **Python 3**, **ffmpeg** and **Chromium/Playwright** (`install_watch.sh` installs whatever is missing). Already have Chromium? Point to it with `CHROMIUM_PATH=/path/to/chrome`. Files go to `./jsmotion-work` (work) and `./jsmotion-out` (deliverables) — or wherever you point `JSMOTION_WORKDIR` and `JSMOTION_OUTDIR`.
 
 > [!TIP]
 > The skill's instructions are written in Portuguese, but **Claude talks to you in your language** and writes the on-screen copy in whatever language you ask for.
@@ -123,7 +124,7 @@ At most **7 questions, one at a time**, each with 3 options + *"I don't know, yo
 
 | # | Question | Example options |
 |---|---|---|
-| 1 | **Format** | 9:16 Reels/TikTok/Shorts · 1:1 or 4:5 feed · 16:9 YouTube/website |
+| 1 | **Where you'll post** | **pack 9:16 + 1:1 + 16:9** · 9:16 only · another combination (4:5, 1:1, 16:9) |
 | 2 | **Length** | 15s · 25s · 40s — or **any value from 6 to 90s** |
 | 3 | **Style** | your reference's style in your colors · + 2 other moods |
 | 4 | **Hook (first 3 seconds)** | provocative question · bold statement · promise of results |
@@ -149,7 +150,8 @@ hook ~12% │ twist ~12% │ services ~20% │ proof/projects ~34% │ promise ~
 
 - Animates everything on a single `<canvas>`, composes the soundtrack and packs the assets into a **single HTML file that works offline**.
 - Takes **15–18 snapshots** (including mid-transitions) and hunts for leaking text, overlaps, text too close to the edge, altered logos, empty scenes — fixes and reviews again.
-- Renders **frame by frame** in headless Chromium → **MP4 H.264 (CRF 17) + AAC 192k**, checks loudness and delivers.
+- Renders **frame by frame** in headless Chromium → **MP4 H.264 (CRF 17) + AAC 192k**, **all formats in parallel**.
+- **Masters the audio to −14 LUFS** (the loudness Instagram, TikTok and YouTube use), true peak below −1.5 dBTP, and delivers.
 </details>
 
 ---
@@ -172,14 +174,14 @@ Mandatory rules in every video:
 
 ## 📐 Formats
 
-| Format | Resolution | Where to use | Text safe area |
+| Format | Resolution | Where to use | Layout |
 |---|---|---|---|
-| 📱 Vertical 9:16 | 1080×1920 | Reels · TikTok · Shorts · Stories | x 90–990 · y 300–1650 |
-| 🖼️ Portrait 4:5 | 1080×1350 | Instagram/Facebook feed | x 90–990 · y 110–1240 |
-| ⬛ Square 1:1 | 1080×1080 | Feed · LinkedIn | x 90–990 · y 90–990 |
-| 🖥️ Landscape 16:9 | 1920×1080 | YouTube · website · presentations | x 160–1760 · y 90–990 |
+| 📱 Vertical 9:16 | 1080×1920 | Reels · TikTok · Shorts · Stories | the original design |
+| 🖼️ Portrait 4:5 | 1080×1350 | Instagram/Facebook feed | stacked, scaled into the safe area |
+| ⬛ Square 1:1 | 1080×1080 | Feed · LinkedIn | stacked, scaled into the safe area |
+| 🖥️ Landscape 16:9 | 1920×1080 | YouTube · website · presentations | media on the left, text on the right |
 
-Always **30 fps**. The 9:16 safe area avoids the apps' UI (top and bottom) — your text never hides behind the like button.
+**One codebase, every format:** scenes are drawn once and a "stage" fits each block (media, text, full screen) into the chosen format. The 9:16 output is pixel-identical to the design. Always **30 fps**. The 9:16 safe area avoids the apps' UI (top and bottom) — your text never hides behind the like button.
 
 ---
 
@@ -216,7 +218,9 @@ const WH     = [2.7, 5.7, 10.75];  // whooshes (played 0.35s before each transit
 const IMPACT = [3.0, 22.6];        // deep hits at key moments
 ```
 
-The whole soundtrack (Am–F–C–G pad, kick, hi-hat, clap, bass, arpeggio, riser, final chord) is **synthesized** in an `OfflineAudioContext` into a single buffer. That's why the browser preview, the in-browser recording and the rendered MP4 **sound exactly the same**. No music files — and no copyright issues.
+The whole soundtrack (Am–F–C–G pad, kick, hi-hat, clap, bass, arpeggio, riser, final chord) is **synthesized** in an `OfflineAudioContext` into a single buffer. That's why the browser preview, the in-browser recording and the rendered MP4 **sound the same**. No music files — and no copyright issues.
+
+For the MP4, `render.py` also **masters** the audio: gain + an oversampled (192 kHz) limiter, iterated until it hits **−14 LUFS** with true peak below **−1.5 dBTP**. Never too quiet, never clipping, on any platform.
 
 Ready-made variations: **epic** (deep strings, longer kick, a hit every 4s) and **minimal** (only sparkles, whooshes, hits and a soft tick per beat).
 </details>
@@ -255,9 +259,11 @@ jsmotion/
 │   ├── prep_assets.py       🧳 logo, images, clips and font → data URIs (assets.js)
 │   ├── build_html.py        🧱 merges shell + assets + animation into one offline .html
 │   ├── snap.py              📸 review snapshots + console errors
-│   └── render.py            🎬 frame-by-frame render + audio → MP4
+│   ├── render.py            🎬 frame-by-frame render + mastered audio (−14 LUFS) → MP4
+│   ├── pack.py              📦 multi-format pack: one .html and one MP4 per format, in parallel
+│   └── paths.sh · _paths.py 📁 work/output folders (claude.ai, Claude Code or environment variable)
 ├── templates/
-│   ├── example_anim.js      ⭐ complete, tested example (Constructiva.dev · 25s · 9:16)
+│   ├── example_anim.js      ⭐ complete, tested example (Constructiva.dev · 25s · 9:16, 4:5, 1:1 and 16:9)
 │   ├── shell.html           ▶️ page with preview, "Download MP4" button and render hooks
 │   └── saira.woff2          🔤 default font (Saira)
 ├── examples/
@@ -281,9 +287,9 @@ SK=~/.claude/skills/jsmotion
 python3 $SK/scripts/scrape_site.py https://www.example.com ./site          # 1. study the site
 cp $SK/templates/example_anim.js anim.js                                   # 2. adapt colors, copy and timings
 python3 $SK/scripts/prep_assets.py config.json assets.js                   # 3. pack logo/images/clips
-python3 $SK/scripts/build_html.py anim.js assets.js video.html "My Brand" my-brand
-python3 $SK/scripts/snap.py video.html 0.5 1.5 3 6 11 19 23                 # 4. review (→ /tmp/review.jpg)
-python3 $SK/scripts/render.py video.html video.mp4                         # 5. final MP4
+python3 $SK/scripts/pack.py anim.js assets.js my-brand "My Brand" --html-only        # 4. build the .html files
+python3 $SK/scripts/snap.py jsmotion-out/my-brand_9x16.html 0.5 1.5 3 6 11 19 23      # 5. review (→ jsmotion-work/review.jpg)
+python3 $SK/scripts/pack.py anim.js assets.js my-brand "My Brand"                    # 6. MP4 9:16 + 1:1 + 16:9
 ```
 
 <details>
@@ -316,7 +322,7 @@ No. The skill was written for beginners: Claude speaks plainly, asks with tappab
 <details>
 <summary><b>How long does rendering take?</b></summary>
 
-About **5 minutes for 25s at 1080×1920** in the claude.ai environment. Shorter or 1:1 videos are faster.
+About **5 minutes per format for 25s** at 1080p. The pack renders formats **in parallel**: with 4 cores, 9:16 + 1:1 + 16:9 take ~6–7 minutes in total.
 </details>
 
 <details>
@@ -352,7 +358,10 @@ Yes. Saira is the default (it suits geometric/tech logos). For a different mood,
 - [ ] Automatic burned-in captions
 - [ ] Synthesized voice-over
 - [x] Native 16:9 and 9:16 example from the same code ([`examples/promo`](examples/promo))
-- [ ] Native 1:1 and 4:5 examples
+- [x] Multi-format pack (9:16, 4:5, 1:1 and 16:9) from the same code, rendered in parallel
+- [x] Audio mastered to −14 LUFS
+- [ ] In-browser MP4 export with WebCodecs (no real-time wait)
+- [ ] Automatic layout review (text outside the safe area)
 - [ ] English version of `SKILL.md`
 
 Got an idea? [Open an issue](https://github.com/flavioduque/Jsmotion-skill/issues) 💡

@@ -1,5 +1,11 @@
-// ===== Constructiva.dev — vídeo 25s 1080x1920 =====
-const W = 1080, H = 1920, DUR = 25, FPS = 30, BEAT = 0.5;
+// ===== Constructiva.dev — vídeo 25s · qualquer formato (window.FORMAT) =====
+// As cenas são desenhadas no espaço 1080x1920 (9:16) e o "palco" encaixa cada bloco no formato:
+// 9x16 (original) · 4x5 e 1x1 (mesmo layout, escalado na área segura) · 16x9 (mídia à esquerda, texto à direita).
+const FMT = {'9x16':[1080,1920], '4x5':[1080,1350], '1x1':[1080,1080], '16x9':[1920,1080]};
+const FORMAT = (typeof window!=='undefined' && FMT[window.FORMAT]) ? window.FORMAT : '9x16';
+const [W, H] = FMT[FORMAT];
+const CX = W/2, CY = H/2, M = Math.max(W,H), SIDE = W>H;
+const DUR = 25, FPS = 30, BEAT = 0.5;
 const C = { bg0:'#070510', bg1:'#130c22', bg2:'#1b1130', violet:'#7C3AED', lilac:'#A855F7', lilac2:'#C084FC',
   blue:'#5B8CFF', teal:'#22E0C8', ink:'#F4F1FF', soft:'#B9B0D6' };
 const FONT = 'Saira';
@@ -14,6 +20,26 @@ const eIO = t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
 const eBack = t=>{const c1=1.70158,c3=c1+1;return 1+c3*Math.pow(t-1,3)+c1*Math.pow(t-1,2);};
 function rng(seed){let s=seed>>>0;return()=>{s=(s+0x6D2B79F5)>>>0;let t=s;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296;};}
 const beatPulse = t=>{const p=(t%BEAT)/BEAT;return Math.exp(-p*6);}; // 1 no início de cada batida
+
+// ---------- palco: encaixa o desenho 1080x1920 no formato atual ----------
+// Faixa útil do desenho: y 330–1690 (centro 1010). Nos formatos empilhados ela é escalada para a área segura.
+const SAFE = {'4x5':[110,1240], '1x1':[90,990]};
+const STAGE = FORMAT==='9x16' || SIDE ? {s:1,x:0,y:0} : (()=>{
+  const [a,b]=SAFE[FORMAT], s=Math.min(1,(b-a)/1360); return {s, x:CX-540*s, y:(a+b)/2-1010*s}; })();
+// 16:9: 'media' = coluna esquerda · 'text' = coluna direita (slots top/mid/bot) · 'center' = tela inteira
+const SIDE_K = {media:{s:0.78,x:0.31}, text:{s:0.75,x:0.72}}, SLOT = {top:0.24, mid:0.55, bot:0.8};
+// blk(ctx, tipo, y do bloco no desenho, opções, desenho): nos formatos empilhados só aplica o palco
+function blk(ctx,kind,dy,o,fn){
+  ctx.save();
+  if(!SIDE) ctx.transform(STAGE.s,0,0,STAGE.s,STAGE.x,STAGE.y);
+  else { const k = kind==='center' ? {s:o.s||0.8,x:0.5,y:0.5} : {...SIDE_K[kind], y:kind==='media'?0.5:SLOT[o.slot||'mid']};
+    ctx.transform(k.s,0,0,k.s,W*k.x-540*k.s,H*k.y-dy*k.s); }
+  fn(); ctx.restore();
+}
+// ponto do desenho -> ponto da tela (usado pelo elemento condutor e pelas transições)
+const toCanvas = (x,y)=> SIDE ? [W*0.08+x/1080*W*0.84, H*0.08+clamp((y-300)/1400)*H*0.84] : [STAGE.x+x*STAGE.s, STAGE.y+y*STAGE.s];
+const SS = SIDE ? 0.8 : STAGE.s;                               // escala do condutor
+const RFL = 1500*Math.hypot(W,H)/Math.hypot(1080,1920);       // raio dos clarões (1500 no 9:16)
 
 // ---------- linha do tempo compartilhada (visual + som) ----------
 const WORDS = []; // {t} para o "brilho" sonoro
@@ -78,11 +104,12 @@ function drawBackground(ctx,t){
   ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
   ctx.globalCompositeOperation='lighter';
   const bp = beatPulse(t);
-  glow(ctx, 540+Math.sin(t*0.4)*320, 520+Math.cos(t*0.3)*180, 760, C.violet, 0.30+bp*0.05);
-  glow(ctx, 220+Math.cos(t*0.35)*160, 1450+Math.sin(t*0.5)*200, 700, C.blue, 0.17);
-  glow(ctx, 900+Math.sin(t*0.6+1)*140, 1100+Math.cos(t*0.45)*260, 560, C.lilac, 0.16);
+  const fx=W/1080, fy=H/1920, fr=M/1920; // luzes proporcionais ao formato (1 no 9:16)
+  glow(ctx, (540+Math.sin(t*0.4)*320)*fx, (520+Math.cos(t*0.3)*180)*fy, 760*fr, C.violet, 0.30+bp*0.05);
+  glow(ctx, (220+Math.cos(t*0.35)*160)*fx, (1450+Math.sin(t*0.5)*200)*fy, 700*fr, C.blue, 0.17);
+  glow(ctx, (900+Math.sin(t*0.6+1)*140)*fx, (1100+Math.cos(t*0.45)*260)*fy, 560*fr, C.lilac, 0.16);
   const tealA = 0.07 + 0.08*inv(11,12,t)*(1-inv(19,20,t));
-  glow(ctx, 850, 300+Math.sin(t*0.7)*120, 520, C.teal, tealA);
+  glow(ctx, 850*fx, (300+Math.sin(t*0.7)*120)*fy, 520*fr, C.teal, tealA);
   ctx.globalCompositeOperation='source-over';
   drawGrid(ctx,t);
   // poeira de luz
@@ -94,10 +121,10 @@ function drawBackground(ctx,t){
 }
 function drawGrid(ctx,t){
   // chão em perspectiva (como nos vídeos do site)
-  const hy=1250, vx=540; ctx.save();
+  const hy=1250*H/1920, vx=CX, gs=160*W/1080; ctx.save();
   const fade=ctx.createLinearGradient(0,hy,0,H); fade.addColorStop(0,'rgba(124,58,237,0)'); fade.addColorStop(1,'rgba(124,58,237,0.22)');
   ctx.strokeStyle=fade; ctx.lineWidth=1.5; ctx.beginPath();
-  for(let i=-12;i<=12;i++){ctx.moveTo(vx,hy);ctx.lineTo(vx+i*160,H+40);}
+  for(let i=-12;i<=12;i++){ctx.moveTo(vx,hy);ctx.lineTo(vx+i*gs,H+40);}
   const off=(t*0.6)%1;
   for(let j=0;j<14;j++){const z=(j+off)/14;const y=hy+(H-hy)*z*z;ctx.moveTo(0,y);ctx.lineTo(W,y);}
   ctx.stroke(); ctx.restore();
@@ -106,7 +133,7 @@ function drawNoise(ctx,t){
   ctx.save(); ctx.globalAlpha=0.055; ctx.globalCompositeOperation='overlay';
   const o=Math.floor(t*30)%4; ctx.drawImage(IMG.noise,-o*20,-o*13,W+80,H+52); ctx.restore();
   // vinheta
-  const v=ctx.createRadialGradient(540,960,500,540,960,1250);
+  const v=ctx.createRadialGradient(CX,CY,500*M/1920,CX,CY,1250*M/1920);
   v.addColorStop(0,'rgba(0,0,0,0)'); v.addColorStop(1,'rgba(3,2,10,0.65)'); ctx.fillStyle=v; ctx.fillRect(0,0,W,H);
 }
 
@@ -145,7 +172,8 @@ PROJ.forEach((p,i)=>{const t0=S4+i*S4D;SPARK_KEYS.push([t0+0.1,i%2?160:920,700],
 SPARK_KEYS.push([19.6,540,960],[20.0,860,760],[20.5,220,960],[21.0,860,1180],[21.6,540,1420],[22.3,540,960],
   [23.2,860,560],[24.0,1005,815],[25,1005,815]);
 SPARK_KEYS.sort((a,b)=>a[0]-b[0]);
-function sparkPos(t){
+function sparkPos(t){ const [x,y]=sparkD(t); return toCanvas(x,y); }
+function sparkD(t){ // posição no espaço do desenho
   const K=SPARK_KEYS; let i=0; while(i<K.length-2 && K[i+1][0]<t) i++;
   const p0=K[Math.max(0,i-1)],p1=K[i],p2=K[i+1],p3=K[Math.min(K.length-1,i+2)];
   const u=eIO(clamp((t-p1[0])/(p2[0]-p1[0]||1)));
@@ -157,18 +185,18 @@ function drawSpark(ctx,t){
   ctx.save(); ctx.globalCompositeOperation='lighter';
   for(let k=16;k>=1;k--){ // rastro
     const tt=t-k*0.018; if(tt<0) continue; const [x,y]=sparkPos(tt);
-    ctx.fillStyle=hexA(C.lilac,0.10*(1-k/17)*born); ctx.beginPath(); ctx.arc(x,y,16*(1-k/18),0,6.28); ctx.fill();
+    ctx.fillStyle=hexA(C.lilac,0.10*(1-k/17)*born); ctx.beginPath(); ctx.arc(x,y,16*SS*(1-k/18),0,6.28); ctx.fill();
   }
   const [x,y]=sparkPos(t); const bp=beatPulse(t);
-  glow(ctx,x,y,150+bp*60,C.violet,0.55*born); glow(ctx,x,y,60,C.lilac2,0.9*born);
-  ctx.fillStyle=`rgba(255,255,255,${born})`; ctx.beginPath(); ctx.arc(x,y,10+bp*4,0,6.28); ctx.fill();
+  glow(ctx,x,y,(150+bp*60)*SS,C.violet,0.55*born); glow(ctx,x,y,60*SS,C.lilac2,0.9*born);
+  ctx.fillStyle=`rgba(255,255,255,${born})`; ctx.beginPath(); ctx.arc(x,y,(10+bp*4)*SS,0,6.28); ctx.fill();
   // estrela de 4 pontas
-  ctx.strokeStyle=`rgba(255,240,255,${0.8*born})`; ctx.lineWidth=2.5; const L=38+bp*22;
+  ctx.strokeStyle=`rgba(255,240,255,${0.8*born})`; ctx.lineWidth=2.5*SS; const L=(38+bp*22)*SS;
   ctx.beginPath(); ctx.moveTo(x-L,y);ctx.lineTo(x+L,y);ctx.moveTo(x,y-L);ctx.lineTo(x,y+L);ctx.stroke();
   // faíscas soltas a cada batida
   const bi=Math.floor(t/BEAT), lt=t-bi*BEAT, r=rng(bi*13+1);
-  for(let j=0;j<7;j++){const a=r()*6.28,sp=120+r()*260,d=lt*sp;const al=(1-lt/BEAT)*0.8*born;
-    ctx.fillStyle=hexA(C.lilac2,al); ctx.beginPath(); ctx.arc(x+Math.cos(a)*d,y+Math.sin(a)*d,3,0,6.28); ctx.fill();}
+  for(let j=0;j<7;j++){const a=r()*6.28,sp=(120+r()*260)*SS,d=lt*sp;const al=(1-lt/BEAT)*0.8*born;
+    ctx.fillStyle=hexA(C.lilac2,al); ctx.beginPath(); ctx.arc(x+Math.cos(a)*d,y+Math.sin(a)*d,3*SS,0,6.28); ctx.fill();}
   ctx.restore();
 }
 
@@ -198,6 +226,7 @@ function glassFrame(ctx,img,x,y,w,h,o={}){
 function scene1(ctx,t){ // 0–3 gancho
   if(t>3.3) return;
   const z = 1+eIn(inv(2.55,3.05,t))*1.6, fade=1-inv(2.75,3.05,t);
+  blk(ctx,'center',960,{s:0.85},()=>{
   ctx.save(); ctx.globalAlpha=fade; ctx.translate(540,900); ctx.scale(z,z); ctx.translate(-540,-900);
   for(let i=0;i<3;i++){const s=0.5+i*0.5; const p=inv(s,s+1.4,t);
     ring(ctx,540,900,120+p*520,(1-p)*0.55,i%2?C.blue:C.lilac,3);}
@@ -207,23 +236,28 @@ function scene1(ctx,t){ // 0–3 gancho
   word(ctx,'todavía',540,1060,t,1.15,{size:120});
   word(ctx,'no existe?',540,1200,t,1.45,{size:120,weight:800});
   ctx.restore();
+  });
 }
 function scene2(ctx,t){ // 3–6.2 cubo
   if(t<2.9||t>6.5) return;
   const inP=eBack(inv(3.0,3.6,t)), outP=eIn(inv(5.7,6.25,t));
   const s=lerp(0.6,1,inP)*(1+outP*0.9), a=inv(3.0,3.3,t)*(1-outP);
+  blk(ctx,'media',800,{},()=>{
   ctx.save(); ctx.globalAlpha=a; ctx.translate(540,800+Math.sin(t*2)*10-outP*300); ctx.scale(s,s); ctx.rotate(Math.sin(t*1.3)*0.03);
   ring(ctx,0,0,430+beatPulse(t)*20,0.35,C.lilac,2.5); ring(ctx,0,0,500,0.15,C.blue,2);
   glassFrame(ctx,seqFrame('cube',t-3.0),-340,-340,680,680,{r:60,sheen:inv(3.4,4.6,t),lit:beatPulse(t)*0.6});
   ctx.restore();
+  });
   const out=5.65;
+  blk(ctx,'text',1520,{slot:'mid'},()=>{
   word(ctx,'Nosotros',540,1390,t,3.55,{size:110,out});
   word(ctx,'la',540,1510,t,3.8,{size:110,out,color:C.soft});
   word(ctx,'construimos.',540,1650,t,4.1,{size:150,hl:true,out,fromScale:1.5});
+  });
 }
 function scene3(ctx,t){ // 6.2–11 serviços
   if(t<5.9||t>11.4) return;
-  word(ctx,'Lo que hacemos',540,400,t,6.0,{size:62,weight:500,color:C.soft,out:10.7});
+  blk(ctx,'text',400,{slot:'top'},()=>word(ctx,'Lo que hacemos',540,400,t,6.0,{size:62,weight:500,color:C.soft,out:10.7}));
   SERV.forEach((s,i)=>{
     const t0=S3+i*S3D, t1=t0+S3D; if(t<t0-0.3||t>t1+0.45) return;
     const pin=eOut(inv(t0-0.3,t0+0.25,t)), pout=eIn(inv(t1-0.05,t1+0.45,t));
@@ -232,23 +266,29 @@ function scene3(ctx,t){ // 6.2–11 serviços
     const sc = lerp(0.8,1,pin)*(last?1+pout*1.8:lerp(1,0.75,pout));
     const a = pin*(1-pout);
     if(a<=0.01) return;
-    ctx.save(); ctx.globalAlpha=a; ctx.translate(x,880+Math.sin(t*2+i)*8); ctx.scale(sc,sc);
+    blk(ctx,'media',880,{},()=>{
+    ctx.save(); ctx.globalAlpha*=a; ctx.translate(x,880+Math.sin(t*2+i)*8); ctx.scale(sc,sc);
     ctx.transform(1,(1-pin)*-0.12+pout*0.1,0,1,0,0);
     glassFrame(ctx,seqFrame(s.k,t-t0+0.2),-440,-250,880,500,{sheen:inv(t0,t1,t),lit:Math.exp(-Math.max(0,t-t0-0.05)*4)});
     ctx.restore();
+    });
     const out=t1-0.3;
-    s.n.forEach((w,j)=>word(ctx,w,540,1300+j*120,t,t0+0.12+j*0.12,{size:s.n.length>1&&j===0?110:(s.n.length===1?110:96),hl:j===0,out,outDur:0.22}));
+    blk(ctx,'text',1360,{slot:'mid'},()=>
+    s.n.forEach((w,j)=>word(ctx,w,540,1300+j*120,t,t0+0.12+j*0.12,{size:s.n.length>1&&j===0?110:(s.n.length===1?110:96),hl:j===0,out,outDur:0.22})));
   });
   // indicador de passos (5 pontos)
   const a=inv(6.0,6.4,t)*(1-inv(10.7,11.0,t));
+  blk(ctx,'text',1620,{slot:'bot'},()=>
   SERV.forEach((s,i)=>{const on=t>=S3+i*S3D; ctx.fillStyle=on?hexA(C.lilac,a):hexA('#ffffff',0.15*a);
-    ctx.beginPath(); ctx.arc(540+(i-2)*44,1620,on?10:7,0,6.28); ctx.fill();});
+    ctx.beginPath(); ctx.arc(540+(i-2)*44,1620,on?10:7,0,6.28); ctx.fill();}));
 }
 function scene4(ctx,t){ // 11.2–19.6 projetos
   if(t<11.0||t>19.9) return;
   const tOut=19.2;
+  blk(ctx,'text',450,{slot:'top'},()=>{
   word(ctx,'Proyectos',540,400,t,11.2,{size:96,out:tOut});
   word(ctx,'reales',540,500,t,11.5,{size:96,hl:true,out:tOut});
+  });
   PROJ.forEach((p,i)=>{
     const t0=S4+i*S4D, t1=t0+S4D; if(t<t0-0.35||t>t1+0.5) return;
     const pin=eOut(inv(t0-0.35,t0+0.3,t)), pout=eIn(inv(t1-0.1,t1+0.4,t));
@@ -258,23 +298,29 @@ function scene4(ctx,t){ // 11.2–19.6 projetos
     const sc = lerp(0.72,1,pin)*(last?1+pout*0.35:lerp(1,0.82,pout));
     const a = pin*(1-pout)*(last?1-inv(19.3,19.7,t):1);
     if(a<=0.01) return;
-    ctx.save(); ctx.globalAlpha=a; ctx.translate(540+(1-pin)*dir*260+pout*-dir*300,y+Math.sin(t*2.2+i)*10); ctx.scale(sc,sc);
+    blk(ctx,'media',900,{},()=>{
+    ctx.save(); ctx.globalAlpha*=a; ctx.translate(540+(1-pin)*dir*260+pout*-dir*300,y+Math.sin(t*2.2+i)*10); ctx.scale(sc,sc);
     const sk=(1-pin)*0.10*dir + Math.sin(t*1.5+i)*0.015;
     ctx.transform(1,sk,0,1,0,0);
     glassFrame(ctx,IMG.proj[p.k],-450,-300,900,600,{bar:true,sheen:inv(t0+0.2,t1,t),lit:Math.exp(-Math.max(0,t-t0-0.1)*4)});
     ctx.restore();
+    });
     const out=last?19.2:t1-0.3;
+    blk(ctx,'text',1465,{slot:'mid'},()=>{
     word(ctx,p.n,540,1420,t,t0+0.15,{size:112,hl:true,out,outDur:0.22});
     word(ctx,p.d,540,1510,t,t0+0.32,{size:52,weight:500,color:C.soft,out,outDur:0.22});
+    });
   });
   const a=inv(11.6,12.0,t)*(1-inv(19.2,19.5,t));
+  blk(ctx,'text',1640,{slot:'bot'},()=>
   PROJ.forEach((p,i)=>{const on=t>=S4+i*S4D; ctx.fillStyle=on?hexA(C.lilac,a):hexA('#ffffff',0.15*a);
-    rr(ctx,540+(i-2.5)*60-20,1640,40,8,4); ctx.fill();});
+    rr(ctx,540+(i-2.5)*60-20,1640,40,8,4); ctx.fill();}));
 }
 function scene5(ctx,t){ // 19.6–22.5 promessa
   if(t<19.5||t>22.8) return;
   const out=22.15;
   const z=1+eIn(inv(22.1,22.6,t))*0.5;
+  blk(ctx,'center',1035,{s:0.85},()=>{
   ctx.save(); ctx.translate(540,960); ctx.scale(z,z); ctx.translate(-540,-960);
   [19.85,20.35,20.85].forEach((s,i)=>{const p=inv(s,s+0.9,t); ring(ctx,540,[700,900,1130][i],80+p*520,(1-p)*0.4*(p>0),i===2?C.teal:C.lilac,3);});
   word(ctx,'Software',540,740,t,19.85,{size:150,fromScale:2,out});
@@ -282,9 +328,11 @@ function scene5(ctx,t){ // 19.6–22.5 promessa
   word(ctx,'Resultados',540,1160,t,20.85,{size:176,hl:true,fromScale:2.2,out});
   word(ctx,'Hecho en Paraguay',540,1330,t,21.5,{size:58,weight:500,color:C.soft,out});
   ctx.restore();
+  });
 }
 function scene6(ctx,t){ // 22.5–25 logo + chamada
   if(t<22.3) return;
+  blk(ctx,'center',1130,{s:0.8},()=>{
   const p=eOut(inv(22.55,23.3,t));
   const lw=900, lh=lw*IMG.logo.height/IMG.logo.width;
   ctx.save(); ctx.globalAlpha=p; ctx.translate(540,760); ctx.scale(lerp(0.9,1,p),lerp(0.9,1,p));
@@ -305,18 +353,19 @@ function scene6(ctx,t){ // 22.5–25 logo + chamada
     ctx.fillText('www.constructiva.dev',0,4); ctx.restore();
     ring(ctx,540,1500,420+beatPulse(t)*30,0.25*beatPulse(t),C.lilac,2);
   }
+  });
 }
 
 // ---------- transições de luz ----------
 function transitions(ctx,t){
   const flash=(tc,dur,col,max)=>{const d=Math.abs(t-tc);if(d>dur)return;const a=Math.pow(1-d/dur,2)*max;
     ctx.save();ctx.globalCompositeOperation='lighter';const [x,y]=sparkPos(tc);
-    const g=ctx.createRadialGradient(x,y,0,x,y,1500);g.addColorStop(0,hexA('#ffffff',a));g.addColorStop(0.25,hexA(col,a*0.9));g.addColorStop(1,hexA(col,0));
+    const g=ctx.createRadialGradient(x,y,0,x,y,RFL);g.addColorStop(0,hexA('#ffffff',a));g.addColorStop(0.25,hexA(col,a*0.9));g.addColorStop(1,hexA(col,0));
     ctx.fillStyle=g;ctx.fillRect(0,0,W,H);ctx.restore();};
   flash(3.0,0.45,C.lilac,1.0); flash(6.15,0.35,C.blue,0.6); flash(11.05,0.4,C.lilac,0.8); flash(19.55,0.4,C.teal,0.6);
   // transição líquida para o final
   const lp=inv(22.15,22.95,t); if(lp>0&&lp<1){
-    const [sx,sy]=sparkPos(22.3); const R=eIO(lp<0.5?lp*2:2-lp*2)*1500;
+    const [sx,sy]=sparkPos(22.3); const R=eIO(lp<0.5?lp*2:2-lp*2)*RFL;
     ctx.save(); ctx.beginPath();
     for(let a=0;a<=6.3;a+=0.05){const rr2=R*(1+0.08*Math.sin(a*5+t*9)+0.05*Math.sin(a*9-t*7));ctx.lineTo(sx+Math.cos(a)*rr2,sy+Math.sin(a)*rr2);}
     const g=ctx.createRadialGradient(sx,sy,0,sx,sy,R+1);g.addColorStop(0,C.lilac);g.addColorStop(0.7,C.violet);g.addColorStop(1,C.blue);

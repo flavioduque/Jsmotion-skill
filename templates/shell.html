@@ -30,7 +30,8 @@ button:disabled{opacity:.5;cursor:wait}button:focus-visible{outline:3px solid #C
 <script>
 const cv=document.getElementById('c'); cv.width=W; cv.height=H; const ctx=cv.getContext('2d');
 document.getElementById('info').textContent=`${W}×${H} · ${DUR}s · ${FPS} fps · com trilha e efeitos sonoros`;
-if(W>=H){cv.style.width='min(92vw,1100px)';}else{cv.style.height='88vh';}
+// largura limitada pela tela E pela altura disponível: nunca distorce (9:16, 4:5, 1:1, 16:9)
+cv.style.width=`min(92vw, ${W>=H?'1100px':'100vw'}, ${(88*W/H).toFixed(2)}vh)`; cv.style.height='auto';
 const $=id=>document.getElementById(id), msg=t=>$('msg').textContent=t;
 let busy=false;
 function runRealtime(record){

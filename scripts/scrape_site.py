@@ -1,8 +1,9 @@
-"""Uso: python3 scrape_site.py https://site.com [pasta_saida]
+"""Uso: python3 scrape_site.py https://site.com [pasta_saida]   (padrão: $WORK/site)
 Baixa o HTML + JS/CSS do site, extrai paleta de cores, textos e baixa imagens/vídeos referenciados.
 Funciona bem com sites SPA (Vite/React), onde a mídia está citada dentro do bundle JS."""
 import re, sys, os, json, subprocess, urllib.parse, collections
-url=sys.argv[1].rstrip('/'); out=sys.argv[2] if len(sys.argv)>2 else '/home/claude/site'
+from _paths import workdir
+url=sys.argv[1].rstrip('/'); out=sys.argv[2] if len(sys.argv)>2 else os.path.join(workdir(),'site')
 os.makedirs(out,exist_ok=True)
 def get(u,path=None):
     r=subprocess.run(['curl','-sfL','-A','Mozilla/5.0',u]+(['-o',path] if path else []),capture_output=not path)

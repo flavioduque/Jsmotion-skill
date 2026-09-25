@@ -5,6 +5,13 @@ Tudo é desenhado por `render(ctx, t)` (t em segundos). Ordem por quadro:
 
 ## Globais que o shell/render usam
 `W, H, DUR, FPS` (obrigatórios), `render(ctx,t)`, `buildAudio(ctx, dest)`, `loadAssets()`, `clamp`.
+`W, H` vêm de `window.FORMAT` (`9x16` padrão · `4x5` · `1x1` · `16x9`); `CX, CY, M` (maior lado) e `SIDE` (16:9) derivam deles.
+
+## Palco (multiformato)
+- `blk(ctx, 'media'|'text'|'center', y, {slot|s}, fn)`: desenha `fn` no espaço 1080×1920 e encaixa no formato
+  (identidade no 9:16; escala na área segura no 4:5/1:1; colunas no 16:9). Detalhes em `formats.md`.
+- `toCanvas(x,y)`: ponto do desenho → ponto da tela. `sparkD(t)` = condutor no desenho; `sparkPos(t)` = na tela.
+- `SS`: escala do condutor · `RFL`: raio dos clarões (1500 no 9:16, proporcional à diagonal nos outros).
 O shell define `renderFrame(t)`, `getWav()` e `window.READY` — usados por snap.py e render.py.
 
 ## Blocos reutilizáveis
@@ -31,6 +38,9 @@ O shell define `renderFrame(t)`, `getWav()` e `window.READY` — usados por snap
 palma a cada 1s, baixo em colcheias, arpejo nas cenas centrais, brilhos, whooshes, riser antes do
 1º impacto, pausa curta antes do final, acorde final e fade-out. Tudo gerado no OfflineAudioContext
 e tocado como um buffer — por isso a gravação no navegador e o MP4 daqui soam iguais.
+No MP4, o `render.py` ainda **masteriza** o áudio: ganho + limitador com superamostragem até −14 LUFS (padrão de
+Instagram/TikTok/YouTube) com pico real < −1,5 dBTP. Não tente "compensar" volume no `buildAudio`: mantenha a mixagem
+equilibrada (pico do master perto de −1 dB) e deixe o render cuidar do volume final. `--no-norm` desliga.
 Para "épico": troque pad por cordas graves (saw + lowpass 600Hz), kick mais longo, impactos a cada 4s.
 Para "minimalista": remova pad/baixo/arpejo, mantenha brilhos, whooshes, impactos e um tique suave por batida.
 

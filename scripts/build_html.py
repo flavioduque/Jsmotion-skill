@@ -1,9 +1,14 @@
-"""Uso: python3 build_html.py anim.js assets.js saida.html "Título" nome_arquivo_mp4
-Junta shell + assets + animação num único .html com os botões Prévia e Baixar MP4."""
+"""Uso: python3 build_html.py anim.js assets.js saida.html "Título" nome_arquivo_mp4 [--format 9x16|4x5|1x1|16x9]
+Junta shell + assets + animação num único .html com os botões Prévia e Baixar MP4.
+--format define window.FORMAT antes da animação (o example_anim.js se adapta sozinho)."""
 import sys, os
-anim,assets,out,title,name=sys.argv[1:6]
+args=sys.argv[1:]; fmt=None
+if '--format' in args:
+    i=args.index('--format'); fmt=args[i+1]; del args[i:i+2]
+anim,assets,out,title,name=args[:5]
 here=os.path.dirname(os.path.abspath(__file__))
 s=open(os.path.join(here,'..','templates','shell.html')).read()
-s=s.replace('/*TITLE*/',title).replace('/*ANIM*/',open(anim).read()+f"\nwindow.OUT_NAME={name!r};")
+pre=f"window.FORMAT={fmt!r};\n" if fmt else ''
+s=s.replace('/*TITLE*/',title).replace('/*ANIM*/',pre+open(anim).read()+f"\nwindow.OUT_NAME={name!r};")
 s=s.replace('/*ASSETS*/',open(assets).read())  # por último: assets é grande
 open(out,'w').write(s); print(out, f'{len(s)/1e6:.2f} MB')
