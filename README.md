@@ -1,5 +1,7 @@
 <div align="center">
 
+**🇧🇷 Português** · [🇺🇸 English](README.en.md)
+
 # 🎬 jsmotion
 
 ### Seu vídeo de marca nível estúdio, feito pelo Claude, em **uma conversa**.
@@ -21,7 +23,7 @@ Você manda a logo e o site — o Claude estuda, pergunta, escreve o roteiro, an
 <img src="docs/demo.gif" alt="Animação do jsmotion: gancho 'Seu vídeo de marca nível estúdio', 'Sem After Effects, sem editor, só uma conversa', passos até o MP4 com celulares mostrando vídeos reais, e logo final" width="100%">
 
 <sub>🤯 <b>Este GIF foi feito pelo próprio jsmotion</b> — mesmo motor, mesmo fluxo. <a href="docs/demo.mp4">▶️ Ver com trilha sonora (MP4)</a> · <a href="examples/promo-16x9">🧑‍💻 Ver o código</a><br>
-🇺🇸 <b>English version:</b> <a href="docs/demo-en.gif">GIF</a> · <a href="docs/demo-en.mp4">MP4 with soundtrack</a></sub>
+🇺🇸 <b>English:</b> <a href="README.en.md">README</a> · <a href="docs/demo-en.gif">GIF</a> · <a href="docs/demo-en.mp4">MP4 with soundtrack</a></sub>
 
 <br><br>
 
@@ -349,6 +351,8 @@ Sim. Saira é o padrão (combina com logos geométricas/tech). Para outro clima,
 - [ ] Narração por voz sintetizada
 - [x] Exemplo nativo em 16:9 ([`examples/promo-16x9`](examples/promo-16x9))
 - [ ] Exemplos nativos em 1:1 e 4:5
+- [x] README em inglês ([`README.en.md`](README.en.md))
+- [ ] Versão em inglês do `SKILL.md`
 
 Tem uma ideia? [Abra uma issue](https://github.com/flavioduque/Jsmotion-skill/issues) 💡
 
@@ -361,6 +365,7 @@ PRs são muito bem-vindos! Os que mais ajudam:
 1. **Novos exemplos** em `templates/` (outros formatos, estilos e nichos).
 2. **Novos sons** no `buildAudio` (lo-fi, trap, corporativo…).
 3. **Melhorias no `scrape_site.py`** para mais tipos de site.
+4. **Traduções** das instruções e referências da skill.
 
 Mostre o vídeo que você fez! Poste com **#jsmotion** e marque o repositório — os melhores entram na galeria.
 
