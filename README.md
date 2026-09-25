@@ -20,10 +20,10 @@ Você manda a logo e o site — o Claude estuda, pergunta, escreve o roteiro, an
 
 <br>
 
-<img src="docs/demo.gif" alt="Animação do jsmotion: gancho 'Seu vídeo de marca nível estúdio', 'Sem After Effects, sem editor, só uma conversa', passos até o MP4 com celulares mostrando vídeos reais, e logo final" width="100%">
+<img src="docs/demo.gif" alt="Animação 16:9 do jsmotion: gancho 'Seu vídeo de marca nível estúdio', 'Sem After Effects, sem editor, só uma conversa', passos até o MP4 com celulares mostrando vídeos reais, e logo final" width="72%">&nbsp;<img src="docs/demo-vertical.gif" alt="A mesma animação do jsmotion em 9:16, com textos empilhados para Reels, TikTok e Shorts" width="22.8%">
 
-<sub>🤯 <b>Este GIF foi feito pelo próprio jsmotion</b> — mesmo motor, mesmo fluxo. <a href="docs/demo.mp4">▶️ Ver com trilha sonora (MP4)</a> · <a href="examples/promo-16x9">🧑‍💻 Ver o código</a><br>
-🇺🇸 <b>English:</b> <a href="README.en.md">README</a> · <a href="docs/demo-en.gif">GIF</a> · <a href="docs/demo-en.mp4">MP4 with soundtrack</a></sub>
+<sub>🤯 <b>Estes GIFs foram feitos pelo próprio jsmotion</b> — mesmo motor, mesmo código, <b>16:9 e 9:16</b>. ▶️ Com trilha: <a href="docs/demo.mp4">MP4 16:9</a> · <a href="docs/demo-vertical.mp4">MP4 9:16</a> · <a href="examples/promo">🧑‍💻 Ver o código</a><br>
+🇺🇸 <b>English:</b> <a href="README.en.md">README</a> · <a href="docs/demo-en.gif">GIF 16:9</a> · <a href="docs/demo-vertical-en.gif">GIF 9:16</a></sub>
 
 <br><br>
 
@@ -259,12 +259,12 @@ jsmotion/
 │   ├── shell.html           ▶️ página com prévia, botão "Baixar MP4" e ganchos de render
 │   └── saira.woff2          🔤 fonte padrão (Saira)
 ├── examples/
-│   └── promo-16x9/          🎞️ exemplo 16:9 bilíngue (PT/EN) — o vídeo de apresentação do próprio jsmotion
+│   └── promo/               🎞️ o vídeo de apresentação do próprio jsmotion — 16:9 e 9:16, PT e EN
 ├── references/
 │   ├── engine.md            🧠 anatomia do motor
 │   └── formats.md           📐 tamanhos, áreas seguras e como adaptar o layout
 ├── dist/jsmotion.skill      📦 pacote pronto para upload no claude.ai
-└── docs/                    🖼️ demo.gif/.mp4 (PT) · demo-en.gif/.mp4 (EN) · preview.jpg
+└── docs/                    🖼️ demos 16:9 e 9:16 em GIF e MP4 (PT/EN) · preview.jpg
 ```
 
 ---
@@ -349,7 +349,7 @@ Sim. Saira é o padrão (combina com logos geométricas/tech). Para outro clima,
 - [ ] Presets de estilo prontos (neon, corporativo, minimalista, retrô)
 - [ ] Legendas automáticas queimadas no vídeo
 - [ ] Narração por voz sintetizada
-- [x] Exemplo nativo em 16:9 ([`examples/promo-16x9`](examples/promo-16x9))
+- [x] Exemplo nativo em 16:9 e 9:16 com o mesmo código ([`examples/promo`](examples/promo))
 - [ ] Exemplos nativos em 1:1 e 4:5
 - [x] README em inglês ([`README.en.md`](README.en.md))
 - [ ] Versão em inglês do `SKILL.md`

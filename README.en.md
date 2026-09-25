@@ -20,9 +20,9 @@ Send your logo and website — Claude studies them, asks a few questions, writes
 
 <br>
 
-<img src="docs/demo-en.gif" alt="jsmotion animation: hook 'Your brand video, studio quality', 'No After Effects, no editor, just one conversation', steps to the MP4 with phones showing real videos, and final logo" width="100%">
+<img src="docs/demo-en.gif" alt="16:9 jsmotion animation: hook 'Your brand video, studio quality', 'No After Effects, no editor, just one conversation', steps to the MP4 with phones showing real videos, and final logo" width="72%">&nbsp;<img src="docs/demo-vertical-en.gif" alt="The same jsmotion animation in 9:16, with stacked text for Reels, TikTok and Shorts" width="22.8%">
 
-<sub>🤯 <b>This GIF was made by jsmotion itself</b> — same engine, same workflow. <a href="docs/demo-en.mp4">▶️ Watch it with sound (MP4)</a> · <a href="examples/promo-16x9">🧑‍💻 See the code</a></sub>
+<sub>🤯 <b>These GIFs were made by jsmotion itself</b> — same engine, same code, <b>16:9 and 9:16</b>. ▶️ With sound: <a href="docs/demo-en.mp4">MP4 16:9</a> · <a href="docs/demo-vertical-en.mp4">MP4 9:16</a> · <a href="examples/promo">🧑‍💻 See the code</a></sub>
 
 <br><br>
 
@@ -261,12 +261,12 @@ jsmotion/
 │   ├── shell.html           ▶️ page with preview, "Download MP4" button and render hooks
 │   └── saira.woff2          🔤 default font (Saira)
 ├── examples/
-│   └── promo-16x9/          🎞️ bilingual 16:9 example (PT/EN) — jsmotion's own promo video
+│   └── promo/               🎞️ jsmotion's own promo video — 16:9 and 9:16, PT and EN
 ├── references/
 │   ├── engine.md            🧠 engine anatomy
 │   └── formats.md           📐 sizes, safe areas and how to adapt the layout
 ├── dist/jsmotion.skill      📦 package ready to upload to claude.ai
-└── docs/                    🖼️ demo.gif/.mp4 (PT) · demo-en.gif/.mp4 (EN) · preview.jpg
+└── docs/                    🖼️ 16:9 and 9:16 demos as GIF and MP4 (PT/EN) · preview.jpg
 ```
 
 ---
@@ -351,7 +351,7 @@ Yes. Saira is the default (it suits geometric/tech logos). For a different mood,
 - [ ] Ready-made style presets (neon, corporate, minimal, retro)
 - [ ] Automatic burned-in captions
 - [ ] Synthesized voice-over
-- [x] Native 16:9 example ([`examples/promo-16x9`](examples/promo-16x9))
+- [x] Native 16:9 and 9:16 example from the same code ([`examples/promo`](examples/promo))
 - [ ] Native 1:1 and 4:5 examples
 - [ ] English version of `SKILL.md`
 
