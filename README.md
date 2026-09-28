@@ -355,6 +355,22 @@ Regras obrigatórias em todo vídeo gerado:
 
 ---
 
+## 🎨 Dois estilos prontos
+
+| | **Editorial** (padrão) | **Tech** |
+|---|---|---|
+| Para | imóveis, cursos, marcas pessoais, luxo, gastronomia, turismo, serviços | software, apps, SaaS, startups |
+| Visual | **fotos reais em tela cheia**, título em serifa com itálico dourado, dados em sans, moldura fixa da marca | fundo escuro, luz neon, telas de UI flutuando, elemento condutor |
+| Cenas | gancho com número animado · frase de impacto · foto com legenda · cartões de dados · lista · preço · pessoa · chamada com botão | gancho · virada · serviços · projetos · promessa · logo + CTA |
+| Arquivo | [`templates/example_editorial.js`](templates/example_editorial.js) + [guia](references/editorial.md) | [`templates/example_anim.js`](templates/example_anim.js) |
+
+O **editorial** foi criado a partir de vídeos imobiliários prontos para postar e segue um **padrão de qualidade** de
+10 itens ([`references/editorial.md`](references/editorial.md)): gancho no 1º segundo, mídia real, uma ideia por cena,
+texto legível no celular, números animados, moldura da marca e final com botão de contato. O vídeo é descrito como uma
+lista de cenas: o Claude preenche o conteúdo e o template cuida da animação, do som e dos 4 formatos.
+
+---
+
 ## 📐 Formatos
 
 | Formato | Resolução | Onde usar | Layout |
@@ -446,12 +462,15 @@ jsmotion/
 │   ├── pack.py              📦 pacote multiformato: um .html e um MP4 por formato, em paralelo
 │   └── paths.sh · _paths.py 📁 pastas de trabalho/entrega (claude.ai, Claude Code ou variável de ambiente)
 ├── templates/
-│   ├── example_anim.js      ⭐ exemplo completo e testado (Constructiva.dev · 25s · 9:16, 4:5, 1:1 e 16:9)
+│   ├── example_editorial.js 📰 template editorial: fotos reais, serifa + sans, cenas prontas (padrão)
+│   ├── example_anim.js      ⭐ template tech (Constructiva.dev · 25s · 9:16, 4:5, 1:1 e 16:9)
+│   ├── fonts/               🔤 Playfair Display + Inter (OFL) para o editorial
 │   ├── shell.html           ▶️ página com prévia, botão "Baixar MP4" e ganchos de render
 │   └── saira.woff2          🔤 fonte padrão (Saira)
 ├── examples/
 │   └── promo/               🎞️ o vídeo de apresentação do próprio jsmotion — 16:9 e 9:16, PT e EN
 ├── references/
+│   ├── editorial.md         📰 cenas do editorial + padrão de qualidade (10 itens)
 │   ├── engine.md            🧠 anatomia do motor
 │   └── formats.md           📐 tamanhos, áreas seguras e como adaptar o layout
 ├── agents/                  🤖 variantes prontas: codex · gemini · hermes · openclaw · universal (geradas, não editar)
@@ -551,7 +570,8 @@ Sim. Saira é o padrão (combina com logos geométricas/tech). Para outro clima,
 ## 🗺️ Próximos passos
 
 - [ ] Galeria de vídeos gerados pela comunidade
-- [ ] Presets de estilo prontos (neon, corporativo, minimalista, retrô)
+- [x] Template editorial (fotos reais, serifa + sans) com padrão de qualidade
+- [ ] Mais estilos prontos (minimalista claro, retrô, bold/esportivo)
 - [ ] Legendas automáticas queimadas no vídeo
 - [ ] Narração por voz sintetizada
 - [x] Exemplo nativo em 16:9 e 9:16 com o mesmo código ([`examples/promo`](examples/promo))

@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Uso: watch_reference.sh <link-ou-arquivo> [mais referências…]
 # Assiste cada vídeo de referência com a skill watch e monta uma folha de contato (sheet.jpg).
+# Quadros em intervalos REGULARES (--no-scene-change): a detecção de cenas pega justamente os clarões de transição
+# e faz um vídeo claro/limpo parecer "lavado" — a folha tem que mostrar o vídeo como ele é na maior parte do tempo.
 # Aceita arquivo local (mp4, mov, webm…) ou link (YouTube, Instagram, TikTok, Pinterest (pin de vídeo), Vimeo, X,
 # link direto .mp4… via yt-dlp). NÃO aceita Dribbble (bloqueia download automático) nem pasta/board do Pinterest.
 #
@@ -38,7 +40,7 @@ for SRC in "$@"; do
   rm -rf "$REF"; mkdir -p "$REF"
   printf '%s\n' "$SRC" > "$REF/source.txt"
 
-  if ! python3 "$DIR/scripts/watch.py" "$SRC" --no-whisper --max-frames 24 --out-dir "$REF" > "$REF/report.md" 2> "$REF/watch.log"; then
+  if ! python3 "$DIR/scripts/watch.py" "$SRC" --no-whisper --no-scene-change --max-frames 24 --out-dir "$REF" > "$REF/report.md" 2> "$REF/watch.log"; then
     echo "❌ referência $i falhou: $SRC"; tail -8 "$REF/watch.log"
     case "$SRC" in *pinterest.*|*pin.it/*)
       grep -q "No video formats" "$REF/watch.log" && echo "   Este pin é uma imagem, não um vídeo. Só pins de VÍDEO funcionam como referência." ;; esac

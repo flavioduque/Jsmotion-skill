@@ -33,10 +33,15 @@ Arquivos da skill (abaixo `$SK` — ver "Neste agente"):
 - `scripts/snap.py` — fotos de instantes para revisão (`$WORK/review.jpg`, ou `-o arquivo.jpg`)
 - `scripts/render.py` — gera o MP4 (quadro a quadro, determinístico, com áudio masterizado em −14 LUFS)
 - `scripts/pack.py` — **pacote multiformato**: um .html e um MP4 por formato, renderizados em paralelo
-- `templates/example_anim.js` — **exemplo completo e testado** (Constructiva.dev, 25s), **adaptável a 9:16, 4:5, 1:1 e 16:9**. Copie e adapte.
+- `templates/example_editorial.js` — **template EDITORIAL** (fotos reais, serifa + sans, dourado): marcas premium,
+  imóveis, cursos, marcas pessoais, luxo, gastronomia, turismo. O vídeo é uma lista de cenas (`SCRIPT`). **Padrão.**
+- `templates/example_anim.js` — **template TECH** (Constructiva.dev: fundo escuro, luz neon, telas de UI): software,
+  apps, SaaS, startups. Adaptável a 9:16, 4:5, 1:1 e 16:9.
+- `templates/fonts/` — Playfair Display + Inter (editorial) · `templates/saira.woff2` (tech)
 - `templates/shell.html` — página com prévia, gravação e ganchos de render
 - `references/formats.md` — tamanhos por formato e como adaptar o layout
 - `references/engine.md` — anatomia do motor (render(t), faísca, textos, transições, som)
+- `references/editorial.md` — tipos de cena do template editorial e o **padrão de qualidade** (leia sempre)
 
 ---
 
@@ -104,6 +109,8 @@ Faça tudo o que for possível sozinho, para perguntar menos:
    Monte folhas de contato das imagens e 1 quadro de cada vídeo (`ffmpeg -ss 3 ... -frames:v 1`,
    depois `tile`) e veja com a ferramenta de imagem. Extraia: cores principais, nomes de serviços/projetos, frases.
    Se o site for SPA, os textos estão dentro do bundle JS: `grep -oE '"[^"]{3,80}"'` com palavras-chave.
+   **Separe as melhores fotos** (produto, ambiente, pessoa, resultado — ≥ 1080 px de largura): o vídeo profissional
+   é feito de mídia real. Se não houver fotos boas, peça ao usuário (fotos do produto, renders, retrato, logo em PNG).
 3. **Logo**: use o arquivo ORIGINAL enviado (nunca redesenhe; só recorte margem transparente e redimensione).
 
 Resuma para o usuário, em poucas linhas, o que encontrou (estilo da referência, paleta, projetos, vídeos).
@@ -117,9 +124,11 @@ Cores: não pergunte se já tirou do site/logo; só pergunte se não houver nenh
 
 1. **Onde vai postar (formatos)** — 1. **Pacote completo: 9:16 + 1:1 + 16:9** (Reels/TikTok + feed/LinkedIn + YouTube/site, tudo do mesmo vídeo) · 2. Só vertical 9:16 · 3. Outro formato ou combinação (4:5, 1:1, 16:9). Recomende o pacote (padrão); se ele citar um destino só, recomende o formato dele. O formato **principal** (o primeiro) é o que você revisa com mais cuidado.
 2. **Duração** — ofereça 3 opções coerentes com o formato (ex.: 15s · 25s · 40s) e diga que ele pode **digitar qualquer duração** (aceite de 6s a 90s). Padrão 25s. Diga quanto conteúdo cabe em cada uma.
-3. **Estilo** — 3 climas, sendo o 1º o estilo do vídeo de referência com as cores da marca.
+3. **Estilo** — 3 climas, sendo o 1º o estilo do vídeo de referência com as cores da marca. Isso define o template:
+   **editorial** (fotos reais, elegante — padrão para quase tudo que vende produto, imóvel, serviço ou pessoa) ou
+   **tech** (neon, telas de software — só para software/app/SaaS).
 4. **Frase de abertura (gancho dos 3 primeiros segundos)** — 3 frases no idioma do vídeo: uma pergunta provocativa, uma afirmação forte, uma promessa de velocidade/resultado.
-5. **Elemento que acompanha o vídeo todo** — ex.: faísca de luz que "liga" cada tela · anel de luz · linha que se desenha (inspire-se no da referência).
+5. **Elemento que acompanha o vídeo todo** (só no template tech; no editorial, pule — a moldura da marca faz esse papel) — ex.: faísca de luz que "liga" cada tela · anel de luz · linha que se desenha (inspire-se no da referência).
 6. **Som** — batida eletrônica suave com whoosh e brilhos · épico e grave · minimalista só efeitos.
 7. **Chamada final** (logo + CTA por 2,5s) — 3 frases; recomende a que "fecha" o gancho.
 
@@ -135,7 +144,15 @@ promessa ~12% · final logo+CTA **2,5s fixos**. Menos de 15s: junte virada+conte
 
 ## Passo 4 — Construção
 
-1. Leia `references/engine.md`, `references/formats.md` e o `$WORK/ref/estilo.md`.
+1. Leia `references/editorial.md` (padrão de qualidade), `references/formats.md` e o `$WORK/ref/estilo.md`.
+
+   **Template editorial** (padrão): `cp $SK/templates/example_editorial.js $WORK/anim.js` e edite só `C` (paleta),
+   `FRAME` (logos), `LOCALE` e o `SCRIPT` (cenas: `hook`, `statement`, `photo`, `cards`, `list`, `price`, `person`, `cta`).
+   Assets: `"photos"`, `"logos"` e `"fonts": "editorial"` no `config.json`. Siga os 10 itens do padrão de qualidade de
+   `references/editorial.md` — gancho no 1º segundo, mídia real, uma ideia por cena, legível no celular.
+   Pule para o item 3 abaixo.
+
+   **Template tech** (software/app): leia também `references/engine.md` e siga os itens abaixo.
 
    **O exemplo é o motor, não o estilo.** O `example_anim.js` foi feito para uma marca (Constructiva: roxo neon,
    faísca, cubo, janelas de vidro, chão em grade). Reaproveite as **funções** (palco `blk`, `word`, linha do tempo,

@@ -357,6 +357,22 @@ Mandatory rules in every video:
 
 ---
 
+## 🎨 Two ready-made styles
+
+| | **Editorial** (default) | **Tech** |
+|---|---|---|
+| For | real estate, courses, personal brands, luxury, food, travel, services | software, apps, SaaS, startups |
+| Look | **full-screen real photos**, serif headlines with a gold italic keyword, sans for data, a fixed brand frame | dark background, neon light, floating UI screens, a guiding element |
+| Scenes | hook with an animated number · statement · captioned photo · data cards · list · price · person · CTA with button | hook · twist · services · projects · promise · logo + CTA |
+| File | [`templates/example_editorial.js`](templates/example_editorial.js) + [guide](references/editorial.md) | [`templates/example_anim.js`](templates/example_anim.js) |
+
+The **editorial** style was built from ready-to-post real estate videos and follows a 10-point **quality bar**
+([`references/editorial.md`](references/editorial.md)): a hook in the first second, real media, one idea per scene,
+phone-legible text, animated numbers, a brand frame and a final contact button. The video is described as a list of
+scenes: Claude fills in the content and the template handles animation, sound and all 4 formats.
+
+---
+
 ## 📐 Formats
 
 | Format | Resolution | Where to use | Layout |
@@ -448,12 +464,15 @@ jsmotion/
 │   ├── pack.py              📦 multi-format pack: one .html and one MP4 per format, in parallel
 │   └── paths.sh · _paths.py 📁 work/output folders (claude.ai, Claude Code or environment variable)
 ├── templates/
-│   ├── example_anim.js      ⭐ complete, tested example (Constructiva.dev · 25s · 9:16, 4:5, 1:1 and 16:9)
+│   ├── example_editorial.js 📰 editorial template: real photos, serif + sans, ready-made scenes (default)
+│   ├── example_anim.js      ⭐ tech template (Constructiva.dev · 25s · 9:16, 4:5, 1:1 and 16:9)
+│   ├── fonts/               🔤 Playfair Display + Inter (OFL) for the editorial style
 │   ├── shell.html           ▶️ page with preview, "Download MP4" button and render hooks
 │   └── saira.woff2          🔤 default font (Saira)
 ├── examples/
 │   └── promo/               🎞️ jsmotion's own promo video — 16:9 and 9:16, PT and EN
 ├── references/
+│   ├── editorial.md         📰 editorial scenes + quality bar (10 points)
 │   ├── engine.md            🧠 engine anatomy
 │   └── formats.md           📐 sizes, safe areas and how to adapt the layout
 ├── agents/                  🤖 ready-made variants: codex · gemini · hermes · openclaw · universal (generated, don't edit)
@@ -553,7 +572,8 @@ Yes. Saira is the default (it suits geometric/tech logos). For a different mood,
 ## 🗺️ Roadmap
 
 - [ ] Community video gallery
-- [ ] Ready-made style presets (neon, corporate, minimal, retro)
+- [x] Editorial template (real photos, serif + sans) with a quality bar
+- [ ] More ready-made styles (light minimal, retro, bold/sports)
 - [ ] Automatic burned-in captions
 - [ ] Synthesized voice-over
 - [x] Native 16:9 and 9:16 example from the same code ([`examples/promo`](examples/promo))
