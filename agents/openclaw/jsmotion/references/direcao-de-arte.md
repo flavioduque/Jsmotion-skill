@@ -1,13 +1,21 @@
 # Direção de arte — o estilo nasce da análise, nunca de um modelo pronto
 
 A skill **não tem estilo padrão**. Os exemplos (`templates/kit.js`, `templates/example_anim.js`) mostram o motor
-funcionando; **não copie o visual deles**. Cada vídeo começa com uma direção de arte própria, escrita a partir de:
+funcionando; **não copie o visual deles**. Cada vídeo começa com uma direção de arte própria.
+
+> **Prioridade: se o usuário enviou uma referência, ela manda no estilo.** A linguagem visual (ritmo, composição,
+> caráter da tipografia, entrada do texto, transições, tratamento de foto, tipos de cena, densidade, som) vem da
+> referência. A marca entra com a identidade (logo original, cores nos papéis de cor da referência, conteúdo, fotos,
+> metáforas do tema) **dentro** dessa linguagem. Pediu "igual" inclusive nas cores → use a paleta da referência.
+> Sem referência, a direção nasce só da análise abaixo.
+
+Fontes da direção, em ordem:
 
 1. **A marca** — logo (cores, formas, peso), site (`scrape_site.py`: paleta, **fontes**, fotos, tom dos textos),
    redes, materiais que o usuário mandou.
 2. **O tema e o público** — o que se vende, para quem, em que país, qual o medo e o desejo do cliente.
-3. **A referência** (se houver) — `watch_reference.sh` + folha de contato. Sem referência, a direção vem de 1 e 2
-   (é o caso mais comum — e o mais importante de acertar).
+3. **A referência** (se houver) — `watch_reference.sh` + folha de contato. **Quando existe, é a fonte principal do
+   estilo** e 1–2 só ajustam a identidade. Sem referência, a direção vem de 1 e 2 (o caso mais comum).
 4. **O destino** — Reels/TikTok (ritmo alto, gancho forte), LinkedIn (sóbrio), YouTube/site (mais respiro).
 
 ## O que escrever em `$WORK/ref/estilo.md` (antes de qualquer código)
@@ -15,6 +23,7 @@ funcionando; **não copie o visual deles**. Cada vídeo começa com uma direçã
 ```
 Marca/tema: …                      Público: …                 Tom (3 adjetivos): …
 Conceito: uma frase que resume a ideia visual (ex.: "o dossiê jurídico de uma corretora de confiança")
+Origem: referência (o que veio dela) · marca (o que veio da marca)
 Paleta (papéis): fundo · fundo2 · texto · texto2 · destaque · destaque2 · texto-sobre-destaque   (hex + de onde veio)
 Tipografia: display = … (por quê) · texto = … (por quê) · números em … · caixa alta? tracking?
 Destaque da palavra-chave: itálico | cor | sublinhado | marca-texto | caixa | contorno
@@ -71,5 +80,6 @@ Misture e adapte: a direção final tem que ser **desta marca**. Teste: se troca
 ## Na pergunta de estilo (Passo 2)
 
 Ofereça **3 direções de arte geradas pela análise** (não as da tabela acima): nome curto + paleta + fontes + 1 frase
-de conceito, a 1ª recomendada e baseada na referência/marca. Ex.: "1. Dossiê de confiança — marinho, dourado e creme,
+de conceito. **Com referência, a 1ª (recomendada) é fiel a ela com a identidade da marca** e as outras duas são
+variações da mesma linguagem; sem referência, a 1ª é a que melhor traduz a marca. Ex.: "1. Dossiê de confiança — marinho, dourado e creme,
 serifa jurídica + sans, carimbos e contratos (recomendado)".

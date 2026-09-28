@@ -350,7 +350,7 @@ a partir de:
 |---|---|
 | 🏷️ **A marca** | cores e formas da logo; paleta, **fontes** e fotos do site (`scrape_site.py`); tom dos textos |
 | 🎯 **O tema e o público** | o que se vende, para quem, em que país, qual o medo e o desejo do cliente |
-| 🎞️ **A referência** (se houver) | ritmo, transições, tipografia e composição do vídeo que você mandou |
+| 🎞️ **A referência** (se houver — **tem prioridade**) | ritmo, transições, tipografia, composição e tratamento de foto do vídeo que você mandou |
 | 📱 **O destino** | Reels/TikTok (gancho forte, ritmo alto) · LinkedIn (sóbrio) · YouTube/site (mais respiro) |
 
 Daí saem **paleta por papéis, par tipográfico (qualquer fonte do Google Fonts), destaque, composição, movimento,
@@ -358,7 +358,13 @@ transições, textura, tratamento de foto e som** — e as **metáforas do tema*
 assunto (um curso imobiliário ganha carimbos de *EMBARGO* e folhas de contrato; uma clínica, o antes/depois; um
 restaurante, a comanda escrita à mão). **Sem referência, a direção vem só da marca e do tema** — e é aí que mais importa acertar.
 
-Na pergunta de estilo, o Claude oferece **3 direções geradas pela análise** (a 1ª recomendada), não 3 presets.
+> 🎞️ **Mandou uma referência? Ela é a prioridade.** Ritmo, composição, tipografia, entrada do texto, transições e
+> tratamento de foto seguem o vídeo que você enviou; a sua marca entra com logo, cores, conteúdo e as metáforas do tema,
+> dentro dessa linguagem. Quer igual inclusive nas cores? É só dizer. Na revisão, o resultado é comparado lado a lado
+> com a referência antes da entrega.
+
+Na pergunta de estilo, o Claude oferece **3 direções geradas pela análise** (a 1ª recomendada), não 3 presets —
+com referência, a 1ª é sempre **fiel a ela, com a sua marca**.
 Teste final: *se trocar a logo por outra e o vídeo continuar servindo, está genérico* — e ele volta para ajustar.
 
 **Como isso vira vídeo:** o [`templates/kit.js`](templates/kit.js) é um motor **sem estilo próprio**. Ele anima, faz

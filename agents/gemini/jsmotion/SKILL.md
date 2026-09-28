@@ -99,7 +99,9 @@ Faça tudo o que for possível sozinho, para perguntar menos:
 
    Abra `$WORK/ref/sheet.jpg` com a ferramenta de imagem e escreva o que a referência faz: paleta (hex aproximados), fundo, tipografia
    (serifa ou não, peso, caixa alta), como o texto entra, ritmo (trocas por segundo), transições, composição, uso de
-   fotos/vídeo/UI, clima do som. Isso alimenta a direção de arte (Passo 1B) — não é para copiar quadro a quadro.
+   fotos/vídeo/UI, tipos de cena, densidade de texto, tratamento de foto, clima do som.
+   **A referência enviada pelo usuário é a PRIORIDADE**: ela define a linguagem visual do vídeo (Passo 1B). Não é para
+   copiar quadro a quadro nem o conteúdo dela, mas o resultado tem que ser reconhecível como "no estilo desta referência".
 2. **Site da marca** (se houver): `python3 $SK/scripts/scrape_site.py https://site` (salva em `$WORK/site`).
    Monte folhas de contato das imagens e 1 quadro de cada vídeo (`ffmpeg -ss 3 ... -frames:v 1`,
    depois `tile`) e veja com a ferramenta de imagem. Extraia: cores principais, **fontes da marca** (`fonts` no resultado), nomes de
@@ -115,9 +117,20 @@ Resuma para o usuário, em poucas linhas, o que encontrou (estilo da referência
 
 Leia `references/direcao-de-arte.md` e escreva **`$WORK/ref/estilo.md`**: tom, conceito em uma frase, paleta por papéis,
 tipografia (com o porquê), destaque, composição, movimento, transições, textura, **2–3 metáforas visuais do tema**
-e som. **Com ou sem referência** — sem referência, a direção vem da marca, do tema e do público (é o caso mais comum).
-**Não existe estilo padrão**: nunca parta do visual dos exemplos da skill (nem neon, nem dourado). Prepare 3 direções
-diferentes para a pergunta de estilo do Passo 2.
+e som. **Não existe estilo padrão**: nunca parta do visual dos exemplos da skill (nem neon, nem dourado).
+
+**Ordem de prioridade:**
+1. **Com referência → a referência manda no estilo.** Ritmo, composição, tipografia (caráter: serifa/sans, peso,
+   caixa), entrada do texto, transições, tratamento de foto, tipos de cena, densidade e clima do som vêm DELA.
+   A marca entra com a identidade: logo original, cores da marca nos papéis que a referência usa para cor, conteúdo,
+   fotos e metáforas do tema — sempre dentro da linguagem da referência, sem contradizê-la.
+   Se o usuário pedir "igual à referência" (inclusive nas cores), use também a paleta da referência.
+   Anote no `estilo.md` o que veio da referência e o que veio da marca.
+2. **Sem referência → a análise decide**: marca (logo, site, fontes), tema, público e destino.
+
+Prepare 3 direções para a pergunta de estilo do Passo 2. Com referência, a 1ª (recomendada) é **fiel à referência**
+com a identidade da marca; as outras duas são variações dela (ex.: mais calma / mais enérgica), nunca estilos
+desligados da referência. Sem referência, 3 direções diferentes geradas pela análise.
 
 ## Passo 2 — Perguntas (no máximo 7, UMA por vez)
 
@@ -129,7 +142,8 @@ Cores: não pergunte se já tirou do site/logo; só pergunte se não houver nenh
 1. **Onde vai postar (formatos)** — 1. **Pacote completo: 9:16 + 1:1 + 16:9** (Reels/TikTok + feed/LinkedIn + YouTube/site, tudo do mesmo vídeo) · 2. Só vertical 9:16 · 3. Outro formato ou combinação (4:5, 1:1, 16:9). Recomende o pacote (padrão); se ele citar um destino só, recomende o formato dele. O formato **principal** (o primeiro) é o que você revisa com mais cuidado.
 2. **Duração** — ofereça 3 opções coerentes com o formato (ex.: 15s · 25s · 40s) e diga que ele pode **digitar qualquer duração** (aceite de 6s a 90s). Padrão 25s. Diga quanto conteúdo cabe em cada uma.
 3. **Direção de arte** — as 3 direções que você criou no Passo 1B (nome + paleta + fontes + conceito em 1 frase),
-   a 1ª recomendada (a que melhor traduz a marca/referência). Nunca ofereça "estilos da skill".
+   a 1ª recomendada. **Com referência, a 1ª é sempre "fiel à referência, com a sua marca"** e o usuário não precisa
+   escolher de novo o que já mostrou. Nunca ofereça "estilos da skill".
 4. **Frase de abertura (gancho dos 3 primeiros segundos)** — 3 frases no idioma do vídeo: uma pergunta provocativa, uma afirmação forte, uma promessa de velocidade/resultado.
 5. **Elemento que acompanha o vídeo todo** (só se a direção de arte pedir um; senão pule — a moldura da marca e as
    metáforas do tema fazem esse papel) — ex.: faísca de luz que "liga" cada tela · anel de luz · linha que se desenha (inspire-se no da referência).
@@ -182,8 +196,9 @@ python3 $SK/scripts/snap.py $OUT/<nome>_9x16.html 0.5 1.5 2.5 ... -o $WORK/revie
 python3 $SK/scripts/snap.py $OUT/<nome>_16x9.html <8–10 instantes> -o $WORK/review_16x9.jpg     # e um pouco de cada outro formato
 ```
 Compare com a referência atual: `python3 $SK/scripts/snap.py $OUT/<nome>_9x16.html <instantes> --ref $WORK/ref/sheet.jpg -o $WORK/compare.jpg`
-(folha da referência em cima, a do seu vídeo embaixo). Paleta, tipografia, ritmo e transições precisam lembrar
-**esta** referência; se lembrarem o exemplo da skill ou uma referência anterior, refaça. Sem referência, confira com o
+(folha da referência em cima, a do seu vídeo embaixo). **Obrigatório quando há referência**: composição, tipografia,
+ritmo, transições e tratamento de foto precisam ser reconhecíveis como **desta** referência; se lembrarem o exemplo
+da skill, uma referência anterior ou "um estilo genérico", refaça antes de entregar. Sem referência, confira com o
 `estilo.md`: se trocar a logo por outra e o vídeo continuar "servindo", falta marca — acrescente as metáforas do tema.
 Abra as folhas com a ferramenta de imagem. No formato principal, revise tudo; nos outros, confira principalmente as cenas com
 texto longo (no 16:9 o texto fica numa coluna à direita; no 1:1 tudo fica menor). Procure: texto de uma cena vazando para outra, palavras
