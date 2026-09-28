@@ -9,11 +9,12 @@ config.json:
  "image_size": [1000, 625],
  "clips": {"chave": {"src":"/v.mp4","start":2.0,"dur":1.8,"scale":"560:315"}},
  "font": "/caminho/fonte.woff2",          # opcional; padrão: templates/saira.woff2 (template tech)
- # --- template editorial (templates/example_editorial.js) ---
+ # --- kit de cenas (templates/kit.js) ---
  "photos": {"p1": "/foto.jpg"},             # fotos INTEIRAS (sem recorte) para tela cheia; lado maior até photo_max
  "photo_max": 1600,
  "logos": {"logoL": "/logo.png"},           # PNG com transparência preservada (moldura, assinatura, logo final)
- "fonts": "editorial"                       # Playfair Display + Inter (templates/fonts) — ou {"serif":..,"serif_italic":..,"sans":..}
+ "fonts": {"display": "/f.woff2", "display_italic": "/fi.woff2", "text": "/t.woff2"}   # da direção de arte (get_font.py);
+                                            # "playfair-inter" = atalho para as fontes embutidas em templates/fonts
 }"""
 import base64, subprocess, glob, os, json, io, sys, tempfile
 from PIL import Image
@@ -52,7 +53,8 @@ for k,p in cfg.get('logos',{}).items():    # logo/assinatura: PNG, recorta a mar
 fc=cfg.get('fonts')
 if fc:
     fd=os.path.join(here,'..','templates','fonts')
-    if fc=='editorial': fc={'serif':os.path.join(fd,'serif.woff2'),'serif_italic':os.path.join(fd,'serif-italic.woff2'),'sans':os.path.join(fd,'sans.woff2')}
+    if fc in ('playfair-inter','editorial'):
+        fc={'display':os.path.join(fd,'playfair-display-normal.woff2'),'display_italic':os.path.join(fd,'playfair-display-italic.woff2'),'text':os.path.join(fd,'inter-normal.woff2')}
     out['fonts']={k:b64(v,'font/woff2') for k,v in fc.items()}
 js='window.ASSETS='+json.dumps(out)+';'; open(dst,'w').write(js)
 import shutil; shutil.rmtree(tmp,ignore_errors=True)

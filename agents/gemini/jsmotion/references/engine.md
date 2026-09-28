@@ -34,6 +34,7 @@ O shell define `renderFrame(t)`, `getWav()` e `window.READY` — usados por snap
 `IMPACT` (graves nos momentos-chave). Sempre que mudar tempos de cena, atualize essas listas.
 
 ## Som (buildAudio)
+No `example_anim.js` (só um exemplo — o clima do som vem da direção de arte; no `kit.js`, `STYLE.sound.mood` e `bpm`):
 120 BPM. Pad (acordes Am–F–C–G a cada 2s), kick em toda batida após o gancho, hi-hat em semicolcheias,
 palma a cada 1s, baixo em colcheias, arpejo nas cenas centrais, brilhos, whooshes, riser antes do
 1º impacto, pausa curta antes do final, acorde final e fade-out. Tudo gerado no OfflineAudioContext

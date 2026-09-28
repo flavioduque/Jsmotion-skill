@@ -46,6 +46,6 @@ percorre a tela inteira. Clarões e onda líquida escalam com a diagonal da tela
 5. Revise com `snap.py` o formato principal inteiro e as cenas de texto dos outros formatos.
 
 ## Duração
-Mantenha BEAT = 0,5s. Escale os tempos das cenas proporcionalmente; o final (logo + CTA) é sempre 2,5s.
+Mantenha o pulso do som escolhido (BPM da direção de arte) e escale os tempos das cenas proporcionalmente; o final (logo + CTA) fica com 2,5–4s.
 Em vídeos longos (>40s), aumente o número de itens ou dê ~2s por item em vez de esticar animações.
 Tamanhos de fonte de referência (no desenho 9:16): gancho 110–250 px, títulos 96–150, legendas 52–62, botão 60.

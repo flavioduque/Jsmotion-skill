@@ -1,5 +1,5 @@
 """Uso: python3 scrape_site.py https://site.com [pasta_saida]   (padrão: $WORK/site)
-Baixa o HTML + JS/CSS do site, extrai paleta de cores, textos e baixa imagens/vídeos referenciados.
+Baixa o HTML + JS/CSS do site, extrai paleta de cores, FONTES da marca, textos e baixa imagens/vídeos referenciados.
 Funciona bem com sites SPA (Vite/React), onde a mídia está citada dentro do bundle JS."""
 import re, sys, os, json, subprocess, urllib.parse, collections
 from _paths import workdir
@@ -14,6 +14,17 @@ for ref in re.findall(r'(?:src|href)="([^"]+\.(?:js|css))"',html):
 txt='\n'.join(blobs)
 title=(re.findall(r'<title>([^<]*)',html) or [''])[0]
 colors=collections.Counter(c.lower() for c in re.findall(r'#[0-9a-fA-F]{6}\b',txt))
+# fontes da marca: famílias do CSS + do Google Fonts (a direção de arte parte delas; baixe com get_font.py)
+GEN={'inherit','initial','sans-serif','serif','monospace','system-ui','cursive','fantasy','-apple-system','blinkmacsystemfont',
+     'segoe ui','roboto','helvetica','helvetica neue','arial','ui-sans-serif','ui-serif','ui-monospace','apple color emoji',
+     'segoe ui emoji','segoe ui symbol','noto color emoji','var','unset','revert'}
+fonts=collections.Counter()
+for decl in re.findall(r'font-family\s*:\s*([^;}{]+)',txt):
+    for f in decl.split(','):
+        f=f.strip().strip('"\'').strip()
+        if f and f.lower() not in GEN and not f.startswith('var(') and len(f)<40: fonts[f]+=1
+for q in re.findall(r'fonts\.googleapis\.com/css2?\?([^"\'\s)]+)',txt):
+    for fam in re.findall(r'family=([^&:]+)',q): fonts[fam.replace('+',' ')]+=5
 media=sorted(set(re.findall(r'["\'(]([^"\'()\s]+\.(?:mp4|webm|png|jpe?g|webp|svg|gif))["\')]',txt)))
 got=[]
 for m in media:
@@ -21,7 +32,7 @@ for m in media:
     full=urllib.parse.urljoin(url+'/',m); dest=os.path.join(out,'media',urllib.parse.urlparse(full).path.lstrip('/'))
     os.makedirs(os.path.dirname(dest),exist_ok=True)
     if get(full,dest): got.append(dest)
-info={'title':title,'top_colors':colors.most_common(20),'media':got}
+info={'title':title,'top_colors':colors.most_common(20),'fonts':fonts.most_common(8),'media':got}
 json.dump(info,open(os.path.join(out,'site_info.json'),'w'),indent=1,ensure_ascii=False)
-print(json.dumps({'title':title,'top_colors':colors.most_common(12),'n_media':len(got)},ensure_ascii=False))
+print(json.dumps({'title':title,'top_colors':colors.most_common(12),'fonts':fonts.most_common(6),'n_media':len(got)},ensure_ascii=False))
 for g in got: print(g)
