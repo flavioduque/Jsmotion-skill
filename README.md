@@ -298,6 +298,7 @@ flowchart LR
 - **Vídeo de referência (arquivo ou link):** usa a skill [watch](https://github.com/taoufik123-collab/claude-watch) para extrair quadros e montar uma folha de contato. Aceita arquivo ou link (YouTube, Instagram, TikTok, pin de vídeo do Pinterest… — **Dribbble não**; ver [Referências aceitas](#️-referências-aceitas)). Cada referência é analisada **do zero, na própria pasta**, e o Claude confere se o vídeo analisado é o que você mandou. As observações (paleta, tipografia, ritmo, transições) alimentam a direção de arte, e na revisão o resultado é comparado lado a lado com a referência.
 - **Site da marca:** baixa HTML + JS/CSS, ranqueia as **cores mais usadas**, descobre as **fontes da marca**, pega o título e **baixa imagens e vídeos** — inclusive de sites SPA (React/Vite), onde a mídia fica dentro do bundle.
 - **Logo:** usa o arquivo **original**. Nunca redesenha — só recorta a margem transparente e redimensiona.
+- **Sem site?** O Claude pede o link primeiro (site, Instagram, Linktree…). Se não houver, tira a **paleta da própria logo** e dos materiais que você mandar (`brand_palette.py`): cores de marca × neutros, papéis de fundo/texto/destaque com contraste conferido e uma amostra para você aprovar — sempre com o hex e de onde veio cada cor.
 - **Direção de arte:** junta marca, tema, público e referência num `estilo.md` com conceito, paleta, fontes, movimento, som e metáforas do tema. Nada de estilo pré-definido.
 </details>
 
@@ -348,9 +349,9 @@ a partir de:
 
 | Fonte | O que ele extrai |
 |---|---|
-| 🏷️ **A marca** | cores e formas da logo; paleta, **fontes** e fotos do site (`scrape_site.py`); tom dos textos |
+| 🏷️ **A marca** | paleta, **fontes** e fotos do site (`scrape_site.py`); sem site, paleta extraída da logo e dos materiais (`brand_palette.py`); tom dos textos |
 | 🎯 **O tema e o público** | o que se vende, para quem, em que país, qual o medo e o desejo do cliente |
-| 🎞️ **A referência** (se houver) | ritmo, transições, tipografia e composição do vídeo que você mandou |
+| 🎞️ **A referência** (se houver — **tem prioridade**) | ritmo, transições, tipografia, composição e tratamento de foto do vídeo que você mandou |
 | 📱 **O destino** | Reels/TikTok (gancho forte, ritmo alto) · LinkedIn (sóbrio) · YouTube/site (mais respiro) |
 
 Daí saem **paleta por papéis, par tipográfico (qualquer fonte do Google Fonts), destaque, composição, movimento,
@@ -358,7 +359,13 @@ transições, textura, tratamento de foto e som** — e as **metáforas do tema*
 assunto (um curso imobiliário ganha carimbos de *EMBARGO* e folhas de contrato; uma clínica, o antes/depois; um
 restaurante, a comanda escrita à mão). **Sem referência, a direção vem só da marca e do tema** — e é aí que mais importa acertar.
 
-Na pergunta de estilo, o Claude oferece **3 direções geradas pela análise** (a 1ª recomendada), não 3 presets.
+> 🎞️ **Mandou uma referência? Ela é a prioridade.** Ritmo, composição, tipografia, entrada do texto, transições e
+> tratamento de foto seguem o vídeo que você enviou; a sua marca entra com logo, cores, conteúdo e as metáforas do tema,
+> dentro dessa linguagem. Quer igual inclusive nas cores? É só dizer. Na revisão, o resultado é comparado lado a lado
+> com a referência antes da entrega.
+
+Na pergunta de estilo, o Claude oferece **3 direções geradas pela análise** (a 1ª recomendada), não 3 presets —
+com referência, a 1ª é sempre **fiel a ela, com a sua marca**.
 Teste final: *se trocar a logo por outra e o vídeo continuar servindo, está genérico* — e ele volta para ajustar.
 
 **Como isso vira vídeo:** o [`templates/kit.js`](templates/kit.js) é um motor **sem estilo próprio**. Ele anima, faz
@@ -465,6 +472,7 @@ jsmotion/
 │   ├── install_watch.sh     📦 instala a skill watch + yt-dlp, ffmpeg, Playwright, brotli (idempotente)
 │   ├── watch_reference.sh   👀 assiste o vídeo de referência e monta a folha de contato
 │   ├── scrape_site.py       🌐 cores, fontes, título, imagens e vídeos do site (funciona com SPA)
+│   ├── brand_palette.py     🎨 paleta da marca a partir da logo (sem site): papéis, contraste e amostra
 │   ├── get_font.py          🔤 baixa qualquer família do Google Fonts para a direção de arte
 │   ├── prep_assets.py       🧳 logo, imagens, clipes e fonte → data URIs (assets.js)
 │   ├── build_html.py        🧱 junta shell + assets + animação num .html único e offline
