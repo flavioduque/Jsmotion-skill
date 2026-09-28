@@ -40,7 +40,8 @@ Depois, traduza para o objeto `STYLE` do `kit.js` (ver `references/kit.md`) e cr
 
 ## Como decidir (critérios, não modelos)
 
-**Paleta** — comece pelas cores da logo e do site (as mais frequentes do `scrape_site.py`). Defina papéis: um fundo
+**Paleta** — comece pelas cores do site (as mais frequentes do `scrape_site.py`) e da logo; **sem site, rode
+`brand_palette.py` na logo e nos materiais** e escreva no `estilo.md` a origem de cada cor. Defina papéis: um fundo
 dominante, um texto com contraste alto, **um** destaque (a cor mais forte da marca). Fundo escuro dá peso e luxo;
 fundo claro dá leveza, confiança e "editorial de revista". Nunca mais de 1 destaque + 1 variação.
 

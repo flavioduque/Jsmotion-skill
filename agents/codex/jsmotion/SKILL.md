@@ -27,6 +27,8 @@ Arquivos da skill (abaixo `$SK` — ver "Neste agente"):
 - `scripts/snap.py` — fotos de instantes para revisão (`$WORK/review.jpg`, ou `-o arquivo.jpg`)
 - `scripts/render.py` — gera o MP4 (quadro a quadro, determinístico, com áudio masterizado em −14 LUFS)
 - `scripts/pack.py` — **pacote multiformato**: um .html e um MP4 por formato, renderizados em paralelo
+- `scripts/brand_palette.py` — **paleta da marca a partir da logo** (e de outros materiais) quando não há site: cores
+  reais, papéis do `STYLE`, contraste conferido e amostra `palette.png` para mostrar ao usuário
 - `scripts/get_font.py` — baixa **qualquer** família do Google Fonts (a fonte vem da direção de arte, não é fixa)
 - `templates/kit.js` — **KIT DE CENAS, motor sem estilo próprio**: o visual vem do objeto `STYLE` (paleta, fontes,
   destaque, cantos, movimento, transições, textura, som) que VOCÊ define na direção de arte; o vídeo é a lista
@@ -103,7 +105,11 @@ Faça tudo o que for possível sozinho, para perguntar menos:
    fotos/vídeo/UI, tipos de cena, densidade de texto, tratamento de foto, clima do som.
    **A referência enviada pelo usuário é a PRIORIDADE**: ela define a linguagem visual do vídeo (Passo 1B). Não é para
    copiar quadro a quadro nem o conteúdo dela, mas o resultado tem que ser reconhecível como "no estilo desta referência".
-2. **Site da marca** (se houver): `python3 $SK/scripts/scrape_site.py https://site` (salva em `$WORK/site`).
+2. **Site da marca — é muito importante.** Se o usuário não mandou o link, **pergunte antes de tudo** (uma pergunta
+   curta, fora das 7 do Passo 2): "Sua marca tem site ou página (Instagram, Linktree, cardápio online…)? Me passe o link —
+   é de lá que tiro cores, fontes, fotos e textos reais. Se não tiver, sigo pela logo." Só siga sem site se ele disser
+   que não tem.
+   Com site: `python3 $SK/scripts/scrape_site.py https://site` (salva em `$WORK/site`).
    Monte folhas de contato das imagens e 1 quadro de cada vídeo (`ffmpeg -ss 3 ... -frames:v 1`,
    depois `tile`) e veja com a ferramenta de imagem. Extraia: cores principais, **fontes da marca** (`fonts` no resultado), nomes de
    serviços/projetos, frases e o tom dos textos.
@@ -111,8 +117,16 @@ Faça tudo o que for possível sozinho, para perguntar menos:
    **Separe as melhores fotos** (produto, ambiente, pessoa, resultado — ≥ 1080 px de largura): o vídeo profissional
    é feito de mídia real. Se não houver fotos boas, peça ao usuário (fotos do produto, renders, retrato, logo em PNG).
 3. **Logo**: use o arquivo ORIGINAL enviado (nunca redesenhe; só recorte margem transparente e redimensione).
+4. **Paleta explícita (sempre).** Sem site — ou se o site não trouxer cores claras da marca —, extraia da logo e dos
+   materiais enviados: `python3 $SK/scripts/brand_palette.py logo.png [cartão.jpg post.png …]`. Ele separa cores de
+   marca e neutros, propõe os papéis (fundo, texto, destaque, texto sobre o destaque) nas versões escura e clara, com
+   contraste conferido, e gera `$WORK/brand/palette.png`. **Mostre a paleta ao usuário** (hex + papel + de onde veio:
+   "âmbar #FAAA00 da logo → destaque") e siga com a recomendada se ele não se opuser. Se a logo só tiver
+   preto/branco, pergunte a cor de destaque. Com fundo claro e destaque de pouco contraste, use `accentText` para
+   textos e a cor original para blocos, botões e marca-texto.
 
-Resuma para o usuário, em poucas linhas, o que encontrou (estilo da referência, paleta, fontes, projetos, fotos).
+Resuma para o usuário, em poucas linhas, o que encontrou (estilo da referência, **paleta com hex e origem** — site,
+logo ou referência —, fontes, projetos, fotos).
 
 ## Passo 1B — Direção de arte (o estilo nasce da análise)
 
@@ -138,7 +152,8 @@ desligados da referência. Sem referência, 3 direções diferentes geradas pela
 Use a ferramenta de perguntas com opções do seu agente (ver "Ferramentas por agente"); senão, texto numerado.
 Cada pergunta: 3 opções numeradas + "Não sei, escolha por mim" + **sua recomendação** no enunciado.
 Pule a pergunta se a resposta já estiver clara na conversa. "Não sei" → escolha a recomendação.
-Cores: não pergunte se já tirou do site/logo; só pergunte se não houver nenhuma fonte.
+Cores: não pergunte se já tirou do site/logo — mas **mostre** a paleta (hex + origem) no resumo do Passo 1; só
+pergunte se não houver nenhuma fonte ou se a logo for só preto/branco.
 
 1. **Onde vai postar (formatos)** — 1. **Pacote completo: 9:16 + 1:1 + 16:9** (Reels/TikTok + feed/LinkedIn + YouTube/site, tudo do mesmo vídeo) · 2. Só vertical 9:16 · 3. Outro formato ou combinação (4:5, 1:1, 16:9). Recomende o pacote (padrão); se ele citar um destino só, recomende o formato dele. O formato **principal** (o primeiro) é o que você revisa com mais cuidado.
 2. **Duração** — ofereça 3 opções coerentes com o formato (ex.: 15s · 25s · 40s) e diga que ele pode **digitar qualquer duração** (aceite de 6s a 90s). Padrão 25s. Diga quanto conteúdo cabe em cada uma.
