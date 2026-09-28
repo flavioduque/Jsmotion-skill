@@ -28,7 +28,7 @@ Works with **Claude**, **Codex**, **Gemini CLI**, **Hermes Agent**, **OpenClaw**
 
 <br><br>
 
-**[⚡ Install](#-install-in-1-minute)** · **[🤖 Other agents](#-any-agent)** · **[🎥 How it works](#-how-it-works)** · **[✨ Features](#-what-makes-it-look-studio-made)** · **[🧠 Under the hood](#-under-the-hood)** · **[❓ FAQ](#-faq)**
+**[⚡ Install](#-install-in-1-minute)** · **[🤖 Other agents](#-any-agent)** · **[🎞️ References](#️-supported-references)** · **[🎥 How it works](#-how-it-works)** · **[✨ Features](#-what-makes-it-look-studio-made)** · **[🧠 Under the hood](#-under-the-hood)** · **[❓ FAQ](#-faq)**
 
 </div>
 
@@ -257,6 +257,31 @@ It also works without saying "jsmotion": *"make an animated video of my company 
 
 ---
 
+## 🎞️ Supported references
+
+Send a reference video and the skill copies its **style** (palette, typography, pacing, transitions). It can be a
+file or a link:
+
+| Source | Supported? | Notes |
+|---|:---:|---|
+| **File** MP4, MOV, WEBM, MKV | ✅ | the most reliable option: works in any environment |
+| **YouTube** (videos and Shorts) | ✅ | YouTube often blocks downloads from cloud servers (403 error); then send the file |
+| **Instagram** (Reels, posts) | ✅ | public posts; private or login-only content fails |
+| **TikTok** | ✅ | public videos |
+| **Pinterest — video pin** | ✅ | link to **one pin** (`pinterest.com/pin/…` or `pin.it/…`) |
+| **Pinterest — image pin** | ❌ | the analysis needs motion; the skill tells you the pin is an image |
+| **Pinterest — board/profile** | ❌ | send the link to one specific video pin |
+| **Dribbble** | ❌ | **not supported**: the site blocks automated downloads (anti-bot) and its API only shows the owner's own shots. Save the video (right-click the shot's video → *Save video as…*) or record your screen, and send the **file** |
+| **Vimeo, X/Twitter, Facebook, LinkedIn** | ✅ | public videos |
+| **Direct link** to an `.mp4` | ✅ | any site |
+
+- **Multiple references:** send several at once, or switch mid-conversation. Each one is analyzed **from scratch,
+  in its own folder**, and Claude shows the source, format and duration so you can check it's the right video.
+- **Rejected links:** Dribbble and Pinterest board links are rejected right away, with an explanation. Links that
+  fail to download (private, login, blocked) make Claude ask for the file, **never** use another reference instead.
+
+---
+
 ## 🎥 How it works
 
 ```mermaid
@@ -272,9 +297,10 @@ flowchart LR
 <details open>
 <summary><b>1 · Research before asking</b></summary>
 
-- **Reference video:** uses the [watch](https://github.com/taoufik123-collab/claude-watch) skill to extract frames into a contact sheet. Notes the palette, pacing, how text enters, transitions and the element that guides the eye.
-- **Brand website:** downloads HTML + JS/CSS, ranks the **most-used colors**, grabs the title and **downloads images and videos** — even from SPA sites (React/Vite), where media lives inside the bundle.
+- **Reference video (file or link):** uses the [watch](https://github.com/taoufik123-collab/claude-watch) skill to extract frames into a contact sheet. Accepts a file or a link (YouTube, Instagram, TikTok, Pinterest video pin… — **not Dribbble**; see [Supported references](#️-supported-references)). Each reference is analyzed **from scratch, in its own folder**, and Claude checks that the analyzed video is the one you sent. Its observations (palette, typography, pacing, transitions) feed the art direction, and during review the result is compared side by side with the reference.
+- **Brand website:** downloads HTML + JS/CSS, ranks the **most-used colors**, detects the **brand fonts**, grabs the title and **downloads images and videos** — even from SPA sites (React/Vite), where media lives inside the bundle.
 - **Logo:** uses the **original** file. Never redraws it — only trims transparent margins and resizes.
+- **Art direction:** combines brand, topic, audience and reference into an `estilo.md` with concept, palette, fonts, motion, sound and topic metaphors. No predefined style.
 </details>
 
 <details open>
@@ -286,10 +312,10 @@ At most **7 questions, one at a time**, each with 3 options + *"I don't know, yo
 |---|---|---|
 | 1 | **Where you'll post** | **pack 9:16 + 1:1 + 16:9** · 9:16 only · another combination (4:5, 1:1, 16:9) |
 | 2 | **Length** | 15s · 25s · 40s — or **any value from 6 to 90s** |
-| 3 | **Style** | your reference's style in your colors · + 2 other moods |
+| 3 | **Art direction** | 3 directions created from the analysis (e.g. "Trust dossier — navy, gold and cream, stamps and contracts") |
 | 4 | **Hook (first 3 seconds)** | provocative question · bold statement · promise of results |
-| 5 | **Guiding element** | spark of light · light ring · self-drawing line |
-| 6 | **Sound** | soft electronic · epic and deep · minimal |
+| 5 | **Guiding element** (only if the direction calls for it) | spark · self-drawing line · stamp · cursor… |
+| 6 | **Sound** | premium · energetic · calm · epic · minimal — matching the tone |
 | 7 | **Call to action** | 3 CTAs — recommends the one that "closes" the hook |
 
 If the answer is already in the conversation, the question is skipped.
@@ -316,19 +342,43 @@ hook ~12% │ twist ~12% │ services ~20% │ proof/projects ~34% │ promise ~
 
 ---
 
-## ✨ What makes it look studio-made
+## 🎨 No preset style: art direction comes from analysis
 
-Mandatory rules in every video:
+jsmotion **has no default look** — no neon, no gold, no "house template". Before writing any code, Claude writes an
+**art direction** for that specific video ([`references/direcao-de-arte.md`](references/direcao-de-arte.md)), based on:
 
-- 🎯 **A hook in the first 3 seconds** — what stops the scroll.
-- 🥁 **Something happens every half second** — everything pulses at 120 BPM: rings, sparks, entrances.
-- ✍️ **Word-by-word text** with blur + scale, and the **key word highlighted** (gradient + glow).
-- ✨ **A guiding element** from start to finish — the spark "lights up" each screen as it enters.
-- 🌊 **Zero hard cuts** — only light flashes, zooms or liquid waves.
-- 🌌 **A background with depth** — gradient, soft lights, particles, grain and vignette.
-- 🪟 **Glass screens** — windows with browser bars, passing reflections and glowing borders.
-- 🔊 **Sound that "sees" the picture** — every word gets a sparkle, every transition a whoosh, every key moment a deep hit.
-- 🏁 **A fixed 2.5s ending** with the original logo + call to action.
+| Source | What it extracts |
+|---|---|
+| 🏷️ **The brand** | logo colors and shapes; site palette, **fonts** and photos (`scrape_site.py`); tone of voice |
+| 🎯 **The topic and audience** | what is sold, to whom, in which country, the customer's fears and desires |
+| 🎞️ **The reference** (if any) | pacing, transitions, typography and composition of the video you sent |
+| 📱 **The destination** | Reels/TikTok (strong hook, fast pace) · LinkedIn (sober) · YouTube/site (more breathing room) |
+
+From that come a **role-based palette, a type pairing (any Google Font), highlight, composition, motion, transitions,
+texture, photo grading and sound** — plus **topic metaphors**: scenes that only make sense for that subject (a real
+estate course gets *EMBARGO* stamps and contract sheets; a clinic, the before/after; a restaurant, the handwritten
+order ticket). **With no reference, the direction comes from the brand and topic alone** — which is where getting it right matters most.
+
+At the style question, Claude offers **3 directions generated by the analysis** (the 1st recommended), not 3 presets.
+Final test: *if you could swap the logo for another brand's and the video still works, it's generic* — and Claude goes back to fix it.
+
+**How it becomes a video:** [`templates/kit.js`](templates/kit.js) is an engine **with no style of its own**. It
+handles animation, transitions, counters, sound and the 4 formats; the look comes entirely from a `STYLE` object
+(colors, fonts, highlight, text reveal, transition, texture, photo, sound) that Claude writes from the art direction.
+The video is a list of scenes (`SCRIPT`) plus custom scenes for the metaphors. The same engine produces a dark serif
+editorial, a light minimal on paper or an all-caps bold sports look — just by changing `STYLE`.
+
+### ✨ Quality bar (applies to any style)
+
+- 🎯 **A hook in the first second** — number + benefit or a strong question; never open with just the logo.
+- 📸 **Real client media** (photos, renders, screens) whenever it exists.
+- ✂️ **One idea per scene**, 2–3.5 s each.
+- 📱 **Phone-legible** — big headlines, lists of up to 5 items, short lines.
+- 🔠 **Type hierarchy** from the art direction; highlight only the key word.
+- 🏷️ **A fixed brand frame** (logos + signature) and **animated numbers** for proof.
+- 🧩 **Topic metaphors** in at least 1–2 scenes.
+- 🔊 **Sound that fits the tone**, mastered to −14 LUFS with no clipping.
+- 🏁 **An actionable ending** with the original logo + contact button.
 
 ---
 
@@ -415,7 +465,8 @@ jsmotion/
 ├── scripts/
 │   ├── install_watch.sh     📦 installs the watch skill + yt-dlp, ffmpeg, Playwright, brotli (idempotent)
 │   ├── watch_reference.sh   👀 watches the reference video and builds a contact sheet
-│   ├── scrape_site.py       🌐 colors, title, images and videos from the site (SPA-friendly)
+│   ├── scrape_site.py       🌐 colors, fonts, title, images and videos from the site (SPA-friendly)
+│   ├── get_font.py          🔤 downloads any Google Fonts family for the art direction
 │   ├── prep_assets.py       🧳 logo, images, clips and font → data URIs (assets.js)
 │   ├── build_html.py        🧱 merges shell + assets + animation into one offline .html
 │   ├── snap.py              📸 review snapshots + console errors
@@ -423,12 +474,16 @@ jsmotion/
 │   ├── pack.py              📦 multi-format pack: one .html and one MP4 per format, in parallel
 │   └── paths.sh · _paths.py 📁 work/output folders (claude.ai, Claude Code or environment variable)
 ├── templates/
-│   ├── example_anim.js      ⭐ complete, tested example (Constructiva.dev · 25s · 9:16, 4:5, 1:1 and 16:9)
+│   ├── kit.js               🧩 scene engine with NO style of its own: the look comes from the STYLE object
+│   ├── example_anim.js      🔬 example built from scratch (Constructiva.dev) — technique, not a style to copy
+│   ├── fonts/               🔤 Playfair Display + Inter (OFL), optional for offline use
 │   ├── shell.html           ▶️ page with preview, "Download MP4" button and render hooks
-│   └── saira.woff2          🔤 default font (Saira)
+│   └── saira.woff2          🔤 Saira (used by the example)
 ├── examples/
 │   └── promo/               🎞️ jsmotion's own promo video — 16:9 and 9:16, PT and EN
 ├── references/
+│   ├── direcao-de-arte.md   🎨 the method: style comes from the brand, topic and reference
+│   ├── kit.md               🧩 STYLE tokens, scenes, custom scenes and quality bar
 │   ├── engine.md            🧠 engine anatomy
 │   └── formats.md           📐 sizes, safe areas and how to adapt the layout
 ├── agents/                  🤖 ready-made variants: codex · gemini · hermes · openclaw · universal (generated, don't edit)
@@ -508,9 +563,19 @@ There's no music file: the soundtrack is **synthesized in code** (Web Audio API)
 </details>
 
 <details>
+<summary><b>Can I send the reference as a link, or only an MP4?</b></summary>
+
+Both. A file (MP4, MOV, WEBM…) or a **YouTube, Instagram, TikTok, Pinterest (video pin), Vimeo, X, Facebook** or
+direct `.mp4` link, downloaded with `yt-dlp`. **Dribbble is not supported** (it blocks automated downloads): save the
+video and send the file. The full list is in [Supported references](#️-supported-references). You can send **several references** and switch references mid-conversation: each one is
+analyzed from scratch. If a link fails (private video, login required, or the site blocks downloads from Claude's
+environment, as YouTube often does on servers), Claude tells you and asks for the file instead of using another reference.
+</details>
+
+<details>
 <summary><b>Can I use another font?</b></summary>
 
-Yes. Saira is the default (it suits geometric/tech logos). For a different mood, grab one from [Google Fonts](https://github.com/google/fonts), subset it with `pyftsubset --flavor=woff2` and point to it in `config.json`.
+Yes — there is no default font. Claude picks the type pairing during art direction (preferably your site's fonts) and downloads any Google Fonts family with `scripts/get_font.py "Family Name"`. Commercial fonts (Söhne, Gotham…) are replaced by the closest free alternative; if you own a licensed `.woff2`, point to it in `config.json`.
 </details>
 
 ---
@@ -518,7 +583,8 @@ Yes. Saira is the default (it suits geometric/tech logos). For a different mood,
 ## 🗺️ Roadmap
 
 - [ ] Community video gallery
-- [ ] Ready-made style presets (neon, corporate, minimal, retro)
+- [x] Art direction by analysis (brand, topic, audience, reference) — no predefined style
+- [x] Style-less scene engine (`kit.js` + `STYLE`) and any Google Font
 - [ ] Automatic burned-in captions
 - [ ] Synthesized voice-over
 - [x] Native 16:9 and 9:16 example from the same code ([`examples/promo`](examples/promo))

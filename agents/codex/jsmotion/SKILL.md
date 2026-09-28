@@ -27,10 +27,18 @@ Arquivos da skill (abaixo `$SK` — ver "Neste agente"):
 - `scripts/snap.py` — fotos de instantes para revisão (`$WORK/review.jpg`, ou `-o arquivo.jpg`)
 - `scripts/render.py` — gera o MP4 (quadro a quadro, determinístico, com áudio masterizado em −14 LUFS)
 - `scripts/pack.py` — **pacote multiformato**: um .html e um MP4 por formato, renderizados em paralelo
-- `templates/example_anim.js` — **exemplo completo e testado** (Constructiva.dev, 25s), **adaptável a 9:16, 4:5, 1:1 e 16:9**. Copie e adapte.
+- `scripts/get_font.py` — baixa **qualquer** família do Google Fonts (a fonte vem da direção de arte, não é fixa)
+- `templates/kit.js` — **KIT DE CENAS, motor sem estilo próprio**: o visual vem do objeto `STYLE` (paleta, fontes,
+  destaque, cantos, movimento, transições, textura, som) que VOCÊ define na direção de arte; o vídeo é a lista
+  `SCRIPT`; cenas próprias para as metáforas do tema. É a base de todo vídeo.
+- `templates/example_anim.js` — exemplo de vídeo **construído do zero** (Constructiva.dev, 25s): consulte para efeitos
+  avançados (telas de UI flutuando, partícula condutora, clipes de vídeo). **Não é um estilo a copiar.**
+- `templates/fonts/` — Playfair Display + Inter (opcionais, para uso sem internet) · `templates/saira.woff2`
 - `templates/shell.html` — página com prévia, gravação e ganchos de render
 - `references/formats.md` — tamanhos por formato e como adaptar o layout
 - `references/engine.md` — anatomia do motor (render(t), faísca, textos, transições, som)
+- `references/direcao-de-arte.md` — **como o estilo nasce da análise** (leia sempre, antes do Passo 2)
+- `references/kit.md` — tokens do `STYLE`, cenas prontas, cenas próprias e o **padrão de qualidade**
 
 ---
 
@@ -77,16 +85,40 @@ Use sempre `$WORK` e `$OUT` — nunca caminhos fixos. Se o Chromium já existir,
 
 Faça tudo o que for possível sozinho, para perguntar menos:
 
-1. **Vídeo de referência** (anexado ou link): `bash $SK/scripts/watch_reference.sh "<arquivo-ou-url>"`
-   e abra `$WORK/ref/sheet.jpg` com a ferramenta de imagem. Anote: paleta, ritmo, como o texto entra,
-   que elemento acompanha o vídeo, tipo de transição, se usa telas/UI flutuando.
+1. **Vídeo(s) de referência** — arquivo anexado **ou link** (YouTube, Instagram, TikTok, **Pinterest — só pin de vídeo**,
+   Vimeo, X, link direto .mp4). **Não funcionam:** links do **Dribbble** (bloqueia download automático) e **pastas ou
+   pins de imagem do Pinterest** — peça o arquivo do vídeo (no Dribbble: botão direito no vídeo → "Salvar vídeo como…")
+   ou o link de um pin de vídeo. O script já recusa esses links com a explicação.
+   `bash $SK/scripts/watch_reference.sh "<arquivo-ou-link>"` (várias referências: passe todas no mesmo comando).
+   - Confira a linha `✅ referência: … · formato · duração`: **tem que ser o vídeo que o usuário mandou agora**.
+     Se não bater, pare e investigue.
+   - Cada referência tem a própria pasta (`$WORK/refs/<id>`, sempre do zero); `$WORK/ref` aponta para a última.
+     **Nunca reaproveite análise, folha, estilo ou código de uma referência anterior** — nem desta conversa, nem de
+     outra, nem do exemplo da skill. Nova referência no meio da conversa → rode de novo e refaça o `estilo.md`.
+   - Link falhou (bloqueio 403, login, vídeo privado, rede do ambiente)? Diga ao usuário e peça o **arquivo MP4**
+     (ou outro link). Não continue com outra referência no lugar.
+
+   Abra `$WORK/ref/sheet.jpg` com a ferramenta de imagem e escreva o que a referência faz: paleta (hex aproximados), fundo, tipografia
+   (serifa ou não, peso, caixa alta), como o texto entra, ritmo (trocas por segundo), transições, composição, uso de
+   fotos/vídeo/UI, clima do som. Isso alimenta a direção de arte (Passo 1B) — não é para copiar quadro a quadro.
 2. **Site da marca** (se houver): `python3 $SK/scripts/scrape_site.py https://site` (salva em `$WORK/site`).
    Monte folhas de contato das imagens e 1 quadro de cada vídeo (`ffmpeg -ss 3 ... -frames:v 1`,
-   depois `tile`) e veja com a ferramenta de imagem. Extraia: cores principais, nomes de serviços/projetos, frases.
+   depois `tile`) e veja com a ferramenta de imagem. Extraia: cores principais, **fontes da marca** (`fonts` no resultado), nomes de
+   serviços/projetos, frases e o tom dos textos.
    Se o site for SPA, os textos estão dentro do bundle JS: `grep -oE '"[^"]{3,80}"'` com palavras-chave.
+   **Separe as melhores fotos** (produto, ambiente, pessoa, resultado — ≥ 1080 px de largura): o vídeo profissional
+   é feito de mídia real. Se não houver fotos boas, peça ao usuário (fotos do produto, renders, retrato, logo em PNG).
 3. **Logo**: use o arquivo ORIGINAL enviado (nunca redesenhe; só recorte margem transparente e redimensione).
 
-Resuma para o usuário, em poucas linhas, o que encontrou (estilo da referência, paleta, projetos, vídeos).
+Resuma para o usuário, em poucas linhas, o que encontrou (estilo da referência, paleta, fontes, projetos, fotos).
+
+## Passo 1B — Direção de arte (o estilo nasce da análise)
+
+Leia `references/direcao-de-arte.md` e escreva **`$WORK/ref/estilo.md`**: tom, conceito em uma frase, paleta por papéis,
+tipografia (com o porquê), destaque, composição, movimento, transições, textura, **2–3 metáforas visuais do tema**
+e som. **Com ou sem referência** — sem referência, a direção vem da marca, do tema e do público (é o caso mais comum).
+**Não existe estilo padrão**: nunca parta do visual dos exemplos da skill (nem neon, nem dourado). Prepare 3 direções
+diferentes para a pergunta de estilo do Passo 2.
 
 ## Passo 2 — Perguntas (no máximo 7, UMA por vez)
 
@@ -97,10 +129,13 @@ Cores: não pergunte se já tirou do site/logo; só pergunte se não houver nenh
 
 1. **Onde vai postar (formatos)** — 1. **Pacote completo: 9:16 + 1:1 + 16:9** (Reels/TikTok + feed/LinkedIn + YouTube/site, tudo do mesmo vídeo) · 2. Só vertical 9:16 · 3. Outro formato ou combinação (4:5, 1:1, 16:9). Recomende o pacote (padrão); se ele citar um destino só, recomende o formato dele. O formato **principal** (o primeiro) é o que você revisa com mais cuidado.
 2. **Duração** — ofereça 3 opções coerentes com o formato (ex.: 15s · 25s · 40s) e diga que ele pode **digitar qualquer duração** (aceite de 6s a 90s). Padrão 25s. Diga quanto conteúdo cabe em cada uma.
-3. **Estilo** — 3 climas, sendo o 1º o estilo do vídeo de referência com as cores da marca.
+3. **Direção de arte** — as 3 direções que você criou no Passo 1B (nome + paleta + fontes + conceito em 1 frase),
+   a 1ª recomendada (a que melhor traduz a marca/referência). Nunca ofereça "estilos da skill".
 4. **Frase de abertura (gancho dos 3 primeiros segundos)** — 3 frases no idioma do vídeo: uma pergunta provocativa, uma afirmação forte, uma promessa de velocidade/resultado.
-5. **Elemento que acompanha o vídeo todo** — ex.: faísca de luz que "liga" cada tela · anel de luz · linha que se desenha (inspire-se no da referência).
-6. **Som** — batida eletrônica suave com whoosh e brilhos · épico e grave · minimalista só efeitos.
+5. **Elemento que acompanha o vídeo todo** (só se a direção de arte pedir um; senão pule — a moldura da marca e as
+   metáforas do tema fazem esse papel) — ex.: faísca de luz que "liga" cada tela · anel de luz · linha que se desenha (inspire-se no da referência).
+6. **Som** — 3 climas coerentes com a direção (premium · energético · calmo · épico · minimalista), recomendando o que
+   combina com o tom.
 7. **Chamada final** (logo + CTA por 2,5s) — 3 frases; recomende a que "fecha" o gancho.
 
 ## Passo 3 — Roteiro e aprovação
@@ -115,30 +150,31 @@ promessa ~12% · final logo+CTA **2,5s fixos**. Menos de 15s: junte virada+conte
 
 ## Passo 4 — Construção
 
-1. Leia `references/engine.md` e `references/formats.md`.
-2. `cp $SK/templates/example_anim.js $WORK/anim.js` e adapte:
-   - **Não mude `W, H`**: o formato vem de `window.FORMAT` (o `--format` do build/pack). Desenhe as cenas no
-     espaço 1080×1920 e envolva cada bloco com `blk(ctx,'media'|'text'|'center', y, opções, ()=>{…})` — é isso que
-     faz o mesmo código servir para todos os formatos (ver `references/formats.md`).
-   - `DUR` conforme a duração; `C` (paleta) com as cores da marca; `FONT` (Saira combina com logos geométricas/tech; troque se a logo pedir outro clima — baixe de github.com/google/fonts e reduza com `pyftsubset --flavor=woff2`).
-   - Listas de conteúdo (`SERV`, `PROJ`…), textos, tempos de cena e `SPARK_KEYS`.
-   - A linha do tempo compartilhada `WORDS`/`WH`/`IMPACT` — o som lê dela, então som e imagem ficam no ritmo.
-   - Posições: pense no 9:16 (área segura x 90–990, y 330–1690); o palco encaixa nos outros formatos.
+1. Leia `references/kit.md` (tokens, cenas, padrão de qualidade), `references/formats.md` e o seu `$WORK/ref/estilo.md`.
+2. `cp $SK/templates/kit.js $WORK/anim.js` e:
+   - **Substitua o objeto `STYLE` inteiro** pela sua direção de arte (o do arquivo é só um exemplo): `colors` da marca,
+     `highlight`, `eyebrow`, `align`, `radius`, `card`, `reveal`, `speed`, `transition`, `texture`, `photo`, `frame`,
+     `sound`, `locale`.
+   - **Fontes da direção**: `python3 $SK/scripts/get_font.py "Família" --role display` e `--role text` (qualquer família
+     do Google Fonts; se a fonte da marca for comercial, a alternativa livre mais próxima).
+   - Escreva o `SCRIPT` (cenas prontas: `hook`, `statement`, `photo`, `cards`, `list`, `price`, `person`, `cta`) e
+     **crie as cenas das metáforas do tema** (`SC.nome = (ctx, s, lt) => {…}` — ver `references/kit.md`).
+   - Siga os 10 itens do **padrão de qualidade** (`references/kit.md`): gancho no 1º segundo, mídia real, uma ideia por
+     cena, legível no celular, números animados, final acionável, metáforas do tema.
+   - Efeitos que o kit não tem (telas de UI flutuando, partícula condutora, clipes de vídeo): veja como o
+     `templates/example_anim.js` faz (`references/engine.md`) e traga a técnica para uma cena própria — sem trazer o visual.
 3. Crie `config.json` e rode `python3 $SK/scripts/prep_assets.py config.json $WORK/assets.js`
    (clipes de vídeo: trechos de 1,5–3,5s a 15 fps; mantenha o total < ~8 MB).
 4. Monte os .html de todos os formatos pedidos (sem renderizar ainda):
    `python3 $SK/scripts/pack.py $WORK/anim.js $WORK/assets.js <nome> "<Título>" --formats 9x16,1x1,16x9 --html-only`
    → `$OUT/<nome>_9x16.html`, `$OUT/<nome>_1x1.html`, … (um formato só: `--formats 9x16`).
 
-### Padrão estúdio (obrigatório)
+### Regras técnicas (valem para qualquer estilo)
 - Um único canvas, tudo desenhado por `render(ctx, t)` — determinístico (nada de `Math.random()` solto; use `rng(seed)`).
-- Sem cortes secos: transições com clarão de luz, zoom ou onda líquida.
-- Movimentos com easing; textos entrando **palavra por palavra**; **palavra principal em destaque** (gradiente + brilho).
-- Fundo: degradê + luzes desfocadas + textura de ruído + vinheta.
-- Um **elemento condutor** presente do início ao fim.
-- **Algo acontece a cada meio segundo** (batida de 120 BPM = 0,5s: pulsos, anéis, faíscas, entradas).
-- Logo original, nunca redesenhada; final com logo + chamada por **2,5s**.
-- Trilha e efeitos com **Web Audio API** (gerados via OfflineAudioContext, tocados em sincronia).
+- Movimentos sempre com easing; transições e texturas **as da direção de arte** (o kit já faz).
+- Logo original, nunca redesenhada; final com logo + chamada por 2,5–4 s.
+- Trilha e efeitos com **Web Audio API** (OfflineAudioContext, em sincronia com a linha do tempo).
+- O estilo (cores, fontes, brilhos, fundos, ritmo) **nunca** vem destas regras nem dos exemplos: vem do `estilo.md`.
 
 ## Passo 5 — Revisão (antes de entregar)
 
@@ -146,6 +182,10 @@ promessa ~12% · final logo+CTA **2,5s fixos**. Menos de 15s: junte virada+conte
 python3 $SK/scripts/snap.py $OUT/<nome>_9x16.html 0.5 1.5 2.5 ... -o $WORK/review_9x16.jpg   # 15–18 instantes, incluindo meios de transição
 python3 $SK/scripts/snap.py $OUT/<nome>_16x9.html <8–10 instantes> -o $WORK/review_16x9.jpg     # e um pouco de cada outro formato
 ```
+Compare com a referência atual: `python3 $SK/scripts/snap.py $OUT/<nome>_9x16.html <instantes> --ref $WORK/ref/sheet.jpg -o $WORK/compare.jpg`
+(folha da referência em cima, a do seu vídeo embaixo). Paleta, tipografia, ritmo e transições precisam lembrar
+**esta** referência; se lembrarem o exemplo da skill ou uma referência anterior, refaça. Sem referência, confira com o
+`estilo.md`: se trocar a logo por outra e o vídeo continuar "servindo", falta marca — acrescente as metáforas do tema.
 Abra as folhas com a ferramenta de imagem. No formato principal, revise tudo; nos outros, confira principalmente as cenas com
 texto longo (no 16:9 o texto fica numa coluna à direita; no 1:1 tudo fica menor). Procure: texto de uma cena vazando para outra, palavras
 sobrepostas nas trocas, texto perto da borda, elementos cortados, logo alterada, faísca cobrindo texto,

@@ -29,7 +29,7 @@ Funciona no **Claude**, **Codex**, **Gemini CLI**, **Hermes Agent**, **OpenClaw*
 
 <br><br>
 
-**[⚡ Instalar](#-instalar-em-1-minuto)** · **[🤖 Outros agentes](#-em-qualquer-agente)** · **[🎥 Como funciona](#-como-funciona)** · **[✨ Recursos](#-o-que-deixa-o-vídeo-com-cara-de-estúdio)** · **[🧠 Por dentro](#-por-dentro-do-motor)** · **[❓ FAQ](#-faq)**
+**[⚡ Instalar](#-instalar-em-1-minuto)** · **[🤖 Outros agentes](#-em-qualquer-agente)** · **[🎞️ Referências](#️-referências-aceitas)** · **[🎥 Como funciona](#-como-funciona)** · **[✨ Recursos](#-o-que-deixa-o-vídeo-com-cara-de-estúdio)** · **[🧠 Por dentro](#-por-dentro-do-motor)** · **[❓ FAQ](#-faq)**
 
 </div>
 
@@ -255,6 +255,31 @@ Também funciona sem dizer "jsmotion": *"faz um vídeo animado da minha empresa 
 
 ---
 
+## 🎞️ Referências aceitas
+
+Mande um vídeo de referência e a skill copia o **estilo** dele (paleta, tipografia, ritmo, transições). Pode ser
+arquivo ou link:
+
+| Fonte | Aceita? | Observação |
+|---|:---:|---|
+| **Arquivo** MP4, MOV, WEBM, MKV | ✅ | o caminho mais garantido: funciona em qualquer ambiente |
+| **YouTube** (vídeos e Shorts) | ✅ | em servidores na nuvem o YouTube costuma bloquear o download (erro 403); aí mande o arquivo |
+| **Instagram** (Reels, posts) | ✅ | posts públicos; conteúdo privado ou que exige login falha |
+| **TikTok** | ✅ | vídeos públicos |
+| **Pinterest — pin de vídeo** | ✅ | link de **um pin** (`pinterest.com/pin/…` ou `pin.it/…`) |
+| **Pinterest — pin de imagem** | ❌ | a análise precisa de movimento; a skill avisa que o pin é imagem |
+| **Pinterest — pasta/perfil** | ❌ | mande o link de um pin de vídeo específico |
+| **Dribbble** | ❌ | **não suportado**: o site bloqueia download automático (anti-robô) e a API só mostra os shots do próprio dono. Salve o vídeo (botão direito no vídeo do shot → *Salvar vídeo como…*) ou grave a tela, e mande o **arquivo** |
+| **Vimeo, X/Twitter, Facebook, LinkedIn** | ✅ | vídeos públicos |
+| **Link direto** para `.mp4` | ✅ | qualquer site |
+
+- **Várias referências:** pode mandar várias de uma vez, ou trocar no meio da conversa. Cada uma é analisada **do
+  zero, na própria pasta**, e o Claude mostra fonte, formato e duração para você conferir que é o vídeo certo.
+- **Links recusados:** Dribbble e pasta do Pinterest são recusados na hora, com a explicação. Links que falham no
+  download (privado, login, bloqueio) fazem o Claude pedir o arquivo, **nunca** usar outra referência no lugar.
+
+---
+
 ## 🎥 Como funciona
 
 ```mermaid
@@ -270,9 +295,10 @@ flowchart LR
 <details open>
 <summary><b>1 · Estuda antes de perguntar</b></summary>
 
-- **Vídeo de referência:** usa a skill [watch](https://github.com/taoufik123-collab/claude-watch) para extrair quadros e montar uma folha de contato. Anota paleta, ritmo, como o texto entra, transições e o elemento que conduz o vídeo.
-- **Site da marca:** baixa HTML + JS/CSS, ranqueia as **cores mais usadas**, pega o título e **baixa imagens e vídeos** — inclusive de sites SPA (React/Vite), onde a mídia fica dentro do bundle.
+- **Vídeo de referência (arquivo ou link):** usa a skill [watch](https://github.com/taoufik123-collab/claude-watch) para extrair quadros e montar uma folha de contato. Aceita arquivo ou link (YouTube, Instagram, TikTok, pin de vídeo do Pinterest… — **Dribbble não**; ver [Referências aceitas](#️-referências-aceitas)). Cada referência é analisada **do zero, na própria pasta**, e o Claude confere se o vídeo analisado é o que você mandou. As observações (paleta, tipografia, ritmo, transições) alimentam a direção de arte, e na revisão o resultado é comparado lado a lado com a referência.
+- **Site da marca:** baixa HTML + JS/CSS, ranqueia as **cores mais usadas**, descobre as **fontes da marca**, pega o título e **baixa imagens e vídeos** — inclusive de sites SPA (React/Vite), onde a mídia fica dentro do bundle.
 - **Logo:** usa o arquivo **original**. Nunca redesenha — só recorta a margem transparente e redimensiona.
+- **Direção de arte:** junta marca, tema, público e referência num `estilo.md` com conceito, paleta, fontes, movimento, som e metáforas do tema. Nada de estilo pré-definido.
 </details>
 
 <details open>
@@ -284,10 +310,10 @@ No máximo **7 perguntas, uma por vez**, cada uma com 3 opções + *"Não sei, e
 |---|---|---|
 | 1 | **Onde vai postar** | **pacote 9:16 + 1:1 + 16:9** · só 9:16 · outra combinação (4:5, 1:1, 16:9) |
 | 2 | **Duração** | 15s · 25s · 40s — ou **qualquer valor de 6 a 90s** |
-| 3 | **Estilo** | o da sua referência com as suas cores · + 2 climas |
+| 3 | **Direção de arte** | 3 direções criadas a partir da análise (ex.: "Dossiê de confiança — marinho, dourado e creme, carimbos e contratos") |
 | 4 | **Gancho (3 primeiros segundos)** | pergunta provocativa · afirmação forte · promessa de resultado |
-| 5 | **Elemento condutor** | faísca de luz · anel de luz · linha que se desenha |
-| 6 | **Som** | eletrônico suave · épico e grave · minimalista |
+| 5 | **Elemento condutor** (só se a direção pedir) | faísca · linha que se desenha · carimbo · cursor… |
+| 6 | **Som** | premium · energético · calmo · épico · minimalista — conforme o tom |
 | 7 | **Chamada final** | 3 CTAs — recomenda a que "fecha" o gancho |
 
 Se a resposta já está na conversa, a pergunta é pulada.
@@ -314,19 +340,44 @@ gancho ~12% │ virada ~12% │ serviços ~20% │ provas/projetos ~34% │ prom
 
 ---
 
-## ✨ O que deixa o vídeo com cara de estúdio
+## 🎨 Sem estilo pronto: a direção de arte nasce da análise
 
-Regras obrigatórias em todo vídeo gerado:
+O jsmotion **não tem um visual padrão** — nem neon, nem dourado, nem "template da casa". Antes de qualquer código, o
+Claude escreve uma **direção de arte** para aquele vídeo ([`references/direcao-de-arte.md`](references/direcao-de-arte.md)),
+a partir de:
 
-- 🎯 **Gancho nos 3 primeiros segundos** — o que segura o scroll.
-- 🥁 **Algo acontece a cada meio segundo** — tudo pulsa em 120 BPM: anéis, faíscas, entradas.
-- ✍️ **Texto palavra por palavra**, com desfoque + escala, e a **palavra principal em destaque** (gradiente + brilho).
-- ✨ **Elemento condutor** do início ao fim — a faísca "acende" cada tela no momento em que ela entra.
-- 🌊 **Zero corte seco** — só clarão de luz, zoom ou onda líquida.
-- 🌌 **Fundo com profundidade** — degradê, luzes desfocadas, partículas, textura de ruído e vinheta.
-- 🪟 **Telas em vidro** — janelas com barra de navegador, reflexo passando e borda que acende.
-- 🔊 **Som que "vê" a imagem** — cada palavra tem um brilho sonoro, cada troca tem whoosh, cada momento-chave tem impacto grave.
-- 🏁 **Final fixo de 2,5s** com a logo original + chamada.
+| Fonte | O que ele extrai |
+|---|---|
+| 🏷️ **A marca** | cores e formas da logo; paleta, **fontes** e fotos do site (`scrape_site.py`); tom dos textos |
+| 🎯 **O tema e o público** | o que se vende, para quem, em que país, qual o medo e o desejo do cliente |
+| 🎞️ **A referência** (se houver) | ritmo, transições, tipografia e composição do vídeo que você mandou |
+| 📱 **O destino** | Reels/TikTok (gancho forte, ritmo alto) · LinkedIn (sóbrio) · YouTube/site (mais respiro) |
+
+Daí saem **paleta por papéis, par tipográfico (qualquer fonte do Google Fonts), destaque, composição, movimento,
+transições, textura, tratamento de foto e som** — e as **metáforas do tema**: cenas que só fazem sentido para aquele
+assunto (um curso imobiliário ganha carimbos de *EMBARGO* e folhas de contrato; uma clínica, o antes/depois; um
+restaurante, a comanda escrita à mão). **Sem referência, a direção vem só da marca e do tema** — e é aí que mais importa acertar.
+
+Na pergunta de estilo, o Claude oferece **3 direções geradas pela análise** (a 1ª recomendada), não 3 presets.
+Teste final: *se trocar a logo por outra e o vídeo continuar servindo, está genérico* — e ele volta para ajustar.
+
+**Como isso vira vídeo:** o [`templates/kit.js`](templates/kit.js) é um motor **sem estilo próprio**. Ele anima, faz
+transições, contadores, som e os 4 formatos; o visual vem inteiro de um objeto `STYLE` (cores, fontes, destaque,
+entrada do texto, transição, textura, foto, som) que o Claude escreve a partir da direção de arte. O vídeo é uma lista
+de cenas (`SCRIPT`) mais as cenas próprias das metáforas. O mesmo motor gera um editorial escuro com serifa, um
+minimal claro com fundo de papel ou um bold esportivo em caixa alta — só trocando o `STYLE`.
+
+### ✨ Padrão de qualidade (vale para qualquer estilo)
+
+- 🎯 **Gancho no 1º segundo** — número + benefício ou pergunta forte; nunca abrir só com a logo.
+- 📸 **Mídia real** do cliente (fotos, renders, telas) sempre que existir.
+- ✂️ **Uma ideia por cena**, 2–3,5 s cada.
+- 📱 **Legível no celular** — títulos grandes, listas de até 5 itens, linhas curtas.
+- 🔠 **Hierarquia tipográfica** da direção de arte; destaque só na palavra-chave.
+- 🏷️ **Moldura da marca** fixa (logos + assinatura) e **números animados** para provas.
+- 🧩 **Metáforas do tema** em pelo menos 1–2 cenas.
+- 🔊 **Som coerente com o tom**, masterizado em −14 LUFS sem cortes.
+- 🏁 **Final acionável** com a logo original + botão de contato.
 
 ---
 
@@ -413,7 +464,8 @@ jsmotion/
 ├── scripts/
 │   ├── install_watch.sh     📦 instala a skill watch + yt-dlp, ffmpeg, Playwright, brotli (idempotente)
 │   ├── watch_reference.sh   👀 assiste o vídeo de referência e monta a folha de contato
-│   ├── scrape_site.py       🌐 cores, título, imagens e vídeos do site (funciona com SPA)
+│   ├── scrape_site.py       🌐 cores, fontes, título, imagens e vídeos do site (funciona com SPA)
+│   ├── get_font.py          🔤 baixa qualquer família do Google Fonts para a direção de arte
 │   ├── prep_assets.py       🧳 logo, imagens, clipes e fonte → data URIs (assets.js)
 │   ├── build_html.py        🧱 junta shell + assets + animação num .html único e offline
 │   ├── snap.py              📸 fotos de instantes para revisão + erros do console
@@ -421,12 +473,16 @@ jsmotion/
 │   ├── pack.py              📦 pacote multiformato: um .html e um MP4 por formato, em paralelo
 │   └── paths.sh · _paths.py 📁 pastas de trabalho/entrega (claude.ai, Claude Code ou variável de ambiente)
 ├── templates/
-│   ├── example_anim.js      ⭐ exemplo completo e testado (Constructiva.dev · 25s · 9:16, 4:5, 1:1 e 16:9)
+│   ├── kit.js               🧩 motor de cenas SEM estilo próprio: o visual vem do objeto STYLE
+│   ├── example_anim.js      🔬 exemplo feito do zero (Constructiva.dev) — técnica, não estilo a copiar
+│   ├── fonts/               🔤 Playfair Display + Inter (OFL), opcionais para uso sem internet
 │   ├── shell.html           ▶️ página com prévia, botão "Baixar MP4" e ganchos de render
-│   └── saira.woff2          🔤 fonte padrão (Saira)
+│   └── saira.woff2          🔤 Saira (usada pelo exemplo)
 ├── examples/
 │   └── promo/               🎞️ o vídeo de apresentação do próprio jsmotion — 16:9 e 9:16, PT e EN
 ├── references/
+│   ├── direcao-de-arte.md   🎨 o método: o estilo nasce da marca, do tema e da referência
+│   ├── kit.md               🧩 tokens do STYLE, cenas, cenas próprias e padrão de qualidade
 │   ├── engine.md            🧠 anatomia do motor
 │   └── formats.md           📐 tamanhos, áreas seguras e como adaptar o layout
 ├── agents/                  🤖 variantes prontas: codex · gemini · hermes · openclaw · universal (geradas, não editar)
@@ -506,9 +562,19 @@ Não existe arquivo de música: a trilha é **sintetizada por código** (Web Aud
 </details>
 
 <details>
+<summary><b>Posso mandar a referência por link, ou só MP4?</b></summary>
+
+Os dois. Arquivo (MP4, MOV, WEBM…) ou link do **YouTube, Instagram, TikTok, Pinterest (pin de vídeo), Vimeo, X,
+Facebook** ou link direto `.mp4`, baixado pelo `yt-dlp`. **Dribbble não é suportado** (bloqueia download automático):
+salve o vídeo e mande o arquivo. A lista completa está em [Referências aceitas](#️-referências-aceitas). Pode mandar **várias referências** e trocar de referência no meio da conversa: cada
+uma é analisada do zero. Se um link falhar (vídeo privado, exige login, ou o site bloqueia o download no ambiente do
+Claude, como o YouTube costuma fazer em servidores), o Claude avisa e pede o arquivo, em vez de usar outra referência.
+</details>
+
+<details>
 <summary><b>Posso usar outra fonte?</b></summary>
 
-Sim. Saira é o padrão (combina com logos geométricas/tech). Para outro clima, baixe do [Google Fonts](https://github.com/google/fonts), reduza com `pyftsubset --flavor=woff2` e aponte no `config.json`.
+Sim — não existe fonte padrão. O Claude escolhe o par tipográfico na direção de arte (de preferência as fontes do seu site) e baixa qualquer família do Google Fonts com `scripts/get_font.py "Nome da Família"`. Fontes comerciais (Söhne, Gotham…) são trocadas pela alternativa livre mais próxima; se você tiver o arquivo `.woff2` licenciado, aponte no `config.json`.
 </details>
 
 ---
@@ -516,7 +582,8 @@ Sim. Saira é o padrão (combina com logos geométricas/tech). Para outro clima,
 ## 🗺️ Próximos passos
 
 - [ ] Galeria de vídeos gerados pela comunidade
-- [ ] Presets de estilo prontos (neon, corporativo, minimalista, retrô)
+- [x] Direção de arte por análise (marca, tema, público, referência) — sem estilo pré-definido
+- [x] Motor de cenas sem estilo (`kit.js` + `STYLE`) e qualquer fonte do Google Fonts
 - [ ] Legendas automáticas queimadas no vídeo
 - [ ] Narração por voz sintetizada
 - [x] Exemplo nativo em 16:9 e 9:16 com o mesmo código ([`examples/promo`](examples/promo))
