@@ -13,17 +13,54 @@ config.json:
  "photos": {"p1": "/foto.jpg"},             # fotos INTEIRAS (sem recorte) para tela cheia; lado maior até photo_max
  "photo_max": 1600,
  "logos": {"logoL": "/logo.png"},           # PNG com transparência preservada (moldura, assinatura, logo final)
+                                            # sem transparência (JPG, PNG com fundo branco/liso)? o fundo liso que toca
+                                            # as bordas é removido sozinho; para manter: {"src": "/logo.jpg", "keep_bg": true};
+                                            # miolos das letras também: {"src": "/logo.jpg", "holes": true}
  "fonts": {"display": "/f.woff2", "display_italic": "/fi.woff2", "text": "/t.woff2"}   # da direção de arte (get_font.py);
                                             # "playfair-inter" = atalho para as fontes embutidas em templates/fonts
 }"""
 import base64, subprocess, glob, os, json, io, sys, tempfile
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFilter, ImageChops
+
+def cutout(im, name='', tol=34, soft=34, holes=False):
+    """Imagem sem transparência com fundo LISO (branco, preto ou cor sólida) → PNG transparente.
+    Só remove o fundo ligado às bordas (o branco DENTRO da logo fica), com borda suave (antisserrilhado).
+    holes=True também remove a cor do fundo nos miolos fechados (ex.: dentro do "A" ou do "O").
+    Devolve a imagem original se já tiver transparência ou se o fundo não for liso."""
+    im = im.convert('RGBA')
+    if im.getextrema()[3][0] < 250: return im                     # já tem transparência
+    w, h = im.size; rgb = im.convert('RGB'); px = rgb.load()
+    border = [px[x, y] for x in range(0, w, max(1, w//80)) for y in (0, h-1)] + \
+             [px[x, y] for y in range(0, h, max(1, h//80)) for x in (0, w-1)]
+    bg = max(set(border), key=border.count) if border else (255, 255, 255)
+    near = lambda c: sum((a-b)**2 for a, b in zip(c, bg)) <= tol**2
+    if sum(near(c) for c in border) < 0.85*len(border): return im   # fundo não é liso (foto, degradê): não mexe
+    # distância de cada pixel até a cor do fundo (0 = fundo)
+    diff = ImageChops.difference(rgb, Image.new('RGB', im.size, bg)).convert('L')
+    diff = diff.point(lambda v: min(255, v*2))
+    # máscara do fundo ligado às bordas: flood fill a partir da moldura da imagem
+    m = diff.point(lambda v: 255 if v <= tol else 0); mp = m.load()
+    for x in range(w):
+        for y in (0, h-1):
+            if mp[x, y] == 255: ImageDraw.floodfill(m, (x, y), 128)
+    for y in range(h):
+        for x in (0, w-1):
+            if mp[x, y] == 255: ImageDraw.floodfill(m, (x, y), 128)
+    outside = m.point(lambda v: 255 if (v == 128 or (holes and v == 255)) else 0)
+    # alfa: 0 no fundo; perto da borda do fundo, proporcional à diferença de cor (borda suave); resto opaco
+    ring = outside.filter(ImageFilter.MaxFilter(5))
+    softa = diff.point(lambda v: 0 if v <= tol else min(255, int((v-tol)*255/soft)))
+    alpha = Image.composite(softa, Image.new('L', im.size, 255), ring)
+    alpha = Image.composite(Image.new('L', im.size, 0), alpha, outside)
+    im.putalpha(alpha)
+    print(f'✂️  {name or "imagem"}: fundo liso {"#%02X%02X%02X" % bg[:3]} removido (fica transparente)')
+    return im
 cfg=json.load(open(sys.argv[1])); dst=sys.argv[2]; here=os.path.dirname(os.path.abspath(__file__))
 tmp=tempfile.mkdtemp(prefix='jsmotion_')  # temporários únicos: dois processos não se atropelam
 b64=lambda p,m:f"data:{m};base64,"+base64.b64encode(open(p,'rb').read()).decode()
 out={'projects':{},'seq':{}}
 if cfg.get('logo'):
-    im=Image.open(cfg['logo']).convert('RGBA'); bb=im.getbbox(); im=im.crop(bb) if bb else im
+    im=cutout(Image.open(cfg['logo']), 'logo'); bb=im.getbbox(); im=im.crop(bb) if bb else im
     w=cfg.get('logo_width',1400); im=im.resize((w,round(im.height*w/im.width)),Image.LANCZOS); lp=os.path.join(tmp,'logo.png'); im.save(lp,optimize=True)
     out['logo']=b64(lp,'image/png')
 iw,ih=cfg.get('image_size',[1000,625])
@@ -46,7 +83,10 @@ for k,p in cfg.get('photos',{}).items():   # foto inteira: só reduz o lado maio
     out['photos'][k]="data:image/jpeg;base64,"+base64.b64encode(buf.getvalue()).decode()
 if cfg.get('logos'): out['logos']={}
 for k,p in cfg.get('logos',{}).items():    # logo/assinatura: PNG, recorta a margem transparente, largura até 1000
-    im=Image.open(p).convert('RGBA'); bb=im.getbbox(); im=im.crop(bb) if bb else im
+    o = p if isinstance(p, dict) else {'src': p}; p = o['src']
+    im=Image.open(p).convert('RGBA')
+    if not o.get('keep_bg'): im=cutout(im, k, holes=o.get('holes', False))
+    bb=im.getbbox(); im=im.crop(bb) if bb else im
     if im.width>1000: im=im.resize((1000,round(im.height*1000/im.width)),Image.LANCZOS)
     buf=io.BytesIO(); im.save(buf,'PNG',optimize=True)
     out['logos'][k]="data:image/png;base64,"+base64.b64encode(buf.getvalue()).decode()
