@@ -39,7 +39,7 @@ Funciona no **Claude**, **Codex**, **Gemini CLI**, **Hermes Agent**, **OpenClaw*
 
 > **Você diz:** *"Quero um vídeo jsmotion da minha marca, site www.minhaempresa.com"* — e anexa a logo.
 >
-> **O Claude devolve:** um **pacote de MP4 1080p com trilha e efeitos sonoros — 9:16, 1:1 e 16:9 do mesmo vídeo** —, os **.html** de reserva com botão *"Baixar MP4"* e **3 sugestões** para deixar o próximo ainda melhor.
+> **O Claude devolve:** um **pacote de MP4 1080p com trilha e efeitos sonoros — 9:16, 1:1 e 16:9 do mesmo vídeo** —, os **.html** de reserva com botão *"Baixar MP4"*, a **copy pronta para postar** (se você quiser — com ou sem emojis) e **3 sugestões** para deixar o próximo ainda melhor.
 
 Uma conversa. Zero timeline. Zero keyframe manual.
 
@@ -285,11 +285,11 @@ arquivo ou link:
 ```mermaid
 flowchart LR
     A["📎 Logo + site<br/>+ vídeo de referência"] --> B["👀 Estuda<br/>referência e site"]
-    B --> C["💬 Até 7 perguntas<br/>com opções"]
+    B --> C["💬 Até 8 perguntas<br/>com opções"]
     C --> D["📝 Roteiro cena a cena<br/>espera o seu ok"]
     D --> E["🧑‍💻 Anima em JS<br/>+ compõe a trilha"]
     E --> F["🔍 Revisa com fotos<br/>das cenas e corrige"]
-    F --> G["🎬 MP4 + HTML<br/>+ 3 sugestões"]
+    F --> G["🎬 MP4 + HTML<br/>+ copy para postar<br/>+ 3 sugestões"]
 ```
 
 <details open>
@@ -305,19 +305,26 @@ flowchart LR
 <details open>
 <summary><b>2 · Pergunta pouco, e com opções</b></summary>
 
-No máximo **7 perguntas, uma por vez**, cada uma com 3 opções + *"Não sei, escolha por mim"* + a recomendação do Claude:
+No máximo **8 perguntas, uma por vez**, cada uma com 3 opções + *"Não sei, escolha por mim"* + a recomendação do Claude:
 
 | # | Pergunta | Exemplos de opções |
 |---|---|---|
-| 1 | **Onde vai postar** | **pacote 9:16 + 1:1 + 16:9** · só 9:16 · outra combinação (4:5, 1:1, 16:9) |
+| 1 | **É para redes? Onde vai postar** | **pacote 9:16 + 1:1 + 16:9** · só 9:16 · outra combinação (4:5, 1:1, 16:9) |
 | 2 | **Duração** | 15s · 25s · 40s — ou **qualquer valor de 6 a 90s** |
 | 3 | **Direção de arte** | 3 direções criadas a partir da análise (ex.: "Dossiê de confiança — marinho, dourado e creme, carimbos e contratos") |
 | 4 | **Gancho (3 primeiros segundos)** | pergunta provocativa · afirmação forte · promessa de resultado |
 | 5 | **Elemento condutor** (só se a direção pedir) | faísca · linha que se desenha · carimbo · cursor… |
 | 6 | **Som** | premium · energético · calmo · épico · minimalista — conforme o tom |
 | 7 | **Chamada final** | 3 CTAs — recomenda a que "fecha" o gancho |
+| 8 | **Copy para postar** (se for para redes) | **sim, com emojis** · sim, sem emojis · não precisa |
 
 Se a resposta já está na conversa, a pergunta é pulada.
+
+**📝 Copy para postar:** se o vídeo é para redes e você quer a legenda, o Claude entrega junto com o MP4 uma copy
+por rede (Instagram, TikTok, LinkedIn, YouTube…) seguindo [`references/copy.md`](references/copy.md): **gancho de
+impacto na 1ª linha**, texto curto com benefícios e números **reais** do seu site, **a mesma chamada do vídeo**,
+hashtags certas, emojis **só se você quiser**, + 2 variações de gancho e o texto da capa do Reels.
+
 </details>
 
 <details open>
@@ -491,6 +498,7 @@ jsmotion/
 ├── references/
 │   ├── direcao-de-arte.md   🎨 o método: o estilo nasce da marca, do tema e da referência
 │   ├── kit.md               🧩 tokens do STYLE, cenas, cenas próprias e padrão de qualidade
+│   ├── copy.md              📝 copy para postar: gancho, CTA, hashtags, emojis, uma versão por rede
 │   ├── engine.md            🧠 anatomia do motor
 │   └── formats.md           📐 tamanhos, áreas seguras e como adaptar o layout
 ├── agents/                  🤖 variantes prontas: codex · gemini · hermes · openclaw · universal (geradas, não editar)

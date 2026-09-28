@@ -38,7 +38,7 @@ Works with **Claude**, **Codex**, **Gemini CLI**, **Hermes Agent**, **OpenClaw**
 
 > **You say:** *"Make me a jsmotion video for my brand, website www.mycompany.com"* — and attach your logo.
 >
-> **Claude delivers:** a **pack of 1080p MP4s with music and sound effects — 9:16, 1:1 and 16:9 of the same video** —, backup **.html** files with a *"Download MP4"* button, and **3 suggestions** to make the next one even better.
+> **Claude delivers:** a **pack of 1080p MP4s with music and sound effects — 9:16, 1:1 and 16:9 of the same video** —, backup **.html** files with a *"Download MP4"* button, **ready-to-post copy** (if you want it — with or without emojis), and **3 suggestions** to make the next one even better.
 
 One conversation. Zero timeline. Zero manual keyframes.
 
@@ -287,11 +287,11 @@ file or a link:
 ```mermaid
 flowchart LR
     A["📎 Logo + website<br/>+ reference video"] --> B["👀 Studies the<br/>reference and site"]
-    B --> C["💬 Up to 7 questions<br/>with options"]
+    B --> C["💬 Up to 8 questions<br/>with options"]
     C --> D["📝 Scene-by-scene script<br/>waits for your ok"]
     D --> E["🧑‍💻 Animates in JS<br/>+ composes the music"]
     E --> F["🔍 Reviews scene<br/>snapshots and fixes"]
-    F --> G["🎬 MP4 + HTML<br/>+ 3 suggestions"]
+    F --> G["🎬 MP4 + HTML<br/>+ ready-to-post copy<br/>+ 3 suggestions"]
 ```
 
 <details open>
@@ -307,19 +307,26 @@ flowchart LR
 <details open>
 <summary><b>2 · Few questions, all multiple-choice</b></summary>
 
-At most **7 questions, one at a time**, each with 3 options + *"I don't know, you choose"* + Claude's recommendation:
+At most **8 questions, one at a time**, each with 3 options + *"I don't know, you choose"* + Claude's recommendation:
 
 | # | Question | Example options |
 |---|---|---|
-| 1 | **Where you'll post** | **pack 9:16 + 1:1 + 16:9** · 9:16 only · another combination (4:5, 1:1, 16:9) |
+| 1 | **Is it for social media? Where you'll post** | **pack 9:16 + 1:1 + 16:9** · 9:16 only · another combination (4:5, 1:1, 16:9) |
 | 2 | **Length** | 15s · 25s · 40s — or **any value from 6 to 90s** |
 | 3 | **Art direction** | 3 directions created from the analysis (e.g. "Trust dossier — navy, gold and cream, stamps and contracts") |
 | 4 | **Hook (first 3 seconds)** | provocative question · bold statement · promise of results |
 | 5 | **Guiding element** (only if the direction calls for it) | spark · self-drawing line · stamp · cursor… |
 | 6 | **Sound** | premium · energetic · calm · epic · minimal — matching the tone |
 | 7 | **Call to action** | 3 CTAs — recommends the one that "closes" the hook |
+| 8 | **Post copy** (if it's for social media) | **yes, with emojis** · yes, no emojis · no thanks |
 
 If the answer is already in the conversation, the question is skipped.
+
+**📝 Ready-to-post copy:** if the video is for social media and you want the caption, Claude delivers it with the
+MP4, one version per network (Instagram, TikTok, LinkedIn, YouTube…) following
+[`references/copy.md`](references/copy.md): a **scroll-stopping first line**, short copy with **real** benefits and
+numbers from your site, **the same call to action as the video**, the right hashtags, emojis **only if you want
+them**, plus 2 alternative hooks and the Reels cover text.
 </details>
 
 <details open>
@@ -492,6 +499,7 @@ jsmotion/
 ├── references/
 │   ├── direcao-de-arte.md   🎨 the method: style comes from the brand, topic and reference
 │   ├── kit.md               🧩 STYLE tokens, scenes, custom scenes and quality bar
+│   ├── copy.md              📝 post copy: hook, CTA, hashtags, emojis, one version per network
 │   ├── engine.md            🧠 engine anatomy
 │   └── formats.md           📐 sizes, safe areas and how to adapt the layout
 ├── agents/                  🤖 ready-made variants: codex · gemini · hermes · openclaw · universal (generated, don't edit)
