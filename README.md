@@ -4,6 +4,8 @@
 
 # 🎬 JSmotion-skill
 
+<sub>Criado por <b><a href="https://github.com/flavioduque">Flavio Duque</a></b> · ✅ <b>Repositório oficial:</b> <a href="https://github.com/flavioduque/Jsmotion-skill">github.com/flavioduque/Jsmotion-skill</a> · <a href="https://flavioduque.github.io/Jsmotion-skill/">site</a></sub>
+
 ### Seu vídeo de marca nível estúdio, feito pelo Claude, em **uma conversa**.
 
 **Sem After Effects. Sem Premiere. Sem template genérico. Sem editor.**<br>
@@ -632,6 +634,7 @@ Mostre o vídeo que você fez! Poste com **#jsmotion** e marque o repositório �
 
 ## 🙏 Créditos
 
+- **Criação e manutenção: [Flavio Duque](https://github.com/flavioduque)** — primeira publicação em 25/09/2026. O repositório oficial é **[flavioduque/Jsmotion-skill](https://github.com/flavioduque/Jsmotion-skill)**; cópias em outros perfis não são mantidas por mim e podem estar desatualizadas. Republicou? Mantenha o [`LICENSE`](LICENSE) e o [`NOTICE`](NOTICE) e cite o original (ou use o botão Fork). Como citar: [`CITATION.cff`](CITATION.cff).
 - Leitura de vídeo de referência: [claude-watch](https://github.com/taoufik123-collab/claude-watch)
 - Fonte padrão: [Saira](https://fonts.google.com/specimen/Saira) (SIL Open Font License)
 - Render: [Playwright](https://playwright.dev) + [FFmpeg](https://ffmpeg.org)

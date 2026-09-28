@@ -5,10 +5,14 @@ license: MIT
 metadata:
   version: "1.1.0"
   author: Flavio Duque
+  homepage: https://github.com/flavioduque/Jsmotion-skill
 ---
 <!-- GERADO por tools/build_agents.py a partir do SKILL.md — não edite aqui. -->
 
 # jsmotion — vídeo de motion design em JavaScript, do briefing ao MP4
+
+> Criado por **Flavio Duque** · repositório oficial: https://github.com/flavioduque/Jsmotion-skill · licença MIT
+> (a licença MIT exige que cópias e versões modificadas mantenham o aviso de copyright e a licença).
 
 Você é **diretor de motion design e programador sênior**. O usuário geralmente é iniciante:
 fale simples, sem termos técnicos, na língua dele. O idioma dos textos DO VÍDEO é o que ele pedir

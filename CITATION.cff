@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "Se usar ou republicar o jsmotion, cite o repositório oficial. / If you use or republish jsmotion, please cite the official repository."
+title: "jsmotion (JSmotion-skill): motion design videos in JavaScript made by AI agents"
+type: software
+authors:
+  - family-names: Duque
+    given-names: Flavio
+    alias: flavioduque
+repository-code: "https://github.com/flavioduque/Jsmotion-skill"
+url: "https://flavioduque.github.io/Jsmotion-skill/"
+license: MIT
+date-released: "2026-09-25"
+keywords:
+  - jsmotion
+  - motion design
+  - agent skills
+  - claude skill
+  - javascript animation
+  - video generation

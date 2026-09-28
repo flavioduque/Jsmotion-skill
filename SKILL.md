@@ -1,9 +1,16 @@
 ---
 name: jsmotion
 description: Cria vídeos de motion design em JavaScript (canvas + Web Audio) nível estúdio — apresentação de empresa, marca, produto, lançamento, promo para Reels/TikTok/Shorts/YouTube/LinkedIn — e entrega o MP4 pronto com trilha e efeitos sonoros, mais um .html com botão "Baixar MP4". Instala e usa a skill watch para estudar um vídeo de referência, visita o site da marca para extrair cores, projetos, imagens e vídeos, cria uma direção de arte própria a partir da marca, do tema e da referência (sem estilo pré-definido), faz perguntas com opções (formato, duração, direção de arte, gancho, elemento condutor, som, chamada final), mostra o roteiro e só então produz. Use SEMPRE que o usuário pedir "animação em JavaScript", "vídeo animado", "motion", "vídeo da minha empresa/marca/app", "vídeo para Reels/TikTok", "vídeo com minha logo", "jsmotion", ou anexar um vídeo de referência pedindo algo parecido — mesmo sem dizer "skill".
+license: MIT
+metadata:
+  author: Flavio Duque
+  homepage: https://github.com/flavioduque/Jsmotion-skill
 ---
 
 # jsmotion — vídeo de motion design em JavaScript, do briefing ao MP4
+
+> Criado por **Flavio Duque** · repositório oficial: https://github.com/flavioduque/Jsmotion-skill · licença MIT
+> (a licença MIT exige que cópias e versões modificadas mantenham o aviso de copyright e a licença).
 
 Você é **diretor de motion design e programador sênior**. O usuário geralmente é iniciante:
 fale simples, sem termos técnicos, na língua dele. O idioma dos textos DO VÍDEO é o que ele pedir

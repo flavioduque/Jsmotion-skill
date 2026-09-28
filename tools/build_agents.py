@@ -12,6 +12,7 @@ import os, re, sys, shutil, zipfile, filecmp, tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RES = ['scripts', 'templates', 'references']          # recursos copiados em toda variante
+LEGAL = ['LICENSE', 'NOTICE']                          # autoria e licença viajam com toda variante
 VERSION = '1.1.0'
 
 DESC = ('Creates studio-quality motion-design videos in JavaScript (canvas + Web Audio): company, brand, product '
@@ -150,7 +151,7 @@ metadata:
         - python3
         - git
 ---'''
-    return f'---\nname: jsmotion\ndescription: "{q}"\nlicense: MIT\nmetadata:\n  version: "{VERSION}"\n  author: Flavio Duque\n---'
+    return f'---\nname: jsmotion\ndescription: "{q}"\nlicense: MIT\nmetadata:\n  version: "{VERSION}"\n  author: Flavio Duque\n  homepage: https://github.com/flavioduque/Jsmotion-skill\n---'
 
 def variant(agent):
     src = open(os.path.join(ROOT, 'SKILL.md')).read()
@@ -180,6 +181,7 @@ def build(dst_root):
         open(os.path.join(d, 'SKILL.md'), 'w').write(variant(agent))
         for r in RES:
             shutil.copytree(os.path.join(ROOT, r), os.path.join(d, r), ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
+        for f in LEGAL: shutil.copy(os.path.join(ROOT, f), os.path.join(d, f))
         if agent == 'codex':
             os.makedirs(os.path.join(d, 'agents')); open(os.path.join(d, 'agents', 'openai.yaml'), 'w').write(OPENAI_YAML)
 

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>jsmotion — vídeos de motion design em JavaScript feitos por IA · por Flavio Duque</title>
+<meta name="description" content="jsmotion (JSmotion-skill), criado por Flavio Duque: skill para Claude, Codex, Gemini CLI, Hermes, OpenClaw, Cursor e Copilot que transforma logo e site em vídeo de motion design nível estúdio — MP4 com trilha, em 9:16, 1:1 e 16:9. Repositório oficial: github.com/flavioduque/Jsmotion-skill.">
+<meta name="author" content="Flavio Duque">
+<link rel="canonical" href="https://flavioduque.github.io/Jsmotion-skill/">
+<link rel="alternate" hreflang="pt-BR" href="https://flavioduque.github.io/Jsmotion-skill/">
+<link rel="alternate" hreflang="en" href="https://flavioduque.github.io/Jsmotion-skill/#en">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="jsmotion">
+<meta property="og:title" content="jsmotion — vídeo de marca nível estúdio, feito por IA em uma conversa">
+<meta property="og:description" content="Criado por Flavio Duque. Logo + site → roteiro, animação em JavaScript, trilha e MP4 pronto. Repositório oficial: github.com/flavioduque/Jsmotion-skill">
+<meta property="og:url" content="https://flavioduque.github.io/Jsmotion-skill/">
+<meta property="og:image" content="https://flavioduque.github.io/Jsmotion-skill/preview.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="jsmotion — por Flavio Duque">
+<meta name="twitter:description" content="Vídeos de motion design em JavaScript feitos por agentes de IA. Repositório oficial: github.com/flavioduque/Jsmotion-skill">
+<meta name="twitter:image" content="https://flavioduque.github.io/Jsmotion-skill/preview.jpg">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareSourceCode",
+  "name": "jsmotion (JSmotion-skill)",
+  "alternateName": ["jsmotion", "JSmotion-skill", "jsmotion skill"],
+  "description": "Agent skill that turns a logo and a website into a studio-quality motion design video in JavaScript (canvas + Web Audio), rendered to MP4 in 9:16, 1:1 and 16:9.",
+  "author": {"@type": "Person", "name": "Flavio Duque", "url": "https://github.com/flavioduque"},
+  "creator": {"@type": "Person", "name": "Flavio Duque", "url": "https://github.com/flavioduque"},
+  "maintainer": {"@type": "Person", "name": "Flavio Duque", "url": "https://github.com/flavioduque"},
+  "copyrightHolder": {"@type": "Person", "name": "Flavio Duque"},
+  "copyrightYear": 2026,
+  "dateCreated": "2026-09-25",
+  "codeRepository": "https://github.com/flavioduque/Jsmotion-skill",
+  "url": "https://flavioduque.github.io/Jsmotion-skill/",
+  "license": "https://opensource.org/licenses/MIT",
+  "programmingLanguage": ["JavaScript", "Python"],
+  "keywords": "jsmotion, motion design, agent skills, claude skill, codex, gemini cli, video generation, javascript animation",
+  "image": "https://flavioduque.github.io/Jsmotion-skill/preview.jpg"
+}
+</script>
+<style>
+  :root{ --bg:#0B0D12; --bg2:#141824; --ink:#F3F5FA; --soft:#A6AFC3; --accent:#5B8CFF; --accent2:#22E0C8; --line:rgba(255,255,255,.1); }
+  @media (prefers-color-scheme: light){ :root{ --bg:#F7F8FB; --bg2:#FFFFFF; --ink:#0E1220; --soft:#4A5268; --accent:#2F5BD8; --accent2:#0E9F8C; --line:rgba(0,0,0,.1);} }
+  *{box-sizing:border-box} html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  a{color:var(--accent)} .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+  header{padding:56px 0 24px;text-align:center}
+  .by{color:var(--soft);font-size:15px} .by b{color:var(--ink)}
+  h1{font-size:clamp(34px,6vw,58px);line-height:1.08;margin:.3em 0 .25em;letter-spacing:-.02em}
+  h1 span{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lead{font-size:clamp(17px,2.2vw,20px);color:var(--soft);max-width:760px;margin:0 auto 26px}
+  .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:34px}
+  .btn{display:inline-block;padding:13px 22px;border-radius:12px;font-weight:650;text-decoration:none;border:1px solid var(--line)}
+  .btn.primary{background:var(--accent);color:#fff;border-color:transparent}
+  .official{overflow-wrap:anywhere;max-width:100%;display:inline-block;margin:0 auto 20px;padding:8px 14px;border-radius:999px;background:var(--bg2);border:1px solid var(--line);font-size:14px}
+  .demo{display:flex;gap:14px;justify-content:center;align-items:flex-start}
+  .demo img{border-radius:14px;border:1px solid var(--line);max-width:100%;height:auto}
+  .demo .wide{width:74%} .demo .tall{width:23.5%}
+  section{padding:34px 0;border-top:1px solid var(--line)}
+  h2{font-size:26px;margin:0 0 14px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+  .card{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:18px}
+  .card h3{margin:0 0 6px;font-size:18px} .card p{margin:0;color:var(--soft);font-size:15px}
+  code{overflow-wrap:anywhere;background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:2px 6px;font-size:14px}
+  footer{padding:30px 0 50px;color:var(--soft);font-size:14px;text-align:center;border-top:1px solid var(--line)}
+  @media (max-width:640px){ .demo{flex-direction:column;align-items:center} .demo .wide{width:100%} .demo .tall{width:60%} }
+</style>
+</head>
+<body>
+<header class="wrap">
+  <div class="official">✅ Site oficial · criado por <b>Flavio Duque</b> · <a href="https://github.com/flavioduque/Jsmotion-skill">github.com/flavioduque/Jsmotion-skill</a></div>
+  <h1>Seu vídeo de marca <span>nível estúdio</span>,<br>feito por IA em uma conversa.</h1>
+  <p class="lead"><b>jsmotion</b> é uma skill para agentes de IA: você manda a logo e o site, o agente estuda a marca, cria a direção de arte, escreve o roteiro, anima em JavaScript, compõe a trilha e entrega o <b>MP4 pronto</b> em 9:16, 1:1 e 16:9 — com a copy para postar.</p>
+  <div class="cta">
+    <a class="btn primary" href="https://github.com/flavioduque/Jsmotion-skill">⭐ Repositório oficial no GitHub</a>
+    <a class="btn" href="https://github.com/flavioduque/Jsmotion-skill/raw/main/dist/jsmotion.skill">⬇️ Baixar para o Claude</a>
+    <a class="btn" href="#en">🇺🇸 English</a>
+  </div>
+  <div class="demo">
+    <img class="wide" src="demo.gif" alt="Demonstração 16:9 feita pelo próprio jsmotion" width="800" height="450" loading="eager">
+    <img class="tall" src="demo-vertical.gif" alt="A mesma demonstração em 9:16 para Reels, TikTok e Shorts" width="360" height="640" loading="eager">
+  </div>
+</header>
+
+<main class="wrap">
+  <section>
+    <h2>Como funciona</h2>
+    <div class="grid">
+      <div class="card"><h3>1 · Estuda a marca</h3><p>Site (cores, fontes, textos, fotos), logo e o vídeo de referência — que, quando existe, manda no estilo.</p></div>
+      <div class="card"><h3>2 · Direção de arte própria</h3><p>Sem estilo pronto: paleta, tipografia, movimento e metáforas do tema nascem da análise.</p></div>
+      <div class="card"><h3>3 · Roteiro e perguntas</h3><p>Até 8 perguntas com opções e o roteiro cena a cena antes de animar.</p></div>
+      <div class="card"><h3>4 · MP4 + copy</h3><p>Render quadro a quadro, áudio em −14 LUFS, todos os formatos e a legenda pronta por rede.</p></div>
+    </div>
+  </section>
+  <section>
+    <h2>Funciona em</h2>
+    <p>Claude (claude.ai e Claude Code), OpenAI Codex, Gemini CLI, Hermes Agent, OpenClaw, Cursor e GitHub Copilot.
+      Instalação: <code>curl -fsSL https://raw.githubusercontent.com/flavioduque/Jsmotion-skill/main/install.sh | bash -s -- claude</code></p>
+  </section>
+  <section id="en" lang="en">
+    <h2>🇺🇸 jsmotion — by Flavio Duque</h2>
+    <p><b>jsmotion</b> (JSmotion-skill) is an agent skill created by <b>Flavio Duque</b>. Send a logo and a website; the agent studies the brand, builds its own art direction, writes the script, animates it in JavaScript, composes the soundtrack and delivers a ready-to-post <b>MP4</b> in 9:16, 1:1 and 16:9 — plus the post copy. Works with Claude, Codex, Gemini CLI, Hermes Agent, OpenClaw, Cursor and Copilot.</p>
+    <p>The only official repository is <a href="https://github.com/flavioduque/Jsmotion-skill">github.com/flavioduque/Jsmotion-skill</a>. Copies under other accounts are not maintained by the author and may be outdated.</p>
+  </section>
+</main>
+
+<footer class="wrap">
+  © 2026 <a href="https://github.com/flavioduque">Flavio Duque</a> · criado e publicado em 25/09/2026 · licença MIT ·
+  <a href="https://github.com/flavioduque/Jsmotion-skill">repositório oficial</a>
+</footer>
+</body>
+</html>
