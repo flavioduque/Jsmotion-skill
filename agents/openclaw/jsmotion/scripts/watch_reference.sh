@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Uso: watch_reference.sh <link-ou-arquivo> [mais referências…]
 # Assiste cada vídeo de referência com a skill watch e monta uma folha de contato (sheet.jpg).
-# Aceita arquivo local (mp4, mov, webm…) ou link (YouTube, Instagram, TikTok, Vimeo, X, link direto .mp4… via yt-dlp).
+# Aceita arquivo local (mp4, mov, webm…) ou link (YouTube, Instagram, TikTok, Pinterest (pin de vídeo), Vimeo, X,
+# link direto .mp4… via yt-dlp). NÃO aceita Dribbble (bloqueia download automático) nem pasta/board do Pinterest.
 #
 # Cada referência ganha uma pasta própria, SEMPRE do zero: $WORK/refs/<id>
 # (o watch salva todo download como download/video.mp4 — reaproveitar a pasta fazia o yt-dlp pular o download
@@ -16,6 +17,16 @@ hash10(){ if command -v sha1sum >/dev/null; then sha1sum; else shasum; fi | cut 
 i=0
 for SRC in "$@"; do
   i=$((i+1))
+  [ -f "$SRC" ] || case "$SRC" in   # links que sabemos que não funcionam: explica na hora, sem tentar (arquivos locais passam)
+    *dribbble.com*)
+      echo "❌ referência $i: links do Dribbble não são suportados (o site bloqueia download automático)."
+      echo "   Peça o arquivo: no navegador, botão direito no vídeo do shot → \"Salvar vídeo como…\" (ou uma gravação de tela)."
+      exit 2 ;;
+    *pinterest.*/pin/*|*pin.it/*) ;;   # pin de vídeo: ok
+    *pinterest.*)
+      echo "❌ referência $i: isto parece uma pasta/perfil do Pinterest. Mande o link de UM pin de vídeo (…/pin/…)."
+      exit 2 ;;
+  esac
   if [ -f "$SRC" ]; then   # arquivo local: caminho + tamanho + data (arquivo trocado com o mesmo nome = nova análise)
     SRC="$(cd "$(dirname "$SRC")" && pwd)/$(basename "$SRC")"
     KEY="$SRC|$(stat -c %s-%Y "$SRC" 2>/dev/null || stat -f %z-%m "$SRC")"
@@ -28,7 +39,10 @@ for SRC in "$@"; do
   printf '%s\n' "$SRC" > "$REF/source.txt"
 
   if ! python3 "$DIR/scripts/watch.py" "$SRC" --no-whisper --max-frames 24 --out-dir "$REF" > "$REF/report.md" 2> "$REF/watch.log"; then
-    echo "❌ referência $i falhou: $SRC"; tail -8 "$REF/watch.log"; exit 1
+    echo "❌ referência $i falhou: $SRC"; tail -8 "$REF/watch.log"
+    case "$SRC" in *pinterest.*|*pin.it/*)
+      grep -q "No video formats" "$REF/watch.log" && echo "   Este pin é uma imagem, não um vídeo. Só pins de VÍDEO funcionam como referência." ;; esac
+    exit 1
   fi
   N=$(ls "$REF"/frames/frame_*.jpg 2>/dev/null | wc -l | tr -d ' ')
   [ "$N" -gt 0 ] || { echo "❌ referência $i: nenhum quadro extraído ($SRC)"; tail -8 "$REF/watch.log"; exit 1; }

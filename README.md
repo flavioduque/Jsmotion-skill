@@ -29,7 +29,7 @@ Funciona no **Claude**, **Codex**, **Gemini CLI**, **Hermes Agent**, **OpenClaw*
 
 <br><br>
 
-**[⚡ Instalar](#-instalar-em-1-minuto)** · **[🤖 Outros agentes](#-em-qualquer-agente)** · **[🎥 Como funciona](#-como-funciona)** · **[✨ Recursos](#-o-que-deixa-o-vídeo-com-cara-de-estúdio)** · **[🧠 Por dentro](#-por-dentro-do-motor)** · **[❓ FAQ](#-faq)**
+**[⚡ Instalar](#-instalar-em-1-minuto)** · **[🤖 Outros agentes](#-em-qualquer-agente)** · **[🎞️ Referências](#️-referências-aceitas)** · **[🎥 Como funciona](#-como-funciona)** · **[✨ Recursos](#-o-que-deixa-o-vídeo-com-cara-de-estúdio)** · **[🧠 Por dentro](#-por-dentro-do-motor)** · **[❓ FAQ](#-faq)**
 
 </div>
 
@@ -255,6 +255,31 @@ Também funciona sem dizer "jsmotion": *"faz um vídeo animado da minha empresa 
 
 ---
 
+## 🎞️ Referências aceitas
+
+Mande um vídeo de referência e a skill copia o **estilo** dele (paleta, tipografia, ritmo, transições). Pode ser
+arquivo ou link:
+
+| Fonte | Aceita? | Observação |
+|---|:---:|---|
+| **Arquivo** MP4, MOV, WEBM, MKV | ✅ | o caminho mais garantido: funciona em qualquer ambiente |
+| **YouTube** (vídeos e Shorts) | ✅ | em servidores na nuvem o YouTube costuma bloquear o download (erro 403); aí mande o arquivo |
+| **Instagram** (Reels, posts) | ✅ | posts públicos; conteúdo privado ou que exige login falha |
+| **TikTok** | ✅ | vídeos públicos |
+| **Pinterest — pin de vídeo** | ✅ | link de **um pin** (`pinterest.com/pin/…` ou `pin.it/…`) |
+| **Pinterest — pin de imagem** | ❌ | a análise precisa de movimento; a skill avisa que o pin é imagem |
+| **Pinterest — pasta/perfil** | ❌ | mande o link de um pin de vídeo específico |
+| **Dribbble** | ❌ | **não suportado**: o site bloqueia download automático (anti-robô) e a API só mostra os shots do próprio dono. Salve o vídeo (botão direito no vídeo do shot → *Salvar vídeo como…*) ou grave a tela, e mande o **arquivo** |
+| **Vimeo, X/Twitter, Facebook, LinkedIn** | ✅ | vídeos públicos |
+| **Link direto** para `.mp4` | ✅ | qualquer site |
+
+- **Várias referências:** pode mandar várias de uma vez, ou trocar no meio da conversa. Cada uma é analisada **do
+  zero, na própria pasta**, e o Claude mostra fonte, formato e duração para você conferir que é o vídeo certo.
+- **Links recusados:** Dribbble e pasta do Pinterest são recusados na hora, com a explicação. Links que falham no
+  download (privado, login, bloqueio) fazem o Claude pedir o arquivo, **nunca** usar outra referência no lugar.
+
+---
+
 ## 🎥 Como funciona
 
 ```mermaid
@@ -270,7 +295,7 @@ flowchart LR
 <details open>
 <summary><b>1 · Estuda antes de perguntar</b></summary>
 
-- **Vídeo de referência (arquivo ou link):** usa a skill [watch](https://github.com/taoufik123-collab/claude-watch) para extrair quadros e montar uma folha de contato. Aceita MP4/MOV/WEBM ou link do YouTube, Instagram, TikTok, Vimeo, X ou link direto `.mp4`. Cada referência é analisada **do zero, na própria pasta**, e o Claude confere se o vídeo analisado é o que você mandou. Depois escreve um `estilo.md` só dessa referência (paleta, tipografia, ritmo, transições), que guia o vídeo novo, e na revisão compara o resultado lado a lado com ela.
+- **Vídeo de referência (arquivo ou link):** usa a skill [watch](https://github.com/taoufik123-collab/claude-watch) para extrair quadros e montar uma folha de contato. Aceita arquivo ou link (YouTube, Instagram, TikTok, pin de vídeo do Pinterest… — **Dribbble não**; ver [Referências aceitas](#️-referências-aceitas)). Cada referência é analisada **do zero, na própria pasta**, e o Claude confere se o vídeo analisado é o que você mandou. Depois escreve um `estilo.md` só dessa referência (paleta, tipografia, ritmo, transições), que guia o vídeo novo, e na revisão compara o resultado lado a lado com ela.
 - **Site da marca:** baixa HTML + JS/CSS, ranqueia as **cores mais usadas**, pega o título e **baixa imagens e vídeos** — inclusive de sites SPA (React/Vite), onde a mídia fica dentro do bundle.
 - **Logo:** usa o arquivo **original**. Nunca redesenha — só recorta a margem transparente e redimensiona.
 </details>
@@ -508,8 +533,9 @@ Não existe arquivo de música: a trilha é **sintetizada por código** (Web Aud
 <details>
 <summary><b>Posso mandar a referência por link, ou só MP4?</b></summary>
 
-Os dois. Arquivo (MP4, MOV, WEBM…) ou link do **YouTube, Instagram, TikTok, Vimeo, X, Facebook** ou link direto
-`.mp4`, baixado pelo `yt-dlp`. Pode mandar **várias referências** e trocar de referência no meio da conversa: cada
+Os dois. Arquivo (MP4, MOV, WEBM…) ou link do **YouTube, Instagram, TikTok, Pinterest (pin de vídeo), Vimeo, X,
+Facebook** ou link direto `.mp4`, baixado pelo `yt-dlp`. **Dribbble não é suportado** (bloqueia download automático):
+salve o vídeo e mande o arquivo. A lista completa está em [Referências aceitas](#️-referências-aceitas). Pode mandar **várias referências** e trocar de referência no meio da conversa: cada
 uma é analisada do zero. Se um link falhar (vídeo privado, exige login, ou o site bloqueia o download no ambiente do
 Claude, como o YouTube costuma fazer em servidores), o Claude avisa e pede o arquivo, em vez de usar outra referência.
 </details>

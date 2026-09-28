@@ -28,7 +28,7 @@ Works with **Claude**, **Codex**, **Gemini CLI**, **Hermes Agent**, **OpenClaw**
 
 <br><br>
 
-**[⚡ Install](#-install-in-1-minute)** · **[🤖 Other agents](#-any-agent)** · **[🎥 How it works](#-how-it-works)** · **[✨ Features](#-what-makes-it-look-studio-made)** · **[🧠 Under the hood](#-under-the-hood)** · **[❓ FAQ](#-faq)**
+**[⚡ Install](#-install-in-1-minute)** · **[🤖 Other agents](#-any-agent)** · **[🎞️ References](#️-supported-references)** · **[🎥 How it works](#-how-it-works)** · **[✨ Features](#-what-makes-it-look-studio-made)** · **[🧠 Under the hood](#-under-the-hood)** · **[❓ FAQ](#-faq)**
 
 </div>
 
@@ -257,6 +257,31 @@ It also works without saying "jsmotion": *"make an animated video of my company 
 
 ---
 
+## 🎞️ Supported references
+
+Send a reference video and the skill copies its **style** (palette, typography, pacing, transitions). It can be a
+file or a link:
+
+| Source | Supported? | Notes |
+|---|:---:|---|
+| **File** MP4, MOV, WEBM, MKV | ✅ | the most reliable option: works in any environment |
+| **YouTube** (videos and Shorts) | ✅ | YouTube often blocks downloads from cloud servers (403 error); then send the file |
+| **Instagram** (Reels, posts) | ✅ | public posts; private or login-only content fails |
+| **TikTok** | ✅ | public videos |
+| **Pinterest — video pin** | ✅ | link to **one pin** (`pinterest.com/pin/…` or `pin.it/…`) |
+| **Pinterest — image pin** | ❌ | the analysis needs motion; the skill tells you the pin is an image |
+| **Pinterest — board/profile** | ❌ | send the link to one specific video pin |
+| **Dribbble** | ❌ | **not supported**: the site blocks automated downloads (anti-bot) and its API only shows the owner's own shots. Save the video (right-click the shot's video → *Save video as…*) or record your screen, and send the **file** |
+| **Vimeo, X/Twitter, Facebook, LinkedIn** | ✅ | public videos |
+| **Direct link** to an `.mp4` | ✅ | any site |
+
+- **Multiple references:** send several at once, or switch mid-conversation. Each one is analyzed **from scratch,
+  in its own folder**, and Claude shows the source, format and duration so you can check it's the right video.
+- **Rejected links:** Dribbble and Pinterest board links are rejected right away, with an explanation. Links that
+  fail to download (private, login, blocked) make Claude ask for the file, **never** use another reference instead.
+
+---
+
 ## 🎥 How it works
 
 ```mermaid
@@ -272,7 +297,7 @@ flowchart LR
 <details open>
 <summary><b>1 · Research before asking</b></summary>
 
-- **Reference video (file or link):** uses the [watch](https://github.com/taoufik123-collab/claude-watch) skill to extract frames into a contact sheet. Accepts MP4/MOV/WEBM or a YouTube, Instagram, TikTok, Vimeo, X or direct `.mp4` link. Each reference is analyzed **from scratch, in its own folder**, and Claude checks that the analyzed video is the one you sent. Then it writes a `estilo.md` style brief for that reference only (palette, typography, pacing, transitions), which drives the new video, and compares the result side by side with it during review.
+- **Reference video (file or link):** uses the [watch](https://github.com/taoufik123-collab/claude-watch) skill to extract frames into a contact sheet. Accepts a file or a link (YouTube, Instagram, TikTok, Pinterest video pin… — **not Dribbble**; see [Supported references](#️-supported-references)). Each reference is analyzed **from scratch, in its own folder**, and Claude checks that the analyzed video is the one you sent. Then it writes a `estilo.md` style brief for that reference only (palette, typography, pacing, transitions), which drives the new video, and compares the result side by side with it during review.
 - **Brand website:** downloads HTML + JS/CSS, ranks the **most-used colors**, grabs the title and **downloads images and videos** — even from SPA sites (React/Vite), where media lives inside the bundle.
 - **Logo:** uses the **original** file. Never redraws it — only trims transparent margins and resizes.
 </details>
@@ -510,8 +535,9 @@ There's no music file: the soundtrack is **synthesized in code** (Web Audio API)
 <details>
 <summary><b>Can I send the reference as a link, or only an MP4?</b></summary>
 
-Both. A file (MP4, MOV, WEBM…) or a **YouTube, Instagram, TikTok, Vimeo, X, Facebook** or direct `.mp4` link,
-downloaded with `yt-dlp`. You can send **several references** and switch references mid-conversation: each one is
+Both. A file (MP4, MOV, WEBM…) or a **YouTube, Instagram, TikTok, Pinterest (video pin), Vimeo, X, Facebook** or
+direct `.mp4` link, downloaded with `yt-dlp`. **Dribbble is not supported** (it blocks automated downloads): save the
+video and send the file. The full list is in [Supported references](#️-supported-references). You can send **several references** and switch references mid-conversation: each one is
 analyzed from scratch. If a link fails (private video, login required, or the site blocks downloads from Claude's
 environment, as YouTube often does on servers), Claude tells you and asks for the file instead of using another reference.
 </details>

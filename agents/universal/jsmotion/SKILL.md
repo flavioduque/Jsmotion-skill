@@ -74,7 +74,10 @@ Use sempre `$WORK` e `$OUT` — nunca caminhos fixos. Se o Chromium já existir,
 
 Faça tudo o que for possível sozinho, para perguntar menos:
 
-1. **Vídeo(s) de referência** — arquivo anexado **ou link** (YouTube, Instagram, TikTok, Vimeo, X, link direto .mp4):
+1. **Vídeo(s) de referência** — arquivo anexado **ou link** (YouTube, Instagram, TikTok, **Pinterest — só pin de vídeo**,
+   Vimeo, X, link direto .mp4). **Não funcionam:** links do **Dribbble** (bloqueia download automático) e **pastas ou
+   pins de imagem do Pinterest** — peça o arquivo do vídeo (no Dribbble: botão direito no vídeo → "Salvar vídeo como…")
+   ou o link de um pin de vídeo. O script já recusa esses links com a explicação.
    `bash $SK/scripts/watch_reference.sh "<arquivo-ou-link>"` (várias referências: passe todas no mesmo comando).
    - Confira a linha `✅ referência: … · formato · duração`: **tem que ser o vídeo que o usuário mandou agora**.
      Se não bater, pare e investigue.
