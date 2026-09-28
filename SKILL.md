@@ -37,6 +37,7 @@ Arquivos da skill (caminho = pasta desta SKILL.md, abaixo `$SK`):
 - `references/engine.md` — anatomia do motor (render(t), faísca, textos, transições, som)
 - `references/direcao-de-arte.md` — **como o estilo nasce da análise** (leia sempre, antes do Passo 2)
 - `references/kit.md` — tokens do `STYLE`, cenas prontas, cenas próprias e o **padrão de qualidade**
+- `references/copy.md` — **copy para postagem** (legenda por rede, gancho, CTA, hashtags, emojis ou não)
 
 ---
 
@@ -120,7 +121,7 @@ Prepare 3 direções para a pergunta de estilo do Passo 2. Com referência, a 1�
 com a identidade da marca; as outras duas são variações dela (ex.: mais calma / mais enérgica), nunca estilos
 desligados da referência. Sem referência, 3 direções diferentes geradas pela análise.
 
-## Passo 2 — Perguntas (no máximo 7, UMA por vez)
+## Passo 2 — Perguntas (no máximo 8, UMA por vez)
 
 Use a ferramenta de opções tocáveis (`ask_user_input_v0`) quando existir; senão, texto numerado.
 Cada pergunta: 3 opções numeradas + "Não sei, escolha por mim" + **sua recomendação** no enunciado.
@@ -128,7 +129,7 @@ Pule a pergunta se a resposta já estiver clara na conversa. "Não sei" → esco
 Cores: não pergunte se já tirou do site/logo — mas **mostre** a paleta (hex + origem) no resumo do Passo 1; só
 pergunte se não houver nenhuma fonte ou se a logo for só preto/branco.
 
-1. **Onde vai postar (formatos)** — 1. **Pacote completo: 9:16 + 1:1 + 16:9** (Reels/TikTok + feed/LinkedIn + YouTube/site, tudo do mesmo vídeo) · 2. Só vertical 9:16 · 3. Outro formato ou combinação (4:5, 1:1, 16:9). Recomende o pacote (padrão); se ele citar um destino só, recomende o formato dele. O formato **principal** (o primeiro) é o que você revisa com mais cuidado.
+1. **É para redes sociais? Onde vai postar (formatos)** — 1. **Pacote completo: 9:16 + 1:1 + 16:9** (Reels/TikTok + feed/LinkedIn + YouTube/site, tudo do mesmo vídeo) · 2. Só vertical 9:16 (Reels/TikTok/Shorts) · 3. Outro formato ou combinação (4:5, 1:1, 16:9 — ex.: site, apresentação, TV). Guarde **em quais redes** ele vai postar (vale para a pergunta 8). Recomende o pacote (padrão); se ele citar um destino só, recomende o formato dele. O formato **principal** (o primeiro) é o que você revisa com mais cuidado.
 2. **Duração** — ofereça 3 opções coerentes com o formato (ex.: 15s · 25s · 40s) e diga que ele pode **digitar qualquer duração** (aceite de 6s a 90s). Padrão 25s. Diga quanto conteúdo cabe em cada uma.
 3. **Direção de arte** — as 3 direções que você criou no Passo 1B (nome + paleta + fontes + conceito em 1 frase),
    a 1ª recomendada. **Com referência, a 1ª é sempre "fiel à referência, com a sua marca"** e o usuário não precisa
@@ -139,6 +140,11 @@ pergunte se não houver nenhuma fonte ou se a logo for só preto/branco.
 6. **Som** — 3 climas coerentes com a direção (premium · energético · calmo · épico · minimalista), recomendando o que
    combina com o tom.
 7. **Chamada final** (logo + CTA por 2,5s) — 3 frases; recomende a que "fecha" o gancho.
+8. **Copy para postar** (só se o vídeo for para redes sociais) — "Quer que eu entregue também a legenda pronta
+   para postar (gancho, texto, chamada e hashtags, uma versão por rede)?" · 1. **Sim, com emojis** · 2. Sim, sem
+   emojis · 3. Não precisa. Recomende pelo tom da marca: com emojis para varejo, serviços, lifestyle, Reels/TikTok;
+   sem emojis para LinkedIn, saúde, jurídico, finanças, luxo. Se ele já pediu a copy mas não falou de emojis,
+   pergunte só "com ou sem emojis?".
 
 ## Passo 3 — Roteiro e aprovação
 
@@ -211,5 +217,11 @@ Na resposta, em linguagem simples:
 - qual arquivo usar em cada rede (9:16 → Reels/TikTok/Shorts/Stories · 1:1 ou 4:5 → feed/LinkedIn · 16:9 → YouTube/site);
 - o .html é reserva: **baixar o arquivo → abrir no Google Chrome do computador → clicar em "Baixar MP4" → esperar a duração do vídeo sem trocar de aba**;
 - **3 sugestões de melhoria** concretas.
+
+**Copy (se ele pediu na pergunta 8):** escreva seguindo `references/copy.md` — uma versão por rede que ele vai
+usar, gancho de impacto na 1ª linha, frases e números REAIS da marca (`$WORK/site/textos.md`), a mesma chamada do
+vídeo, hashtags certas e emojis exatamente como ele escolheu (com ou sem). Salve em `$OUT/<nome>_copy.md`, entregue
+junto com os arquivos e **cole também na resposta**, em blocos prontos para copiar (Instagram, TikTok, LinkedIn…),
+mais 2 variações de gancho e o texto da capa do Reels.
 
 Se não for possível renderizar aqui (sem Chromium/ffmpeg), entregue só o .html com essas instruções.
