@@ -82,9 +82,21 @@ Use sempre `$WORK` e `$OUT` — nunca caminhos fixos. Se o Chromium já existir,
 
 Faça tudo o que for possível sozinho, para perguntar menos:
 
-1. **Vídeo de referência** (anexado ou link): `bash $SK/scripts/watch_reference.sh "<arquivo-ou-url>"`
-   e abra `$WORK/ref/sheet.jpg` com a ferramenta de imagem. Anote: paleta, ritmo, como o texto entra,
-   que elemento acompanha o vídeo, tipo de transição, se usa telas/UI flutuando.
+1. **Vídeo(s) de referência** — arquivo anexado **ou link** (YouTube, Instagram, TikTok, Vimeo, X, link direto .mp4):
+   `bash $SK/scripts/watch_reference.sh "<arquivo-ou-link>"` (várias referências: passe todas no mesmo comando).
+   - Confira a linha `✅ referência: … · formato · duração`: **tem que ser o vídeo que o usuário mandou agora**.
+     Se não bater, pare e investigue.
+   - Cada referência tem a própria pasta (`$WORK/refs/<id>`, sempre do zero); `$WORK/ref` aponta para a última.
+     **Nunca reaproveite análise, folha, estilo ou código de uma referência anterior** — nem desta conversa, nem de
+     outra, nem do exemplo da skill. Nova referência no meio da conversa → rode de novo e refaça o `estilo.md`.
+   - Link falhou (bloqueio 403, login, vídeo privado, rede do ambiente)? Diga ao usuário e peça o **arquivo MP4**
+     (ou outro link). Não continue com outra referência no lugar.
+
+   Abra `$WORK/ref/sheet.jpg` com a ferramenta de imagem e escreva **`$WORK/ref/estilo.md`** — o briefing de estilo DESTA referência:
+   paleta (hex aproximados), fundo (claro/escuro, textura, luzes), tipografia (serifa ou não, peso, caixa alta),
+   como o texto entra, ritmo (trocas por segundo), transições, elemento condutor (se houver), composição/layout,
+   uso de fotos/vídeo/telas de UI, clima do som. Sem referência: escreva o `estilo.md` a partir da marca e das
+   respostas do Passo 2.
 2. **Site da marca** (se houver): `python3 $SK/scripts/scrape_site.py https://site` (salva em `$WORK/site`).
    Monte folhas de contato das imagens e 1 quadro de cada vídeo (`ffmpeg -ss 3 ... -frames:v 1`,
    depois `tile`) e veja com a ferramenta de imagem. Extraia: cores principais, nomes de serviços/projetos, frases.
@@ -120,7 +132,13 @@ promessa ~12% · final logo+CTA **2,5s fixos**. Menos de 15s: junte virada+conte
 
 ## Passo 4 — Construção
 
-1. Leia `references/engine.md` e `references/formats.md`.
+1. Leia `references/engine.md`, `references/formats.md` e o `$WORK/ref/estilo.md`.
+
+   **O exemplo é o motor, não o estilo.** O `example_anim.js` foi feito para uma marca (Constructiva: roxo neon,
+   faísca, cubo, janelas de vidro, chão em grade). Reaproveite as **funções** (palco `blk`, `word`, linha do tempo,
+   som), mas o **visual vem do `estilo.md`**: troque paleta `C`, fundo (`drawBackground`, `drawGrid`), fonte,
+   elemento condutor (`drawSpark` — outra forma, ou nenhum se a referência não tiver), transições (`transitions`),
+   molduras (`glassFrame`) e a composição das cenas. Se o resultado parecer o exemplo com outras cores, está errado.
 2. `cp $SK/templates/example_anim.js $WORK/anim.js` e adapte:
    - **Não mude `W, H`**: o formato vem de `window.FORMAT` (o `--format` do build/pack). Desenhe as cenas no
      espaço 1080×1920 e envolva cada bloco com `blk(ctx,'media'|'text'|'center', y, opções, ()=>{…})` — é isso que
@@ -151,6 +169,9 @@ promessa ~12% · final logo+CTA **2,5s fixos**. Menos de 15s: junte virada+conte
 python3 $SK/scripts/snap.py $OUT/<nome>_9x16.html 0.5 1.5 2.5 ... -o $WORK/review_9x16.jpg   # 15–18 instantes, incluindo meios de transição
 python3 $SK/scripts/snap.py $OUT/<nome>_16x9.html <8–10 instantes> -o $WORK/review_16x9.jpg     # e um pouco de cada outro formato
 ```
+Compare com a referência atual: `python3 $SK/scripts/snap.py $OUT/<nome>_9x16.html <instantes> --ref $WORK/ref/sheet.jpg -o $WORK/compare.jpg`
+(folha da referência em cima, a do seu vídeo embaixo). Paleta, tipografia, ritmo e transições precisam lembrar
+**esta** referência; se lembrarem o exemplo da skill ou uma referência anterior, refaça.
 Abra as folhas com a ferramenta de imagem. No formato principal, revise tudo; nos outros, confira principalmente as cenas com
 texto longo (no 16:9 o texto fica numa coluna à direita; no 1:1 tudo fica menor). Procure: texto de uma cena vazando para outra, palavras
 sobrepostas nas trocas, texto perto da borda, elementos cortados, logo alterada, faísca cobrindo texto,

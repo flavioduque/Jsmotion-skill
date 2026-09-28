@@ -270,7 +270,7 @@ flowchart LR
 <details open>
 <summary><b>1 · Estuda antes de perguntar</b></summary>
 
-- **Vídeo de referência:** usa a skill [watch](https://github.com/taoufik123-collab/claude-watch) para extrair quadros e montar uma folha de contato. Anota paleta, ritmo, como o texto entra, transições e o elemento que conduz o vídeo.
+- **Vídeo de referência (arquivo ou link):** usa a skill [watch](https://github.com/taoufik123-collab/claude-watch) para extrair quadros e montar uma folha de contato. Aceita MP4/MOV/WEBM ou link do YouTube, Instagram, TikTok, Vimeo, X ou link direto `.mp4`. Cada referência é analisada **do zero, na própria pasta**, e o Claude confere se o vídeo analisado é o que você mandou. Depois escreve um `estilo.md` só dessa referência (paleta, tipografia, ritmo, transições), que guia o vídeo novo, e na revisão compara o resultado lado a lado com ela.
 - **Site da marca:** baixa HTML + JS/CSS, ranqueia as **cores mais usadas**, pega o título e **baixa imagens e vídeos** — inclusive de sites SPA (React/Vite), onde a mídia fica dentro do bundle.
 - **Logo:** usa o arquivo **original**. Nunca redesenha — só recorta a margem transparente e redimensiona.
 </details>
@@ -503,6 +503,15 @@ Sim. A conversa acontece no seu idioma e os textos do vídeo saem no idioma que 
 <summary><b>A música tem direitos autorais?</b></summary>
 
 Não existe arquivo de música: a trilha é **sintetizada por código** (Web Audio API) a cada vídeo.
+</details>
+
+<details>
+<summary><b>Posso mandar a referência por link, ou só MP4?</b></summary>
+
+Os dois. Arquivo (MP4, MOV, WEBM…) ou link do **YouTube, Instagram, TikTok, Vimeo, X, Facebook** ou link direto
+`.mp4`, baixado pelo `yt-dlp`. Pode mandar **várias referências** e trocar de referência no meio da conversa: cada
+uma é analisada do zero. Se um link falhar (vídeo privado, exige login, ou o site bloqueia o download no ambiente do
+Claude, como o YouTube costuma fazer em servidores), o Claude avisa e pede o arquivo, em vez de usar outra referência.
 </details>
 
 <details>

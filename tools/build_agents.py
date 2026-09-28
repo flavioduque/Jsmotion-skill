@@ -107,7 +107,7 @@ AGENTS = {
 SWAPS = [
     ("Arquivos da skill (caminho = pasta desta SKILL.md, abaixo `$SK`):",
      "Arquivos da skill (abaixo `$SK` — ver \"Neste agente\"):"),
-    ("e use `view` em `$WORK/ref/sheet.jpg`.", "e abra `$WORK/ref/sheet.jpg` com a ferramenta de imagem."),
+    ("Veja `$WORK/ref/sheet.jpg` com `view` e escreva", "Abra `$WORK/ref/sheet.jpg` com a ferramenta de imagem e escreva"),
     ("e veja com `view`.", "e veja com a ferramenta de imagem."),
     ("Use a ferramenta de opções tocáveis (`ask_user_input_v0`) quando existir; senão, texto numerado.",
      "Use a ferramenta de perguntas com opções do seu agente (ver \"Ferramentas por agente\"); senão, texto numerado."),

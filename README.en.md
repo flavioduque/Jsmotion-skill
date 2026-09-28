@@ -272,7 +272,7 @@ flowchart LR
 <details open>
 <summary><b>1 · Research before asking</b></summary>
 
-- **Reference video:** uses the [watch](https://github.com/taoufik123-collab/claude-watch) skill to extract frames into a contact sheet. Notes the palette, pacing, how text enters, transitions and the element that guides the eye.
+- **Reference video (file or link):** uses the [watch](https://github.com/taoufik123-collab/claude-watch) skill to extract frames into a contact sheet. Accepts MP4/MOV/WEBM or a YouTube, Instagram, TikTok, Vimeo, X or direct `.mp4` link. Each reference is analyzed **from scratch, in its own folder**, and Claude checks that the analyzed video is the one you sent. Then it writes a `estilo.md` style brief for that reference only (palette, typography, pacing, transitions), which drives the new video, and compares the result side by side with it during review.
 - **Brand website:** downloads HTML + JS/CSS, ranks the **most-used colors**, grabs the title and **downloads images and videos** — even from SPA sites (React/Vite), where media lives inside the bundle.
 - **Logo:** uses the **original** file. Never redraws it — only trims transparent margins and resizes.
 </details>
@@ -505,6 +505,15 @@ Yes. The conversation happens in your language and the on-screen copy comes out 
 <summary><b>Is the music copyrighted?</b></summary>
 
 There's no music file: the soundtrack is **synthesized in code** (Web Audio API) for every video.
+</details>
+
+<details>
+<summary><b>Can I send the reference as a link, or only an MP4?</b></summary>
+
+Both. A file (MP4, MOV, WEBM…) or a **YouTube, Instagram, TikTok, Vimeo, X, Facebook** or direct `.mp4` link,
+downloaded with `yt-dlp`. You can send **several references** and switch references mid-conversation: each one is
+analyzed from scratch. If a link fails (private video, login required, or the site blocks downloads from Claude's
+environment, as YouTube often does on servers), Claude tells you and asks for the file instead of using another reference.
 </details>
 
 <details>
