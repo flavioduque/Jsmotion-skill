@@ -29,8 +29,9 @@ Arquivos da skill (abaixo `$SK` — ver "Neste agente"):
 - `scripts/paths.sh` — define `$WORK` (trabalho) e `$OUT` (entregas); ver Passo 0
 - `scripts/install_watch.sh` — instala a skill watch + yt-dlp, ffmpeg, playwright, brotli
 - `scripts/watch_reference.sh` — assiste o vídeo de referência e gera folha de contato
-- `scripts/scrape_site.py` — cores, título e mídias (imagens/vídeos) do site
-- `scripts/prep_assets.py` — empacota logo/imagens/clipes/fonte em data URIs (`assets.js`)
+- `scripts/scrape_site.py` — cores, fontes, **textos de marketing** (títulos, frases, botões, preços, números) e mídias do site
+- `scripts/prep_assets.py` — empacota logo/imagens/clipes/fonte em data URIs (`assets.js`); logo sem transparência com
+  fundo liso tem o fundo removido sozinho
 - `scripts/build_html.py` — monta o .html único (shell + assets + animação); `--format` escolhe o formato
 - `scripts/snap.py` — fotos de instantes para revisão (`$WORK/review.jpg`, ou `-o arquivo.jpg`)
 - `scripts/render.py` — gera o MP4 (quadro a quadro, determinístico, com áudio masterizado em −14 LUFS)
@@ -122,10 +123,16 @@ Faça tudo o que for possível sozinho, para perguntar menos:
    Monte folhas de contato das imagens e 1 quadro de cada vídeo (`ffmpeg -ss 3 ... -frames:v 1`,
    depois `tile`) e veja com a ferramenta de imagem. Extraia: cores principais, **fontes da marca** (`fonts` no resultado), nomes de
    serviços/projetos, frases e o tom dos textos.
-   Se o site for SPA, os textos estão dentro do bundle JS: `grep -oE '"[^"]{3,80}"'` com palavras-chave.
+   **Leia `$WORK/site/textos.md`** antes de escrever o roteiro: meta-descrição, títulos, frases, listas, botões,
+   **preços** e **números de prova** do site — e, em sites SPA (React/Vite), os textos do bundle separados por idioma,
+   com os de marketing (hero, benefícios, planos, depoimentos) primeiro. Use as frases e números REAIS da marca no
+   vídeo (gancho, provas, preço, chamada), no idioma pedido; não invente preços, números nem depoimentos.
    **Separe as melhores fotos** (produto, ambiente, pessoa, resultado — ≥ 1080 px de largura): o vídeo profissional
    é feito de mídia real. Se não houver fotos boas, peça ao usuário (fotos do produto, renders, retrato, logo em PNG).
 3. **Logo**: use o arquivo ORIGINAL enviado (nunca redesenhe; só recorte margem transparente e redimensione).
+   Logo em JPG ou PNG com fundo branco/liso: o `prep_assets.py` remove esse fundo sozinho (só o que toca as bordas;
+   o branco dentro da logo fica). Miolos de letras com a cor do fundo: `{"src": "logo.jpg", "holes": true}`;
+   para manter o fundo: `{"src": "logo.jpg", "keep_bg": true}`. Confira o resultado na revisão.
 4. **Paleta explícita (sempre).** Sem site — ou se o site não trouxer cores claras da marca —, extraia da logo e dos
    materiais enviados: `python3 $SK/scripts/brand_palette.py logo.png [cartão.jpg post.png …]`. Ele separa cores de
    marca e neutros, propõe os papéis (fundo, texto, destaque, texto sobre o destaque) nas versões escura e clara, com

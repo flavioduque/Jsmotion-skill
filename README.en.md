@@ -298,8 +298,8 @@ flowchart LR
 <summary><b>1 · Research before asking</b></summary>
 
 - **Reference video (file or link):** uses the [watch](https://github.com/taoufik123-collab/claude-watch) skill to extract frames into a contact sheet. Accepts a file or a link (YouTube, Instagram, TikTok, Pinterest video pin… — **not Dribbble**; see [Supported references](#️-supported-references)). Each reference is analyzed **from scratch, in its own folder**, and Claude checks that the analyzed video is the one you sent. Its observations (palette, typography, pacing, transitions) feed the art direction, and during review the result is compared side by side with the reference.
-- **Brand website:** downloads HTML + JS/CSS, ranks the **most-used colors**, detects the **brand fonts**, grabs the title and **downloads images and videos** — even from SPA sites (React/Vite), where media lives inside the bundle.
-- **Logo:** uses the **original** file. Never redraws it — only trims transparent margins and resizes.
+- **Brand website:** downloads HTML + JS/CSS, ranks the **most-used colors**, detects the **brand fonts**, gathers the **marketing copy** (headlines, sentences, buttons, **prices** and **proof numbers**, into a `textos.md`) and **downloads images and videos** — even from SPA sites (React/Vite), where copy and media live inside the bundle (split by language, marketing first). The script uses the brand's real phrases and numbers.
+- **Logo:** uses the **original** file. Never redraws it — only trims transparent margins and resizes. Logo as a JPG or on a white background? The flat background is removed automatically (white inside the logo stays).
 - **No website?** Claude asks for the link first (site, Instagram, Linktree…). If there is none, it pulls the **palette from the logo itself** and any materials you send (`brand_palette.py`): brand colors vs. neutrals, background/text/accent roles with checked contrast and a swatch for you to approve — always with the hex and where each color came from.
 - **Art direction:** combines brand, topic, audience and reference into an `estilo.md` with concept, palette, fonts, motion, sound and topic metaphors. No predefined style.
 </details>
@@ -472,10 +472,10 @@ jsmotion/
 ├── scripts/
 │   ├── install_watch.sh     📦 installs the watch skill + yt-dlp, ffmpeg, Playwright, brotli (idempotent)
 │   ├── watch_reference.sh   👀 watches the reference video and builds a contact sheet
-│   ├── scrape_site.py       🌐 colors, fonts, title, images and videos from the site (SPA-friendly)
+│   ├── scrape_site.py       🌐 colors, fonts, marketing copy (headlines, prices, numbers), images and videos from the site (SPA-friendly)
 │   ├── brand_palette.py     🎨 brand palette from the logo (no website): roles, contrast and swatch
 │   ├── get_font.py          🔤 downloads any Google Fonts family for the art direction
-│   ├── prep_assets.py       🧳 logo, images, clips and font → data URIs (assets.js)
+│   ├── prep_assets.py       🧳 logo, images, clips and font → data URIs (assets.js); removes flat backgrounds from non-transparent logos
 │   ├── build_html.py        🧱 merges shell + assets + animation into one offline .html
 │   ├── snap.py              📸 review snapshots + console errors
 │   ├── render.py            🎬 frame-by-frame render + mastered audio (−14 LUFS) → MP4
