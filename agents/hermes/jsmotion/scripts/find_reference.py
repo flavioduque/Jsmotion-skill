@@ -2,7 +2,9 @@
 Use quando o usuário NÃO mandou um vídeo de referência: a skill escolhe uma boa referência sozinha.
 
 Uso:
-  python3 find_reference.py list   [--format 9x16|1x1|16x9|all] [--search texto] [--limit 40]
+  Só entram vídeos COM PROMPT e da categoria kinetic-type (tipografia cinética) — o mesmo filtro de
+  https://www.prompt-motion.com/?type=prompt&tag=kinetic-type. Outra categoria: --tag shapes (etc.).
+  python3 find_reference.py list   [--format 9x16|1x1|16x9|all] [--search texto] [--limit 40] [--tag kinetic-type]
   python3 find_reference.py sheet  [--format 9x16] [--search texto] [--limit 36]   → folha numerada de capas (veja e pré-selecione)
   python3 find_reference.py peek   slug1 slug2 slug3                                → baixa os vídeos, folha de quadros + prompt de cada um
   python3 find_reference.py get    slug                                             → caminho do vídeo baixado (passe ao watch_reference.sh)
@@ -21,7 +23,7 @@ args = sys.argv[1:]
 def opt(flag, default=None, cast=str):
     if flag in args: i = args.index(flag); v = args[i+1]; del args[i:i+2]; return cast(v)
     return default
-fmt = opt('--format', 'all'); search = (opt('--search') or '').lower(); limit = opt('--limit', 40, int)
+fmt = opt('--format', 'all'); tag = opt('--tag', 'kinetic-type'); search = (opt('--search') or '').lower(); limit = opt('--limit', 40, int)
 if not args or args[0] not in ('list', 'sheet', 'peek', 'get'): sys.exit(__doc__)
 cmd, rest = args[0], args[1:]
 
@@ -50,7 +52,8 @@ def catalog():
     json.dump(cards, open(cp, 'w')); return cards
 
 def pick(cards):
-    out = [c for c in cards if (fmt == 'all' or c['format'] == fmt) and 'skill' not in c.get('tags', [])]
+    out = [c for c in cards if (fmt == 'all' or c['format'] == fmt) and 'prompt' in c.get('tags', [])
+           and tag in c.get('contentTags', [])]
     if search: out = [c for c in out if search in (c['title'] + ' ' + c['handle']).lower()]
     return out[:limit]
 
