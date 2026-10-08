@@ -1,13 +1,21 @@
-"""Uso: python3 render.py pagina.html saida.mp4 [--lufs -14 | --no-norm]
+"""Uso: python3 render.py pagina.html saida.mp4 [--lufs -14 | --no-norm] [--draft] [--mb 4] [--shutter 0.5]
 Renderiza quadro a quadro (determinístico via render(t)) no Chromium headless + áudio do OfflineAudioContext -> MP4 H.264/AAC.
 O áudio é masterizado para -14 LUFS (padrão de Instagram, TikTok e YouTube) com pico real abaixo de -1,5 dBTP:
 ganho + limitador com superamostragem (192 kHz), ajustado em poucas iterações até bater o alvo.
+--draft: prévia rápida (metade da resolução, 15 fps) para aprovar ritmo e sincronia da voz antes do render final.
+--mb N: desfoque de movimento (N subquadros por quadro, obturador --shutter 0,5 quadro): mais cinematográfico, N× mais lento.
 CHROMIUM_PATH=/caminho/chrome usa um Chromium já instalado (evita "playwright install")."""
 import base64,subprocess,sys,time,os,shutil,json,re,tempfile
 from playwright.sync_api import sync_playwright
 args=sys.argv[1:]; lufs=-14.0; norm=True
 if '--no-norm' in args: norm=False; args.remove('--no-norm')
 if '--lufs' in args: i=args.index('--lufs'); lufs=float(args[i+1]); del args[i:i+2]
+draft='--draft' in args
+if draft: args.remove('--draft')
+mb,shutter=1,0.5
+if '--mb' in args: i=args.index('--mb'); mb=int(args[i+1]); del args[i:i+2]
+if '--shutter' in args: i=args.index('--shutter'); shutter=float(args[i+1]); del args[i:i+2]
+if draft: mb=1
 page,dst=args[0],args[1]; T0=time.time(); TP=-1.5
 tmp=tempfile.mkdtemp(prefix='jsmotion_render_')  # único por execução: renders em paralelo não se atropelam
 wav=os.path.join(tmp,'audio.wav')
@@ -40,11 +48,13 @@ with sync_playwright() as p:
     open(wav,'wb').write(base64.b64decode(pg.evaluate('getWav()')))
     if norm:
         nw=os.path.join(tmp,'audio_master.wav'); master(wav,nw); wav=nw
-    ff=subprocess.Popen(['ffmpeg','-loglevel','error','-y','-f','image2pipe','-framerate',str(FPS),'-c:v','mjpeg','-i','-','-i',wav,
-        '-c:v','libx264','-preset','slow','-crf','17','-pix_fmt','yuv420p','-profile:v','high','-c:a','aac','-b:a','192k',
+    step=2 if draft else 1; vf=['-vf','scale=iw/2:-2'] if draft else []
+    enc=['-preset','veryfast','-crf','26'] if draft else ['-preset','slow','-crf','17']
+    ff=subprocess.Popen(['ffmpeg','-loglevel','error','-y','-f','image2pipe','-framerate',str(FPS/step),'-c:v','mjpeg','-i','-','-i',wav,
+        *vf,'-c:v','libx264',*enc,'-pix_fmt','yuv420p','-profile:v','high','-c:a','aac','-b:a','192k',
         '-movflags','+faststart','-shortest',dst],stdin=subprocess.PIPE)
-    for f in range(round(DUR*FPS)):
-        d=pg.evaluate(f'renderFrame({f/FPS})'); ff.stdin.write(base64.b64decode(d.split(',')[1]))
+    for f in range(0,round(DUR*FPS),step):
+        d=pg.evaluate(f'renderFrameMB({f/FPS},{mb},{shutter})'); ff.stdin.write(base64.b64decode(d.split(',')[1]))
     ff.stdin.close(); ff.wait(); b.close()
 shutil.rmtree(tmp,ignore_errors=True)
 print(f'{dst} pronto em {round(time.time()-T0)}s')

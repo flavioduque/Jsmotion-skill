@@ -70,6 +70,12 @@ function runRealtime(record){
 $('rec').onclick=()=>runRealtime(true);
 $('play').onclick=()=>runRealtime(false);
 window.renderFrame=t=>{render(ctx,t);return cv.toDataURL('image/jpeg',0.93);};
+// desfoque de movimento: média de n subquadros dentro do "obturador" (fração do quadro) — render.py --mb n
+let ACC=null;
+window.renderFrameMB=(t,n,sh)=>{ if(n<=1) return renderFrame(t);
+  if(!ACC){ACC=document.createElement('canvas');ACC.width=W;ACC.height=H;} const a=ACC.getContext('2d');
+  for(let k=0;k<n;k++){ render(ctx,Math.max(0,t+((k+0.5)/n-0.5)*sh/FPS)); a.globalAlpha=1/(k+1); a.drawImage(cv,0,0); }
+  a.globalAlpha=1; return ACC.toDataURL('image/jpeg',0.93); };
 window.getWav=()=>wavB64(AUDIO_BUF);
 async function renderAudioBuffer(){
   const oac=new OfflineAudioContext(2,Math.ceil(48000*DUR),48000);

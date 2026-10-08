@@ -25,6 +25,11 @@ O kit anima, faz transições, contadores, som e os 4 formatos (9:16, 4:5, 1:1, 
 | `frame` | `{left, right, bottom, tint}` | moldura fixa (chaves de `ASSETS.logos`); em fundo claro as logos escurecem (`tint:'none'` desliga) |
 | `sound` | `{mood:'premium'/'energetic'/'calm'/'epic'/'minimal'/'none', bpm}` | trilha gerada |
 | `locale` | `es-PY`, `pt-BR`, `en-US`… | separador de milhar dos números |
+| `kinetic` | `{preset, size, upper, ghost, maxLines, breaks}` | texto palavra por palavra (vídeo narrado) — presets `blurIn` · `rise` · `pop` · `decode` · `type` · `stretch` |
+| `post` | `{bloom, radius, threshold, contrast, ca, caBase, sweep}` | pós-produção: brilho que vaza do que é claro, aberração cromática nos impactos, varredura de luz |
+| `hud` | `{label, rec, corners, grid, meta, right, color, alpha}` | interface fixa em fonte mono (código da cena, REC, cantos, grade); `hud:false` numa cena esconde |
+| `camera` | 0–0.08 | aproximação lenta e contínua em toda cena (`cam` por cena) |
+| `sound.duck` / `voice` / `wordTicks` | 0.25–0.4 / 1 / bool | trilha abaixa sob a voz · volume da voz · tique em cada palavra |
 
 Sobre foto, o texto fica sempre claro (a foto é escurecida embaixo), qualquer que seja a paleta.
 
@@ -43,6 +48,13 @@ Todas aceitam `dur`, `eyebrow`, `photo` (chave de `ASSETS.photos`), `kb:'in'|'ou
 | `price` | preço animado + condições | `label`, `prefix`, `from`, `value`, `rows:[[rótulo, valor]]` |
 | `person` | a pessoa da marca | `photo` (retrato), `title`, `hl` |
 | `cta` | final com botão de contato | `logo`, `title`, `hl`, `button`, `icon:'phone'`, `small` |
+| `fala` | **narrado:** o trecho da narração entrando palavra por palavra | `mark`, `preset`, `size`, `y`, `photo`, `ghost`, `breaks` (ou `text` sem voz) |
+| `gigante` | **narrado:** a palavra-chave em tela cheia, com subida de som e impacto | `mark`, `word`, `upper` |
+| `caixa` | **narrado:** campo de pedido/busca sendo digitado | `mark`, `text`, `from`, `to`, `label` |
+| `contador` | **narrado:** anel + número subindo | `mark`, `value`, `prefix`, `suffix`, `label`, `countAt` |
+
+Toda cena aceita `mark:'nome'` (vídeo narrado): começa no marcador `[nome]` da narração e dura até a próxima cena
+marcada; recebe `s.words` (palavras do trecho, tempo local). Detalhes em `references/narrado.md`.
 
 ## Cenas próprias (as metáforas do tema)
 
@@ -59,7 +71,8 @@ SC.contrato = (ctx, s, lt) => {                 // ex.: curso imobiliário — f
 };
 // no SCRIPT: {type:'contrato', dur:3}
 ```
-Helpers: `T(ctx, yFração, fn)` (bloco de texto no espaço de 1080 de largura), `line`, `eyebrow`, `para`, `stamp`,
+Helpers: `T(ctx, yFração, fn)` (bloco de texto no espaço de 1080 de largura), `Tc` (bloco centralizado em todo formato),
+`kwords(ctx, words, lt, o)` (tipografia cinética), `at('marcador', k)` (instante de uma palavra), `fMono` (fonte do HUD), `line`, `eyebrow`, `para`, `stamp`,
 `photoBg`, `bgFill`, `card`, `rr` (retângulo arredondado), `count(s, lt, t0, t1)` (contador), `fmtNum`, `inv`/`eOut`/`eIO`/`eBack`
 (tempo e easing), `C` (cores), `INK`/`SOFT` (cor de texto da cena), `SP` (ritmo), `LEFT`/`AX`/`AL` (alinhamento).
 

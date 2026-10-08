@@ -1,0 +1,7 @@
+# Exemplo de narração (voice.py). [marcador] = começo de cena · *palavra* = destaque
+[abertura] E se eu te dissesse que dá pra criar um *motion* desse nível
+[pedido] só descrevendo o que você quer?
+[virada] Sem *After Effects*. Sem timeline. Sem keyframe na mão.
+[numero] Em *quinze* segundos de vídeo,
+[gigante] é bem *ABSURDO*.
+[final] Comenta *MOTION* que eu te mando a skill.

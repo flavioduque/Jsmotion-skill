@@ -1,4 +1,5 @@
 """Uso: python3 pack.py anim.js assets.js nome "Título" [--formats 9x16,1x1,16x9] [--jobs N] [--out PASTA] [--html-only]
+                     [--draft] [--mb N]   (repassados ao render.py: prévia rápida · desfoque de movimento)
 Pacote multiformato: monta um .html por formato (nome_9x16.html, nome_1x1.html, ...) e renderiza os MP4
 em paralelo (nome_9x16.mp4, ...). Formatos: 9x16 · 4x5 · 1x1 · 16x9. Pasta padrão: $OUT.
 --html-only só monta os .html (para revisar com snap.py antes de renderizar)."""
@@ -14,6 +15,9 @@ formats = opt('--formats', '9x16,1x1,16x9').split(',')
 out = opt('--out', None) or outdir()
 html_only = '--html-only' in args
 if html_only: args.remove('--html-only')
+extra=[]
+if '--draft' in args: args.remove('--draft'); extra.append('--draft')
+if '--mb' in args: i=args.index('--mb'); extra+=['--mb',args[i+1]]; del args[i:i+2]
 anim, assets, name, title = args[:4]
 ok = {'9x16', '4x5', '1x1', '16x9'}
 bad = [f for f in formats if f not in ok]
@@ -30,8 +34,8 @@ for f in formats:
 if html_only: sys.exit(0)
 
 def render(f):
-    t = time.time(); mp4 = os.path.join(out, f'{name}_{f}.mp4')
-    r = subprocess.run([sys.executable, os.path.join(here, 'render.py'), pages[f], mp4], capture_output=True, text=True)
+    t = time.time(); mp4 = os.path.join(out, f'{name}_{f}' + ('_previa' if '--draft' in extra else '') + '.mp4')
+    r = subprocess.run([sys.executable, os.path.join(here, 'render.py'), pages[f], mp4, *extra], capture_output=True, text=True)
     vol = next((l for l in r.stdout.splitlines() if l.startswith('volume:')), '')
     return f, mp4, r.returncode, round(time.time() - t), vol, r.stderr[-400:]
 
