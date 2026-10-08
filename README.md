@@ -258,7 +258,12 @@ Também funciona sem dizer "jsmotion": *"faz um vídeo animado da minha empresa 
 ## 🎞️ Referências aceitas
 
 Mande um vídeo de referência e a skill copia o **estilo** dele (paleta, tipografia, ritmo, transições). Pode ser
-arquivo ou link:
+arquivo ou link.
+
+**Não tem referência?** A skill escolhe uma sozinha no [prompt-motion.com](https://www.prompt-motion.com), uma galeria de
+vídeos de motion feitos com Claude, com o prompt de cada um. Ela vê as capas no formato do seu vídeo, assiste aos
+quadros dos melhores candidatos, escolhe a referência que combina com a sua marca e te mostra mais 2 alternativas como
+opções de direção de arte. Os vídeos são dos criadores e servem só como referência de estilo.
 
 | Fonte | Aceita? | Observação |
 |---|:---:|---|
@@ -510,6 +515,7 @@ jsmotion/
 ├── scripts/
 │   ├── install_watch.sh     📦 instala a skill watch + yt-dlp, ffmpeg, Playwright, brotli (idempotente)
 │   ├── watch_reference.sh   👀 assiste o vídeo de referência e monta a folha de contato
+│   ├── find_reference.py    🔎 sem referência? escolhe uma sozinho no prompt-motion.com (capas → quadros → download)
 │   ├── scrape_site.py       🌐 cores, fontes, textos de marketing (títulos, preços, números), imagens e vídeos do site (funciona com SPA)
 │   ├── brand_palette.py     🎨 paleta da marca a partir da logo (sem site): papéis, contraste e amostra
 │   ├── get_font.py          🔤 baixa qualquer família do Google Fonts para a direção de arte
