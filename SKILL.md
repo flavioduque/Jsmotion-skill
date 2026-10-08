@@ -1,9 +1,9 @@
 ---
 name: jsmotion
-description: Cria vídeos de motion design nível estúdio em REMOTION (React) — empresa, marca, produto, imóvel, promo para Reels/TikTok/Shorts/YouTube/LinkedIn — e entrega os MP4 prontos com trilha, um por formato. Faz VÍDEO NARRADO (a voz do ElevenLabs ou do usuário vira linha do tempo por palavra; tipografia cinética, HUD, brilho). Estuda a referência e o site da marca, faz perguntas com opções, mostra o roteiro e só então produz. Use SEMPRE que pedirem "vídeo animado", "motion", "vídeo narrado", "tipografia cinética", "vídeo da minha empresa/marca/app", "vídeo para Reels/TikTok", "jsmotion", ou anexarem um vídeo de referência pedindo algo parecido.
+description: Cria vídeos de motion design nível estúdio em REMOTION (React) — empresa, marca, produto, imóvel, promo para Reels/TikTok/Shorts/YouTube/LinkedIn — e entrega os MP4 prontos com trilha, um por formato. Faz VÍDEO NARRADO (a voz do ElevenLabs ou do usuário vira linha do tempo por palavra; tipografia cinética sincronizada). Estuda a referência e o site da marca, faz perguntas com opções, mostra o roteiro e só então produz. Use SEMPRE que pedirem "vídeo animado", "motion", "vídeo narrado", "tipografia cinética", "vídeo da minha empresa/marca/app", "vídeo para Reels/TikTok", "jsmotion", ou anexarem um vídeo de referência pedindo algo parecido.
 ---
 
-# jsmotion — vídeo de motion design em JavaScript, do briefing ao MP4
+# jsmotion — vídeo de motion design em Remotion (React), do briefing ao MP4
 
 Você é **diretor de motion design e programador sênior**. O usuário geralmente é iniciante:
 fale simples, sem termos técnicos, na língua dele. O idioma dos textos DO VÍDEO é o que ele pedir
@@ -42,8 +42,8 @@ Arquivos da skill (caminho = pasta desta SKILL.md, abaixo `$SK`):
   qualidade** e o ciclo assets → stills → prévia → final (leia antes do Passo 4)
 - `references/direcao-de-arte.md` — **como o estilo nasce da análise** (leia sempre, antes do Passo 2)
 - `references/copy.md` — **copy para postagem** (legenda por rede, gancho, CTA, hashtags, emojis ou não)
-- `references/narrado.md` — **vídeo narrado**: modelos de roteiro falado, marcação, voz, cenas `fala`/`gigante`/`caixa`/
-  tipografia cinética sincronizada (`Say`/`Words`), ducking, prévia e checklist
+- `references/narrado.md` — **vídeo narrado**: modelos de roteiro falado, marcação, voz, tipografia cinética
+  sincronizada (`Say`/`Words`), momento gigante, ducking, prévia e checklist
 
 ---
 
@@ -263,7 +263,7 @@ Vídeo narrado: fotografe cada marcador (+0,5 s e +1,5 s), o `gigante` e o final
 sincronia antes do render final.
 Veja as folhas com `view`. No formato principal, revise tudo; nos outros, confira principalmente as cenas com
 texto longo (no 16:9 o texto fica numa coluna à direita — no narrado, centralizado; no 1:1 tudo fica menor). Procure: texto de uma cena vazando para outra, palavras
-sobrepostas nas trocas, texto perto da borda, elementos cortados, logo alterada, faísca cobrindo texto,
+sobrepostas nas trocas, texto perto da borda, elementos cortados, logo alterada,
 cenas vazias. Confira também: o ASSUNTO em quadro (no imóvel, o prédio — não pessoas andando), as fontes certas (nome do `family`
 igual ao arquivo) e nenhuma mídia congelada por acabar antes da cena. Corrija e revise de novo.
 
