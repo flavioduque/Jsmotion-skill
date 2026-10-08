@@ -110,7 +110,9 @@ Use sempre `$WORK` e `$OUT` — nunca caminhos fixos. Se o Chromium já existir,
 Faça tudo o que for possível sozinho, para perguntar menos:
 
 0. **Sem vídeo de referência do usuário? Busque você mesmo** no [prompt-motion.com](https://www.prompt-motion.com)
-   (vídeos de motion feitos com Claude + o prompt de cada um) — não pergunte antes, só faça:
+   (vídeos de motion feitos com Claude + o prompt de cada um) — **só a categoria com prompt + tipografia cinética**
+   ([?type=prompt&tag=kinetic-type](https://www.prompt-motion.com/?type=prompt&tag=kinetic-type); o script já filtra) —
+   não pergunte antes, só faça:
    - `python3 $SK/scripts/find_reference.py sheet --format <formato principal>` → veja a folha de capas (com `--format all`
      se houver poucas) e pré-selecione **3–5 candidatos** que combinam com a marca, o tema, o público e o tipo de vídeo
      (narrado × encarte; sóbrio × energético; claro × escuro; com produto/foto real × só tipografia).
