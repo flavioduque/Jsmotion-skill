@@ -12,11 +12,11 @@ import os, re, sys, shutil, zipfile, filecmp, tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RES = ['scripts', 'templates', 'references']          # recursos copiados em toda variante
-VERSION = '1.3.1'
+VERSION = '1.4.0'
 
-DESC = ('Creates studio-quality motion-design videos in JavaScript: company, brand, product '
+DESC = ('Creates studio-quality motion-design videos in REMOTION (React): company, brand, product, real estate '
         'and app promos, Reels/TikTok/Shorts/YouTube/LinkedIn. Delivers ready MP4s (9:16, 1:1, 4:5 and 16:9 '
-        'from the same code) with a soundtrack mastered to -14 LUFS, plus an .html with a "Download MP4" button. '
+        'from the same code) with a soundtrack mastered to -14 LUFS. Always Remotion, never HyperFrames or other engines. '
         'Also makes NARRATED videos: the voice (ElevenLabs, the user\'s recording or none) becomes a per-word timeline '
         'and the text appears as it is spoken (kinetic typography). '
         'Studies the reference and the brand site, asks a few questions, shows the script, then produces it. '
@@ -51,8 +51,8 @@ AGENTS = {
 - **Rede**: o sandbox padrão do Codex bloqueia a internet. Os passos 0 e 1 (instalar dependências, baixar a
   referência, ler o site) precisam dela: quando o Codex pedir aprovação, explique ao usuário o motivo e
   peça para aprovar (ou para ele liberar o acesso à rede do sandbox nas configurações do Codex).
-- **Render longo**: o `pack.py` leva minutos. Se o comando tiver limite de tempo, rode em segundo plano
-  (`nohup python3 … > $WORK/pack.log 2>&1 &`) e acompanhe o log até aparecer `total:`.
+- **Render longo**: o `render.py` leva minutos. Se o comando tiver limite de tempo, rode em segundo plano
+  (`nohup python3 … > $WORK/render.log 2>&1 &`) e acompanhe o log até aparecer `total:`.
 - **Entregar**: termine com a lista de arquivos (caminhos absolutos em `$OUT`), MP4 principal primeiro."""),
     'gemini': dict(
         title='Gemini CLI',
@@ -61,8 +61,8 @@ AGENTS = {
         extra="""- **Perguntas**: `ask_user` com uma pergunta do tipo `choice` por vez (3 opções + "Não sei, escolha por mim";
   cabeçalho curto, até 16 caracteres, ex.: "Formato").
 - **Imagens**: `read_file` no .jpg (folhas de contato e revisão).
-- **Comandos**: `run_shell_command`. Para o `pack.py` (leva minutos), rode em segundo plano e acompanhe o log
-  (`nohup python3 … > $WORK/pack.log 2>&1 &`) até aparecer `total:`.
+- **Comandos**: `run_shell_command`. Para o `render.py` (leva minutos), rode em segundo plano e acompanhe o log
+  (`nohup python3 … > $WORK/render.log 2>&1 &`) até aparecer `total:`.
 - **Permissões**: o Gemini pede confirmação ao ativar a skill e ao rodar comandos; explique ao usuário que a
   skill instala ffmpeg/Playwright e baixa o vídeo de referência.
 - **Entregar**: termine com a lista de arquivos (caminhos absolutos em `$OUT`), MP4 principal primeiro."""),
@@ -73,7 +73,7 @@ AGENTS = {
         extra="""- **Perguntas**: `clarify` com uma pergunta por vez — 3 opções + "Não sei, escolha por mim" (o Hermes já
   oferece "Outro" para resposta livre).
 - **Imagens**: `vision_analyze` no .jpg (folhas de contato e revisão).
-- **Comandos**: `terminal`. O `pack.py` leva minutos; se precisar, rode em segundo plano e acompanhe o log.
+- **Comandos**: `terminal`. O `render.py` leva minutos; se precisar, rode em segundo plano e acompanhe o log.
 - **Entregar**: escreva o caminho absoluto de cada arquivo **sozinho numa linha** — o gateway (Telegram, Discord,
   WhatsApp, Slack…) envia como mídia. Para mandar o MP4 como arquivo, sem recompressão do app, use `[[as_document]]`.
 - **Mensageiros**: o usuário pode estar no celular — mensagens curtas, uma pergunta por vez, e mande primeiro o
@@ -87,8 +87,8 @@ AGENTS = {
   **uma pergunta por mensagem**, com as opções numeradas, a sua recomendação e "Não sei, escolha por mim"; espere a resposta.
 - **Logo e referência**: o usuário manda pelo chat; use o arquivo recebido (caminho da mídia) no Passo 1.
 - **Imagens**: ferramenta `image` no .jpg (folhas de contato e revisão).
-- **Comandos**: ferramenta `exec`. O `pack.py` leva minutos: avise o usuário do tempo e, se precisar, rode em
-  segundo plano (`nohup python3 … > $WORK/pack.log 2>&1 &`) e acompanhe o log até aparecer `total:`.
+- **Comandos**: ferramenta `exec`. O `render.py` leva minutos: avise o usuário do tempo e, se precisar, rode em
+  segundo plano (`nohup python3 … > $WORK/render.log 2>&1 &`) e acompanhe o log até aparecer `total:`.
 - **Entregar**: ferramenta `message` com `media`/`filePath` apontando para o MP4 (ou uma linha `MEDIA:/caminho/absoluto`).
   Mande primeiro o MP4 do formato principal. Para o app não recomprimir o vídeo, envie como documento se o canal permitir.
 - **Tamanho**: se o canal recusar o arquivo pelo tamanho, gere uma versão leve e mande essa:
@@ -100,8 +100,8 @@ AGENTS = {
         extra="""- **Perguntas**: use a ferramenta de perguntas do agente, se existir; senão escreva **uma** pergunta com opções
   numeradas e espere a resposta.
 - **Imagens**: abra os .jpg de revisão com a ferramenta de leitura de arquivos (o modelo precisa ter visão).
-- **Render longo**: o `pack.py` leva minutos; se o terminal do agente tiver limite de tempo, rode em segundo plano
-  (`nohup python3 … > $WORK/pack.log 2>&1 &`) e acompanhe o log até aparecer `total:`.
+- **Render longo**: o `render.py` leva minutos; se o terminal do agente tiver limite de tempo, rode em segundo plano
+  (`nohup python3 … > $WORK/render.log 2>&1 &`) e acompanhe o log até aparecer `total:`.
 - **Entregar**: termine com a lista de arquivos (caminhos absolutos em `$OUT`), MP4 principal primeiro."""),
 }
 
@@ -114,8 +114,8 @@ SWAPS = [
     ("Use a ferramenta de opções tocáveis (`ask_user_input_v0`) quando existir; senão, texto numerado.",
      "Use a ferramenta de perguntas com opções do seu agente (ver \"Ferramentas por agente\"); senão, texto numerado."),
     ("Veja as folhas com `view`.", "Abra as folhas com a ferramenta de imagem."),
-    ("Entregue com `present_files` (MP4 do formato principal primeiro, depois os outros MP4, depois os .html).",
-     "Entregue os arquivos (ver \"Ferramentas por agente\"): MP4 do formato principal primeiro, depois os outros MP4, depois os .html."),
+    ("Entregue com `present_files` (MP4 do formato principal primeiro, depois os outros MP4).",
+     "Entregue os arquivos (ver \"Ferramentas por agente\"): MP4 do formato principal primeiro, depois os outros MP4."),
 ]
 
 def frontmatter(agent):
@@ -128,10 +128,10 @@ version: {VERSION}
 author: Flavio Duque (https://github.com/flavioduque/Jsmotion-skill)
 license: MIT
 platforms: [linux, macos]
-required_commands: [python3, git]
+required_commands: [python3, git, node, npm]
 metadata:
   hermes:
-    tags: [video, motion-design, animation, marketing, social-media, javascript]
+    tags: [video, motion-design, animation, marketing, social-media, remotion, react]
     category: creative
     homepage: https://github.com/flavioduque/Jsmotion-skill
 ---'''
@@ -151,6 +151,8 @@ metadata:
       bins:
         - python3
         - git
+        - node
+        - npm
 ---'''
     return f'---\nname: jsmotion\ndescription: "{q}"\nlicense: MIT\nmetadata:\n  version: "{VERSION}"\n  author: Flavio Duque\n---'
 
@@ -171,7 +173,7 @@ def variant(agent):
 
 OPENAI_YAML = '''interface:
   display_name: "jsmotion — motion video"
-  short_description: "Studio-quality brand videos in JS: MP4 in 9:16, 1:1 and 16:9"
+  short_description: "Studio-quality brand videos in Remotion: MP4 in 9:16, 1:1 and 16:9"
   default_prompt: "Use $jsmotion to make a motion-design video of my brand. I will attach my logo and give you my website."
 '''
 

@@ -1,6 +1,6 @@
 # Direção de arte — o estilo nasce da análise, nunca de um modelo pronto
 
-A skill **não tem estilo padrão**. Os exemplos (`templates/kit.js`, `templates/example_anim.js`) mostram o motor
+A skill **não tem estilo padrão**. O template (`templates/remotion`) mostra o motor
 funcionando; **não copie o visual deles**. Cada vídeo começa com uma direção de arte própria.
 
 > **Prioridade: se o usuário enviou uma referência, ela manda no estilo.** A linguagem visual (ritmo, composição,
@@ -36,7 +36,7 @@ Som: premium | energético | calmo | épico | minimalista · BPM
 O que evitar: … (o que deixaria o vídeo genérico ou fora do tom da marca)
 ```
 
-Depois, traduza para o objeto `STYLE` do `kit.js` (ver `references/kit.md`) e crie as cenas das metáforas.
+Depois, traduza para o `STYLE` do `src/style.ts` (ver `references/remotion.md`) e crie as cenas das metáforas.
 
 ## Como decidir (critérios, não modelos)
 
@@ -62,7 +62,7 @@ documentos, gestos ou símbolos o público reconhece na hora? Exemplos:
 - academia/esporte → cronômetro, contagem de repetições, a barra de progresso;
 - software/app → a interface real flutuando, o cursor clicando, o gráfico subindo;
 - imóvel de lançamento → a planta baixa se desenhando, o mapa com o pino, o calendário da entrega.
-Use `stamp()` e os helpers do kit, ou escreva a cena do zero (`SC.nome = (ctx, s, lt) => {…}`).
+Use as peças do kit (`src/kit.tsx`) ou escreva a cena do zero como componente React em função de `t`.
 
 ## Direções como vocabulário (inspiração, não presets)
 

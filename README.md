@@ -7,12 +7,12 @@
 ### Seu vídeo de marca nível estúdio, feito pelo Claude, em **uma conversa**.
 
 **Sem After Effects. Sem Premiere. Sem template genérico. Sem editor.**<br>
-Você manda a logo e o site — o Claude estuda, pergunta, escreve o roteiro, anima em JavaScript, compõe a trilha e entrega o **MP4 pronto**.<br>
+Você manda a logo e o site — o Claude estuda, pergunta, escreve o roteiro, anima em **Remotion (React)**, monta a trilha e entrega o **MP4 pronto**.<br>
 Funciona no **Claude**, **Codex**, **Gemini CLI**, **Hermes Agent**, **OpenClaw**, **Cursor** e **GitHub Copilot**.
 
 [![Claude Skill](https://img.shields.io/badge/Claude-Skill-D97757?style=for-the-badge&logo=anthropic&logoColor=white)](#-instalar-em-1-minuto)
-[![JavaScript](https://img.shields.io/badge/Canvas-JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](references/engine.md)
-[![Web Audio](https://img.shields.io/badge/Trilha-Web%20Audio%20API-7C3AED?style=for-the-badge&logo=googlechrome&logoColor=white)](references/engine.md#som-buildaudio)
+[![Remotion](https://img.shields.io/badge/Motor-Remotion%20(React)-0B84F3?style=for-the-badge&logo=react&logoColor=white)](references/remotion.md)
+[![Áudio](https://img.shields.io/badge/%C3%81udio-%E2%88%9214%20LUFS-7C3AED?style=for-the-badge&logo=audacity&logoColor=white)](references/remotion.md)
 [![MP4](https://img.shields.io/badge/Sa%C3%ADda-MP4%20H.264%20%2B%20AAC-5B8CFF?style=for-the-badge&logo=ffmpeg&logoColor=white)](scripts/render.py)
 [![License: MIT](https://img.shields.io/badge/Licen%C3%A7a-MIT-22E0C8?style=for-the-badge)](LICENSE)
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-Claude%20%C2%B7%20Codex%20%C2%B7%20Gemini%20%C2%B7%20Hermes%20%C2%B7%20OpenClaw%20%C2%B7%20Cursor%20%C2%B7%20Copilot-111827?style=for-the-badge)](#-em-qualquer-agente)
@@ -24,7 +24,7 @@ Funciona no **Claude**, **Codex**, **Gemini CLI**, **Hermes Agent**, **OpenClaw*
 
 <img src="docs/demo.gif" alt="Animação 16:9 do jsmotion: gancho 'Seu vídeo de marca nível estúdio', 'Sem After Effects, sem editor, só uma conversa', passos até o MP4 com celulares mostrando vídeos reais, e logo final" width="72%">&nbsp;<img src="docs/demo-vertical.gif" alt="A mesma animação do jsmotion em 9:16, com textos empilhados para Reels, TikTok e Shorts" width="22.8%">
 
-<sub>🤯 <b>Estes GIFs foram feitos pelo próprio jsmotion</b> — mesmo motor, mesmo código, <b>16:9 e 9:16</b>. ▶️ Com trilha: <a href="docs/demo.mp4">MP4 16:9</a> · <a href="docs/demo-vertical.mp4">MP4 9:16</a> · <a href="examples/promo">🧑‍💻 Ver o código</a><br>
+<sub>🤯 <b>Estes GIFs foram feitos com o jsmotion</b> — mesmo código, <b>16:9 e 9:16</b>. ▶️ Com trilha: <a href="docs/demo.mp4">MP4 16:9</a> · <a href="docs/demo-vertical.mp4">MP4 9:16</a><br>
 🇺🇸 <b>English:</b> <a href="README.en.md">README</a> · <a href="docs/demo-en.gif">GIF 16:9</a> · <a href="docs/demo-vertical-en.gif">GIF 9:16</a></sub>
 
 <br><br>
@@ -39,7 +39,7 @@ Funciona no **Claude**, **Codex**, **Gemini CLI**, **Hermes Agent**, **OpenClaw*
 
 > **Você diz:** *"Quero um vídeo jsmotion da minha marca, site www.minhaempresa.com"* — e anexa a logo.
 >
-> **O Claude devolve:** um **pacote de MP4 1080p com trilha e efeitos sonoros — 9:16, 1:1 e 16:9 do mesmo vídeo** —, os **.html** de reserva com botão *"Baixar MP4"*, a **copy pronta para postar** (se você quiser — com ou sem emojis) e **3 sugestões** para deixar o próximo ainda melhor.
+> **O Claude devolve:** um **pacote de MP4 1080p com trilha e efeitos sonoros — 9:16, 1:1 e 16:9 do mesmo vídeo** —, a **copy pronta para postar** (se você quiser — com ou sem emojis) e **3 sugestões** para deixar o próximo ainda melhor.
 
 Uma conversa. Zero timeline. Zero keyframe manual.
 
@@ -81,7 +81,7 @@ git clone https://github.com/flavioduque/Jsmotion-skill.git ~/.claude/skills/jsm
 ```
 
 > [!NOTE]
-> A skill foi desenhada para o ambiente do claude.ai (pastas `/home/claude` e `/mnt/user-data/outputs`). No Claude Code ela também funciona — o Claude usa a sua pasta de trabalho no lugar dessas. É preciso ter **Python 3**, **ffmpeg** e **Chromium/Playwright** (o `install_watch.sh` instala o que faltar). Já tem um Chromium? Aponte com `CHROMIUM_PATH=/caminho/chrome`. Os arquivos vão para `./jsmotion-work` (trabalho) e `./jsmotion-out` (entregas) — ou para onde você apontar com `JSMOTION_WORKDIR` e `JSMOTION_OUTDIR`.
+> A skill foi desenhada para o ambiente do claude.ai (pastas `/home/claude` e `/mnt/user-data/outputs`). No Claude Code ela também funciona — o Claude usa a sua pasta de trabalho no lugar dessas. É preciso ter **Python 3**, **Node 18+ com npm** (o Remotion é instalado na 1ª vez), **ffmpeg** e um **Chromium** (o do Playwright serve; sem nenhum, o Remotion baixa o dele). Já tem um Chromium? Aponte com `CHROMIUM_PATH=/caminho/chrome`. Os arquivos vão para `./jsmotion-work` (trabalho) e `./jsmotion-out` (entregas) — ou para onde você apontar com `JSMOTION_WORKDIR` e `JSMOTION_OUTDIR`.
 
 ### Opção C — Codex, Gemini CLI, Hermes Agent, OpenClaw, Cursor, Copilot…
 
@@ -150,7 +150,7 @@ agente estiver (ou `JSMOTION_WORKDIR` / `JSMOTION_OUTDIR`).
   imagens com `view_image` e termina listando os arquivos. Inclui `agents/openai.yaml` com nome e descrição para o app.
 - **Cuidados:** o **sandbox padrão bloqueia a internet**, e a primeira execução precisa dela para instalar
   dependências, baixar a referência e ler o site. Aprove quando o Codex pedir, ou libere a rede do sandbox nas
-  configurações. O render leva minutos, então a skill roda o `pack.py` em segundo plano e acompanha o log.
+  configurações. O render leva minutos, então a skill roda o `render.py` em segundo plano e acompanha o log.
 </details>
 
 <details>
@@ -188,7 +188,7 @@ agente estiver (ou `JSMOTION_WORKDIR` / `JSMOTION_OUTDIR`).
 - **Implementação:** usa o frontmatter do Hermes (versão, autor, `platforms`, `category: creative`) e
   `${HERMES_SKILL_DIR}` para achar os scripts. Pergunta com `clarify`, revisa com `vision_analyze` e entrega
   escrevendo o caminho do arquivo numa linha, que o gateway manda como mídia (`[[as_document]]` para enviar o MP4 sem recompressão).
-- **Cuidados:** o servidor precisa de Python 3, git e internet; ffmpeg e Playwright são instalados na primeira vez.
+- **Cuidados:** o servidor precisa de Python 3, Node/npm, git e internet; ffmpeg e o Remotion são instalados na primeira vez.
   No celular, a skill faz uma pergunta por mensagem.
 </details>
 
@@ -302,7 +302,7 @@ Para vídeos que **explicam, opinam ou contam um bastidor**, a voz conduz tudo �
   `music.py` acha o BPM e as batidas, e as trocas de cena caem na batida. A trilha criada no código continua como
   opção grátis (qualidade inferior), e os efeitos sonoros seguem sintetizados.
 
-Guia: [`references/narrado.md`](references/narrado.md) · exemplo: [`examples/narrado`](examples/narrado).
+Guia: [`references/narrado.md`](references/narrado.md).
 
 ## 🎥 Como funciona
 
@@ -313,7 +313,7 @@ flowchart LR
     C --> D["📝 Roteiro cena a cena<br/>espera o seu ok"]
     D --> E["🧑‍💻 Anima em JS<br/>+ compõe a trilha"]
     E --> F["🔍 Revisa com fotos<br/>das cenas e corrige"]
-    F --> G["🎬 MP4 + HTML<br/>+ copy para postar<br/>+ 3 sugestões"]
+    F --> G["🎬 MP4 por formato<br/>+ copy para postar<br/>+ 3 sugestões"]
 ```
 
 <details open>
@@ -364,9 +364,9 @@ gancho ~12% │ virada ~12% │ serviços ~20% │ provas/projetos ~34% │ prom
 <details open>
 <summary><b>4 · Produz, revisa e entrega</b></summary>
 
-- Anima tudo num único `<canvas>`, compõe a trilha, empacota os assets num **HTML único que funciona offline**.
+- Monta o vídeo como projeto **Remotion (React)** com a mídia real, a voz e a trilha.
 - Tira **15–18 fotos de instantes** (incluindo meios de transição) e caça texto vazando, sobreposição, texto perto da borda, logo alterada, cena vazia — corrige e revisa de novo.
-- Renderiza **quadro a quadro** em Chromium headless → **MP4 H.264 (CRF 17) + AAC 192k**, **todos os formatos em paralelo**.
+- Renderiza **quadro a quadro** com o Remotion → **MP4 H.264 + AAC 192k**, um por formato.
 - **Masteriza o áudio em −14 LUFS** (o volume que Instagram, TikTok e YouTube usam), com pico abaixo de −1,5 dBTP, e entrega.
 </details>
 
@@ -399,11 +399,11 @@ Na pergunta de estilo, o Claude oferece **3 direções geradas pela análise** (
 com referência, a 1ª é sempre **fiel a ela, com a sua marca**.
 Teste final: *se trocar a logo por outra e o vídeo continuar servindo, está genérico* — e ele volta para ajustar.
 
-**Como isso vira vídeo:** o [`templates/kit.js`](templates/kit.js) é um motor **sem estilo próprio**. Ele anima, faz
-transições, contadores, som e os 4 formatos; o visual vem inteiro de um objeto `STYLE` (cores, fontes, destaque,
-entrada do texto, transição, textura, foto, som) que o Claude escreve a partir da direção de arte. O vídeo é uma lista
-de cenas (`SCRIPT`) mais as cenas próprias das metáforas. O mesmo motor gera um editorial escuro com serifa, um
-minimal claro com fundo de papel ou um bold esportivo em caixa alta — só trocando o `STYLE`.
+**Como isso vira vídeo:** cada vídeo é um projeto [**Remotion**](https://www.remotion.dev) (React). O
+[`templates/remotion`](templates/remotion) traz um kit **sem estilo próprio** — mídia real com recorte, cartões,
+palavras no tempo da fala, selos, contador, cenas que convergem/orbitam/abrem em tela cheia, trilha que abaixa sob a
+voz — e o visual vem inteiro do `src/style.ts` que o Claude escreve a partir da direção de arte (ou do design system
+já aprovado da sua marca). O mesmo kit gera um editorial escuro com serifa, um minimal claro ou um bold esportivo.
 
 ### ✨ Padrão de qualidade (vale para qualquer estilo)
 
@@ -428,68 +428,27 @@ minimal claro com fundo de papel ou um bold esportivo em caixa alta — só troc
 | ⬛ Quadrado 1:1 | 1080×1080 | Feed · LinkedIn | empilhado, escalado na área segura |
 | 🖥️ Horizontal 16:9 | 1920×1080 | YouTube · site · apresentações | mídia à esquerda, texto à direita |
 
-**Um código, todos os formatos:** as cenas são desenhadas uma vez e um "palco" encaixa cada bloco (mídia, texto, tela cheia) no formato escolhido. O 9:16 sai idêntico ao desenho, pixel a pixel. Sempre **30 fps**. A área segura do 9:16 desvia da interface dos apps (topo e base) — seu texto nunca fica escondido atrás do botão de curtir.
+**Um código, todos os formatos:** o mesmo `Video.tsx` é registrado nas 4 composições; posições em fração da tela e tamanhos proporcionais encaixam cada cena no formato. Sempre **30 fps**. A área segura do 9:16 desvia da interface dos apps (topo e base) — seu texto nunca fica escondido atrás do botão de curtir.
 
 ---
 
 ## 🧠 Por dentro do motor
 
 <details>
-<summary><b>Por que canvas + JavaScript, e não um editor de vídeo?</b></summary>
+<summary><b>Por que Remotion (React), e não um editor de vídeo?</b></summary>
 
 <br>
 
-Cada quadro é uma **função pura do tempo**: `render(ctx, t)`. Isso dá superpoderes:
+Cada quadro é uma **função pura do tempo** escrita em React — o Remotion renderiza quadro a quadro num Chromium e
+entrega o MP4. Isso dá superpoderes:
 
-- **Determinístico** — nada de `Math.random()` solto; tudo usa `rng(seed)`. O vídeo sai **idêntico** em todo render.
-- **Renderização exata** — o `render.py` pede cada quadro `t = f / 30` ao Chromium headless e manda direto pro ffmpeg. Sem quadro perdido, sem travada, independente da velocidade da máquina.
-- **Editável como código** — mudar uma cor, um texto ou um tempo é trocar uma linha.
+- **Determinístico** — o vídeo sai **idêntico** em todo render; nada depende da velocidade da máquina.
+- **Sincronia exata com a voz** — cada palavra da narração tem seu instante (`words.json`); as cenas e o texto usam
+  esses tempos, não "mais ou menos".
+- **Editável como código** — mudar uma cor, um texto ou um tempo é trocar uma linha; os 4 formatos saem do mesmo código.
+- **Mídia real de verdade** — vídeos e fotos do cliente tocam quadro a quadro, com recorte no assunto.
 
-Ordem por quadro:
-
-```text
-drawBackground → cenas (scene1..6) → drawSpark (condutor) → transitions → drawNoise → fade-in
-```
-</details>
-
-<details>
-<summary><b>Como a trilha fica sincronizada com a imagem?</b></summary>
-
-<br>
-
-Imagem e som leem a **mesma linha do tempo**:
-
-```js
-const WORDS  = [...];              // cada palavra que entra → um "brilho" sonoro
-const WH     = [2.7, 5.7, 10.75];  // whooshes (tocados 0,35s antes da troca)
-const IMPACT = [3.0, 22.6];        // graves nos momentos-chave
-```
-
-A trilha inteira (pad Am–F–C–G, kick, hi-hat, palma, baixo, arpejo, riser, acorde final) é **sintetizada** num `OfflineAudioContext` e vira um único buffer. Por isso a prévia no navegador, a gravação pelo botão e o MP4 renderizado **soam iguais**. Sem nenhum arquivo de música — e sem problema de direitos autorais.
-
-No MP4, o `render.py` ainda **masteriza** o áudio: ganho + limitador com superamostragem (192 kHz), ajustado em poucas iterações até **−14 LUFS** com pico real abaixo de **−1,5 dBTP**. O vídeo não sai baixo nem estourado em nenhuma rede.
-
-Variações prontas: **épico** (cordas graves, kick longo, impacto a cada 4s) e **minimalista** (só brilhos, whooshes, impactos e um tique por batida).
-</details>
-
-<details>
-<summary><b>Kit de blocos reutilizáveis</b></summary>
-
-<br>
-
-| Bloco | O que faz |
-|---|---|
-| `eOut` `eIn` `eIO` `eBack` · `inv(a,b,t)` | easing e tempo relativo |
-| `beatPulse(t)` | 1 no início de cada batida, cai rápido — pulsa anéis, brilhos, botão |
-| `glow(ctx,x,y,r,cor,a)` | luz desfocada barata (gradiente radial) |
-| `word(ctx,texto,x,y,t,t0,{hl,out,…})` | entrada de palavra com desfoque + escala; `hl` = destaque |
-| `ring(...)` | anel de luz |
-| `glassFrame(ctx,img,…,{bar,sheen,lit})` | janela de vidro com barra, reflexo e borda que acende |
-| `seqFrame(chave,t)` | quadro de um clipe de vídeo do site (15 fps) |
-| `sparkPos(t)` + `SPARK_KEYS` | caminho suave (Catmull-Rom) do elemento condutor |
-| `flash(tc,dur,cor,max)` | clarão de transição a partir do condutor |
-
-Documentação completa em [`references/engine.md`](references/engine.md).
+Só Remotion: a skill não usa HyperFrames, After Effects nem outro motor.
 </details>
 
 ---
@@ -498,79 +457,43 @@ Documentação completa em [`references/engine.md`](references/engine.md).
 
 ```text
 jsmotion/
-├── SKILL.md                 🧭 o fluxo completo: coleta → perguntas → roteiro → produção → revisão → entrega
+├── SKILL.md                 🧠 o passo a passo que o Claude segue
 ├── scripts/
 │   ├── install_watch.sh     📦 instala a skill watch + yt-dlp, ffmpeg, Playwright, brotli (idempotente)
-│   ├── watch_reference.sh   👀 assiste o vídeo de referência e monta a folha de contato
-│   ├── find_reference.py    🔎 sem referência? escolhe uma sozinho no prompt-motion.com (capas → quadros → download)
-│   ├── scrape_site.py       🌐 cores, fontes, textos de marketing (títulos, preços, números), imagens e vídeos do site (funciona com SPA)
-│   ├── brand_palette.py     🎨 paleta da marca a partir da logo (sem site): papéis, contraste e amostra
-│   ├── get_font.py          🔤 baixa qualquer família do Google Fonts para a direção de arte
-│   ├── music.py             🎵 trilha de verdade (sua faixa, biblioteca grátis ou ElevenLabs Music) → BPM e batidas
-│   ├── voice.py             🎙️ narração → voz + linha do tempo por palavra (ElevenLabs, sua gravação ou sem voz)
-│   ├── prep_assets.py       🧳 logo, imagens, clipes e fonte → data URIs (assets.js); tira fundo liso de logo sem transparência
-│   ├── build_html.py        🧱 junta shell + assets + animação num .html único e offline
-│   ├── snap.py              📸 fotos de instantes para revisão + erros do console
-│   ├── render.py            🎬 render quadro a quadro + áudio masterizado (−14 LUFS) → MP4
-│   ├── pack.py              📦 pacote multiformato: um .html e um MP4 por formato, em paralelo
-│   └── paths.sh · _paths.py 📁 pastas de trabalho/entrega (claude.ai, Claude Code ou variável de ambiente)
-├── templates/
-│   ├── kit.js               🧩 motor de cenas SEM estilo próprio: o visual vem do objeto STYLE
-│   ├── example_anim.js      🔬 exemplo feito do zero (Constructiva.dev) — técnica, não estilo a copiar
-│   ├── fonts/               🔤 Playfair Display + Inter (OFL), opcionais para uso sem internet
-│   ├── shell.html           ▶️ página com prévia, botão "Baixar MP4" e ganchos de render
-│   └── saira.woff2          🔤 Saira (usada pelo exemplo)
-├── examples/
-│   ├── promo/               🎞️ o vídeo de apresentação do próprio jsmotion — 16:9 e 9:16, PT e EN
-│   └── narrado/             🎙️ vídeo narrado com tipografia cinética, HUD e bloom
+│   ├── watch_reference.sh   🎞️ assiste a referência e gera a folha de contato
+│   ├── find_reference.py    🔎 acha referências sozinho no prompt-motion.com
+│   ├── scrape_site.py       🌐 cores, fontes, textos e mídia do site da marca
+│   ├── brand_palette.py     🎨 paleta a partir da logo quando não há site
+│   ├── get_font.py          🔤 baixa qualquer família do Google Fonts
+│   ├── voice.py             🎙️ narração → linha do tempo por palavra (ElevenLabs, gravação ou estimativa)
+│   ├── music.py             🎵 trilha de verdade: volume, BPM e batidas
+│   ├── assets.py            🧳 projeto Remotion: cria, coloca mídia/logo/voz/trilha/fontes (tira fundo liso de logo)
+│   └── render.py            🎬 folha de revisão, prévia e MP4 de cada formato (−14 LUFS)
+├── templates/remotion/      ⚛️ o projeto-modelo: style.ts (direção de arte), kit.tsx (peças), Video.tsx, Root.tsx
 ├── references/
-│   ├── direcao-de-arte.md   🎨 o método: o estilo nasce da marca, do tema e da referência
-│   ├── kit.md               🧩 tokens do STYLE, cenas, cenas próprias e padrão de qualidade
-│   ├── copy.md              📝 copy para postar: gancho, CTA, hashtags, emojis, uma versão por rede
-│   ├── narrado.md           🎙️ vídeo narrado: roteiro falado, voz, tipografia cinética, HUD, pós, prévia
-│   ├── engine.md            🧠 anatomia do motor
-│   └── formats.md           📐 tamanhos, áreas seguras e como adaptar o layout
-├── agents/                  🤖 variantes prontas: codex · gemini · hermes · openclaw · universal (geradas, não editar)
-├── tools/build_agents.py    🛠️ gera as variantes a partir da raiz (--check confere se estão em dia)
-├── install.sh               ⚡ instala no agente escolhido: ./install.sh <agente> [--project]
-├── dist/jsmotion.skill      📦 pacote pronto para upload no claude.ai
-├── dist/jsmotion-<agente>.zip 📦 pacote de cada variante
-└── docs/                    🖼️ demos 16:9 e 9:16 em GIF e MP4 (PT/EN) · preview.jpg
+│   ├── remotion.md          ⚛️ o motor: peças do kit, regras do código, padrão de qualidade
+│   ├── direcao-de-arte.md   🎨 como o estilo nasce da análise
+│   ├── narrado.md           🎙️ vídeo narrado: roteiro falado, voz, sincronia
+│   ├── formats.md           📐 formatos e layout
+│   └── copy.md              ✍️ legenda pronta para postar
+├── agents/                  🤖 variantes para Codex, Gemini, Hermes, OpenClaw e outros (geradas)
+└── tools/build_agents.py    🔧 gera as variantes a partir do SKILL.md
 ```
 
 ---
 
 ## 🛠️ Rodando os scripts na mão
 
-Para quem quer o controle total (o Claude faz tudo isso sozinho):
-
 ```bash
-SK=~/.claude/skills/jsmotion
-
-python3 $SK/scripts/scrape_site.py https://www.exemplo.com ./site          # 1. estuda o site
-cp $SK/templates/example_anim.js anim.js                                   # 2. adapte cores, textos e tempos
-python3 $SK/scripts/prep_assets.py config.json assets.js                   # 3. empacota logo/imagens/clipes
-python3 $SK/scripts/pack.py anim.js assets.js minha-marca "Minha Marca" --html-only   # 4. monta os .html
-python3 $SK/scripts/snap.py jsmotion-out/minha-marca_9x16.html 0.5 1.5 3 6 11 19 23   # 5. revisa (→ jsmotion-work/review.jpg)
-python3 $SK/scripts/pack.py anim.js assets.js minha-marca "Minha Marca"               # 6. MP4 9:16 + 1:1 + 16:9
+SK=/caminho/do/jsmotion
+python3 $SK/scripts/assets.py new   video                         # 1. projeto Remotion
+python3 $SK/scripts/assets.py add   video clipe.mp4 foto.jpg      # 2. mídia real
+python3 $SK/scripts/assets.py logo  video logo.png                #    logo (fundo liso removido)
+# 3. edite video/src/style.ts (direção de arte) e video/src/Video.tsx (o vídeo)
+python3 $SK/scripts/render.py video minha-marca --stills 0.5 2 4 8   # 4. folha de revisão
+python3 $SK/scripts/render.py video minha-marca --formats 9x16,1x1,16x9   # 5. MP4s em jsmotion-out/
 ```
-
-<details>
-<summary>Exemplo de <code>config.json</code></summary>
-
-```json
-{
-  "logo": "logo.png",
-  "logo_width": 1400,
-  "images": { "projeto1": "print1.png", "projeto2": "print2.png" },
-  "image_size": [1000, 625],
-  "clips": { "demo": { "src": "demo.mp4", "start": 2.0, "dur": 1.8, "scale": "560:315" } },
-  "font": "minha-fonte.woff2"
-}
-```
-
-Dica: clipes de 1,5–3,5s a 15 fps e o total abaixo de ~8 MB deixam o HTML leve.
-</details>
+Quer ver ao vivo enquanto edita? `cd video && npx remotion studio src/index.ts`.
 
 ---
 
@@ -585,13 +508,13 @@ Não. A skill foi escrita para iniciantes: o Claude fala simples, pergunta com o
 <details>
 <summary><b>Quanto tempo leva o render?</b></summary>
 
-Cerca de **5 minutos por formato para 25s** em 1080p. O pacote renderiza os formatos **em paralelo**: com 4 núcleos, 9:16 + 1:1 + 16:9 saem em ~6–7 minutos no total.
+Depende da máquina e da quantidade de vídeo na tela: em geral **1× a 3× a duração do vídeo por formato** (um reel de 40 s em 9:16 leva ~5–15 minutos). A folha de revisão e a prévia em meia resolução saem bem antes.
 </details>
 
 <details>
 <summary><b>E se o ambiente não conseguir renderizar o MP4?</b></summary>
 
-Você recebe o **.html**. Baixe o arquivo → abra no **Google Chrome do computador** → clique em **"Baixar MP4"** → espere a duração do vídeo **sem trocar de aba**. (Em Chromes antigos o arquivo sai em `.webm`.)
+Você recebe o **projeto Remotion** compactado. No computador: `npm install` e `npx remotion render src/index.ts v9x16 video.mp4` (ou `npx remotion studio src/index.ts` para ver e exportar).
 </details>
 
 <details>
@@ -603,7 +526,7 @@ Sim. A conversa acontece no seu idioma e os textos do vídeo saem no idioma que 
 <details>
 <summary><b>A música tem direitos autorais?</b></summary>
 
-Não existe arquivo de música: a trilha é **sintetizada por código** (Web Audio API) a cada vídeo.
+A trilha vem de uma fonte com uso comercial: gerada no **ElevenLabs Music** (com a duração exata), uma faixa sua, ou uma biblioteca grátis (Pixabay Music, YouTube Audio Library). Ou sem trilha no arquivo, para usar o som em alta do app.
 </details>
 
 <details>
@@ -619,7 +542,7 @@ Claude, como o YouTube costuma fazer em servidores), o Claude avisa e pede o arq
 <details>
 <summary><b>Posso usar outra fonte?</b></summary>
 
-Sim — não existe fonte padrão. O Claude escolhe o par tipográfico na direção de arte (de preferência as fontes do seu site) e baixa qualquer família do Google Fonts com `scripts/get_font.py "Nome da Família"`. Fontes comerciais (Söhne, Gotham…) são trocadas pela alternativa livre mais próxima; se você tiver o arquivo `.woff2` licenciado, aponte no `config.json`.
+Sim — não existe fonte padrão. O Claude escolhe o par tipográfico na direção de arte (de preferência as fontes do seu site) e baixa qualquer família do Google Fonts com `scripts/get_font.py "Nome da Família"`. Fontes comerciais (Söhne, Gotham…) são trocadas pela alternativa livre mais próxima; se você tiver o arquivo `.woff2` licenciado, ele vai para `public/fonts` do projeto.
 </details>
 
 ---
@@ -628,17 +551,15 @@ Sim — não existe fonte padrão. O Claude escolhe o par tipográfico na direç
 
 - [ ] Galeria de vídeos gerados pela comunidade
 - [x] Direção de arte por análise (marca, tema, público, referência) — sem estilo pré-definido
-- [x] Motor de cenas sem estilo (`kit.js` + `STYLE`) e qualquer fonte do Google Fonts
+- [x] Motor Remotion (React) com kit sem estilo (`style.ts`) e qualquer fonte do Google Fonts
 - [ ] Legendas automáticas queimadas no vídeo
-- [x] Vídeo narrado: voz (ElevenLabs ou gravação) → texto palavra por palavra, HUD, bloom, câmera viva ([`examples/narrado`](examples/narrado))
+- [x] Vídeo narrado: voz (ElevenLabs ou gravação) → texto palavra por palavra, sincronizado
 - [x] Trilha de verdade (faixa externa ou ElevenLabs Music) com BPM, batidas e ducking sob a voz
 - [ ] Palco contínuo: elementos que atravessam cenas e câmera que "entra" neles
 - [ ] Biblioteca de componentes de interface (editor de código, timeline, gráficos, celular, chat)
 - [ ] Modo "tela filmada": o vídeo aplicado na tela de um monitor real filmado pelo usuário
-- [x] Exemplo nativo em 16:9 e 9:16 com o mesmo código ([`examples/promo`](examples/promo))
-- [x] Pacote multiformato (9:16, 4:5, 1:1 e 16:9) do mesmo código, renderizado em paralelo
+- [x] Pacote multiformato (9:16, 4:5, 1:1 e 16:9) do mesmo código
 - [x] Áudio masterizado em −14 LUFS
-- [ ] Exportar MP4 no navegador com WebCodecs (sem esperar o vídeo tocar)
 - [ ] Revisão automática de layout (texto fora da área segura)
 - [x] README em inglês ([`README.en.md`](README.en.md))
 - [ ] Versão em inglês do `SKILL.md`
@@ -652,8 +573,8 @@ Tem uma ideia? [Abra uma issue](https://github.com/flavioduque/Jsmotion-skill/is
 
 PRs são muito bem-vindos! Os que mais ajudam:
 
-1. **Novos exemplos** em `templates/` (outros formatos, estilos e nichos).
-2. **Novos sons** no `buildAudio` (lo-fi, trap, corporativo…).
+1. **Novas peças** no `templates/remotion/src/kit.tsx` (cenas, transições, selos).
+2. **Exemplos** de `Video.tsx` para outros nichos.
 3. **Melhorias no `scrape_site.py`** para mais tipos de site.
 4. **Traduções** das instruções e referências da skill.
 
@@ -666,8 +587,10 @@ Mostre o vídeo que você fez! Poste com **#jsmotion** e marque o repositório �
 ## 🙏 Créditos
 
 - Leitura de vídeo de referência: [claude-watch](https://github.com/taoufik123-collab/claude-watch)
-- Fonte padrão: [Saira](https://fonts.google.com/specimen/Saira) (SIL Open Font License)
-- Render: [Playwright](https://playwright.dev) + [FFmpeg](https://ffmpeg.org)
+- Fontes de reserva: [Inter](https://fonts.google.com/specimen/Inter) e [Playfair Display](https://fonts.google.com/specimen/Playfair+Display) (SIL Open Font License)
+- Motor: [Remotion](https://www.remotion.dev) · áudio: [FFmpeg](https://ffmpeg.org)
+  (o Remotion tem licença própria: grátis para pessoas físicas e empresas pequenas; empresas maiores precisam de
+  uma licença da empresa — veja [remotion.dev/license](https://www.remotion.dev/license))
 
 ---
 
