@@ -46,6 +46,30 @@ gerar voz custa créditos e qualquer mudança no texto exige gerar de novo.
 
 ## 2. A voz → linha do tempo por palavra (`scripts/voice.py`)
 
+**Qualidade da voz decide o vídeo.** Prioridade: ElevenLabs > gravação do usuário > sem voz. **Nunca** use voz
+sintética gratuita/robótica (gTTS, espeak, voz do sistema) — sem ElevenLabs e sem gravação, faça o vídeo sem voz.
+
+**Detectar e oferecer o ElevenLabs** (antes da pergunta da voz):
+1. `python3 $SK/scripts/voice.py --check` → diz se há `ELEVENLABS_API_KEY` (e se o faster-whisper está instalado).
+2. No agente, ferramentas do **conector ElevenLabs** (Claude: `creative_list_voices`, `creative_generate_speech`,
+   `creative_get_flow_run_status`) também contam.
+3. Nenhum dos dois → **ofereça**: "Se você tiver conta no ElevenLabs, dá para ter narração com voz profissional —
+   conecte o ElevenLabs nos conectores do app, ou me passe a chave da API." Se ele não tiver, sua voz ou sem voz.
+
+**Escolher a voz** (sugira 3, com prévia): idioma e sotaque do público (pt-BR, es-PY…), gênero/idade coerentes com a
+marca, energia da direção de arte (premium → calma, grave; varejo → animada). Pela API: `voice.py --voices pt` lista
+id, nome, características e o link da prévia. Pelo conector: `creative_list_voices` com `languages:['pt']`,
+`use_cases:['social_media','advertisement','informative_educational']` e `descriptives` do tom.
+
+**Gerar pelo conector ElevenLabs** (quando não há chave da API):
+1. `creative_generate_speech` com o **texto limpo** (sem `[marcadores]` nem `*`), `model_id:'eleven_multilingual_v2'`
+   (ou `eleven_v3` para direção de fala), a `voice_id` escolhida e `generations_count:1` (gasta créditos do usuário;
+   use `estimate_only:true` antes se o texto for longo). Nunca chame de novo para "tentar outra vez" — cobra de novo.
+2. Consulte `creative_get_flow_run_status` (esperando `poll_after_seconds`) até terminar; pegue o link do áudio gerado
+   e baixe para `$WORK/voice/narracao_el.mp3`. Se o download for bloqueado no ambiente, peça ao usuário para baixar o
+   áudio pelo link do flow (`url`) e anexar.
+3. `python3 $SK/scripts/voice.py $WORK/narracao.txt --audio $WORK/voice/narracao_el.mp3` (alinha palavra por palavra).
+
 | Situação | Comando | Sincronia |
 |---|---|---|
 | Chave da API do ElevenLabs no ambiente (`ELEVENLABS_API_KEY`) | `python3 $SK/scripts/voice.py narracao.txt --elevenlabs <VOICE_ID>` | exata (tempo de cada letra devolvido pela API) |

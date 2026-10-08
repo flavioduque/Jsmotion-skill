@@ -1,4 +1,6 @@
 """Uso: python3 voice.py narracao.txt  (--elevenlabs VOICE_ID | --audio voz.mp3 | --estimate)  [opções]
+       python3 voice.py --check          (o que está disponível: chave do ElevenLabs, faster-whisper)
+       python3 voice.py --voices pt      (lista vozes do ElevenLabs no idioma, para sugerir 3 ao usuário)
 Transforma o texto da narração em LINHA DO TEMPO POR PALAVRA (words.json) — é ela que dita o ritmo do vídeo narrado.
 
 Fontes da voz (escolha uma):
@@ -20,6 +22,24 @@ import sys, os, re, json, base64, subprocess, difflib, unicodedata, urllib.reque
 from _paths import workdir
 
 args = sys.argv[1:]
+EL_KEY = os.environ.get('ELEVENLABS_API_KEY')
+def el_get(path):
+    req = urllib.request.Request('https://api.elevenlabs.io' + path, headers={'xi-api-key': EL_KEY})
+    return json.loads(urllib.request.urlopen(req, timeout=60).read())
+if args[:1] == ['--check']:
+    try: import faster_whisper; fw = True
+    except Exception: fw = False
+    print(f"ElevenLabs (ELEVENLABS_API_KEY): {'sim' if EL_KEY else 'não'}")
+    print(f"faster-whisper (alinhar voz pronta): {'sim' if fw else 'não — bash $SK/scripts/install_watch.sh --voz'}")
+    sys.exit(0)
+if args[:1] == ['--voices']:
+    if not EL_KEY: sys.exit('❌ sem ELEVENLABS_API_KEY')
+    lang = (args[1] if len(args) > 1 else 'pt').lower()
+    for v in el_get('/v2/voices?page_size=100').get('voices', []):
+        lb = v.get('labels') or {}; langs = [x.get('language', '') for x in v.get('verified_languages') or []]
+        if lang in (lb.get('language', '') or '').lower() or lang in langs or not langs:
+            print(f"{v['voice_id']}  {v.get('name','')}  · {lb.get('gender','')} {lb.get('age','')} {lb.get('accent','')} · {lb.get('descriptive','') or lb.get('description','')} · {v.get('preview_url','')}")
+    sys.exit(0)
 def opt(flag, default=None, cast=str):
     if flag in args: i = args.index(flag); v = args[i+1]; del args[i:i+2]; return cast(v)
     return default
@@ -88,7 +108,7 @@ voice_mp3 = os.path.join(out, 'narracao.mp3')
 
 # ---------- 2a. ElevenLabs (tempos exatos por caractere) ----------
 if el_voice:
-    key = os.environ.get('ELEVENLABS_API_KEY')
+    key = EL_KEY
     if not key: sys.exit('❌ defina ELEVENLABS_API_KEY (ou gere a voz em outra ferramenta e use --audio)')
     body = json.dumps({'text': text, 'model_id': os.environ.get('ELEVENLABS_MODEL', 'eleven_multilingual_v2'),
                        'voice_settings': {'stability': 0.45, 'similarity_boost': 0.8, 'style': 0.3}}).encode()

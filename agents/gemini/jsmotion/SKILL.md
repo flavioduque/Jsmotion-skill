@@ -171,8 +171,16 @@ pergunte se não houver nenhuma fonte ou se a logo for só preto/branco.
    (a voz conduz, o texto entra palavra por palavra; explicar, opinar, bastidor; 30–90 s) · 2. **Encarte animado**
    (produtos, provas, preço, CTA; 15–40 s) · 3. **Texto cinético sem voz** (no ritmo da trilha). Recomende 1 se a
    referência for narrada ou com texto palavra por palavra, ou se o assunto precisa de explicação; 2 para catálogo/promoção.
-   No narrado, pergunte também a **voz**: 1. **Gerar com ElevenLabs** (você escolhe entre 3 vozes que eu sugiro) ·
-   2. **Sua voz** (grava no celular e me manda o áudio) · 3. Sem voz. E siga `references/narrado.md` em tudo.
+   No narrado, **antes** de perguntar a voz, veja se o ElevenLabs está disponível: `python3 $SK/scripts/voice.py --check`
+   (chave `ELEVENLABS_API_KEY`) **ou** ferramentas do conector ElevenLabs no seu agente (ex.: `creative_list_voices` /
+   `creative_generate_speech`). Pergunta da **voz**:
+   - **Com ElevenLabs disponível** (recomende): 1. **Narração profissional com ElevenLabs** (sugiro 3 vozes no idioma e
+     tom do vídeo, com a prévia de cada uma) · 2. Sua voz (grava no celular e manda) · 3. Sem voz.
+   - **Sem ElevenLabs**: **ofereça** — "Se você tiver conta no ElevenLabs, dá para ter narração com voz profissional:
+     conecte o ElevenLabs (conectores do app) ou me passe a chave da API (`ELEVENLABS_API_KEY`)." Opções: 1. Vou
+     conectar o ElevenLabs · 2. Sua voz gravada · 3. Sem voz (texto no ritmo da trilha).
+   **Nunca** use voz sintética gratuita/robótica (gTTS, espeak, voz do sistema): soa amadora e derruba o vídeo — sem
+   ElevenLabs e sem gravação, faça sem voz. Siga `references/narrado.md` em tudo.
    No narrado, a pergunta 2 (duração) vem do texto (~2,5 palavras/s), a 4 (gancho) vira a 1ª frase da narração e a 5 se pula.
 1. **É para redes sociais? Onde vai postar (formatos)** — 1. **Pacote completo: 9:16 + 1:1 + 16:9** (Reels/TikTok + feed/LinkedIn + YouTube/site, tudo do mesmo vídeo) · 2. Só vertical 9:16 (Reels/TikTok/Shorts) · 3. Outro formato ou combinação (4:5, 1:1, 16:9 — ex.: site, apresentação, TV). Guarde **em quais redes** ele vai postar (vale para a pergunta 8). Recomende o pacote (padrão); se ele citar um destino só, recomende o formato dele. O formato **principal** (o primeiro) é o que você revisa com mais cuidado.
 2. **Duração** — ofereça 3 opções coerentes com o formato (ex.: 15s · 25s · 40s) e diga que ele pode **digitar qualquer duração** (aceite de 6s a 90s). Padrão 25s. Diga quanto conteúdo cabe em cada uma.
@@ -221,8 +229,9 @@ promessa ~12% · final logo+CTA **2,5s fixos**. Menos de 15s: junte virada+conte
    - Efeitos que o kit não tem (telas de UI flutuando, partícula condutora, clipes de vídeo): veja como o
      `templates/example_anim.js` faz (`references/engine.md`) e traga a técnica para uma cena própria — sem trazer o visual.
    - **Vídeo narrado** (`references/narrado.md`): salve o texto aprovado em `$WORK/narracao.txt` e gere a linha do
-     tempo: `python3 $SK/scripts/voice.py $WORK/narracao.txt --elevenlabs <VOICE_ID>` (com `ELEVENLABS_API_KEY`) ·
-     `--audio voz.mp3` (voz do usuário ou gerada em outra ferramenta, ex.: conector do ElevenLabs) · `--estimate` (sem voz).
+     tempo: `python3 $SK/scripts/voice.py $WORK/narracao.txt --elevenlabs <VOICE_ID>` (com `ELEVENLABS_API_KEY`;
+     vozes: `voice.py --voices pt`) · conector ElevenLabs: gere o MP3 pelo conector e use `--audio narracao.mp3`
+     (passo a passo em `references/narrado.md`) · `--audio voz.mp3` (gravação do usuário) · `--estimate` (sem voz).
      Confira os tempos de cada marcador que ele imprime. No `SCRIPT`, use `mark:'nome'` em cada cena (`fala`,
      `gigante`, `caixa`, `contador` ou qualquer cena pronta/própria) e defina no `STYLE` os tokens `kinetic`, `post`,
      `hud`, `camera` e `sound.duck` coerentes com a direção (mono do HUD: `get_font.py "…" --role mono`).
