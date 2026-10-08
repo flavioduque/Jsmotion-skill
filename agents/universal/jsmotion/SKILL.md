@@ -21,6 +21,8 @@ Arquivos da skill (abaixo `$SK` — ver "Neste agente"):
 - `scripts/paths.sh` — define `$WORK` (trabalho) e `$OUT` (entregas); ver Passo 0
 - `scripts/install_watch.sh` — instala a skill watch + yt-dlp, ffmpeg, playwright, brotli
 - `scripts/watch_reference.sh` — assiste o vídeo de referência e gera folha de contato
+- `scripts/find_reference.py` — **busca referências sozinha** no prompt-motion.com (galeria de motion feito com Claude,
+  com o prompt de cada vídeo): capas por formato → quadros dos candidatos → baixa a escolhida
 - `scripts/scrape_site.py` — cores, fontes, **textos de marketing** (títulos, frases, botões, preços, números) e mídias do site
 - `scripts/prep_assets.py` — empacota logo/imagens/clipes/fonte em data URIs (`assets.js`); logo sem transparência com
   fundo liso tem o fundo removido sozinho
@@ -108,6 +110,19 @@ Use sempre `$WORK` e `$OUT` — nunca caminhos fixos. Se o Chromium já existir,
 
 Faça tudo o que for possível sozinho, para perguntar menos:
 
+0. **Sem vídeo de referência do usuário? Busque você mesmo** no [prompt-motion.com](https://www.prompt-motion.com)
+   (vídeos de motion feitos com Claude + o prompt de cada um) — não pergunte antes, só faça:
+   - `python3 $SK/scripts/find_reference.py sheet --format <formato principal>` → veja a folha de capas (com `--format all`
+     se houver poucas) e pré-selecione **3–5 candidatos** que combinam com a marca, o tema, o público e o tipo de vídeo
+     (narrado × encarte; sóbrio × energético; claro × escuro; com produto/foto real × só tipografia).
+   - `python3 $SK/scripts/find_reference.py peek <slug1> <slug2> …` → veja os 10 quadros de cada um e leia o prompt
+     (`peek.md`). Escolha a **melhor** e mais 2 alternativas de linguagens diferentes.
+   - `python3 $SK/scripts/find_reference.py get <slug>` → caminho do vídeo; siga com ele no `watch_reference.sh` abaixo.
+   - No resumo do Passo 1, diga qual referência escolheu e **por quê** (título, @criador, link do post) e mostre as 2
+     alternativas — elas viram as opções da pergunta 3 (direção de arte). O usuário pode trocar ou mandar a dele.
+   - Os vídeos e prompts são dos criadores: use **só como referência de estilo** (ritmo, composição, tipografia,
+     transições); nunca copie conteúdo, marca ou quadros, e nunca reutilize o vídeo. Credite o @criador quando citar.
+   - Site fora do ar ou bloqueado no ambiente? Siga sem referência (a análise decide) e diga isso no resumo.
 1. **Vídeo(s) de referência** — arquivo anexado **ou link** (YouTube, Instagram, TikTok, **Pinterest — só pin de vídeo**,
    Vimeo, X, link direto .mp4). **Não funcionam:** links do **Dribbble** (bloqueia download automático) e **pastas ou
    pins de imagem do Pinterest** — peça o arquivo do vídeo (no Dribbble: botão direito no vídeo → "Salvar vídeo como…")
@@ -172,7 +187,8 @@ e som. **Não existe estilo padrão**: nunca parta do visual dos exemplos da ski
 
 Prepare 3 direções para a pergunta de estilo do Passo 2. Com referência, a 1ª (recomendada) é **fiel à referência**
 com a identidade da marca; as outras duas são variações dela (ex.: mais calma / mais enérgica), nunca estilos
-desligados da referência. Sem referência, 3 direções diferentes geradas pela análise.
+desligados da referência. Referência escolhida por você no prompt-motion (item 0 do Passo 1): a 1ª é fiel à escolhida;
+a 2ª e a 3ª, fiéis às alternativas (cada uma com o link). Sem referência nenhuma, 3 direções geradas pela análise.
 
 ## Passo 2 — Perguntas (no máximo 9, UMA por vez)
 
