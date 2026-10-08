@@ -295,6 +295,9 @@ For videos that **explain, take a stance or show behind the scenes**, the voice 
   hits, light sweeps, a camera that never stops, motion blur on the final render and music that **ducks by itself**
   while someone speaks.
 - **Preview before rendering.** A fast preview (half resolution, 15 fps) to approve pacing and sync.
+- **Real soundtrack.** ElevenLabs Music (at the exact video length), your own track or one from a free library —
+  `music.py` finds BPM and beats, and scene changes land on the beat. The in-code soundtrack stays as a free option
+  (lower quality), and sound effects are still synthesized.
 
 Guide (Portuguese): [`references/narrado.md`](references/narrado.md) · example: [`examples/narrado`](examples/narrado).
 
@@ -498,6 +501,7 @@ jsmotion/
 │   ├── scrape_site.py       🌐 colors, fonts, marketing copy (headlines, prices, numbers), images and videos from the site (SPA-friendly)
 │   ├── brand_palette.py     🎨 brand palette from the logo (no website): roles, contrast and swatch
 │   ├── get_font.py          🔤 downloads any Google Fonts family for the art direction
+│   ├── music.py             🎵 real soundtrack (your track, free library or ElevenLabs Music) → BPM and beats
 │   ├── voice.py             🎙️ narration → voice + per-word timeline (ElevenLabs, your recording or no voice)
 │   ├── prep_assets.py       🧳 logo, images, clips and font → data URIs (assets.js); removes flat backgrounds from non-transparent logos
 │   ├── build_html.py        🧱 merges shell + assets + animation into one offline .html
@@ -622,6 +626,7 @@ Yes — there is no default font. Claude picks the type pairing during art direc
 - [x] Style-less scene engine (`kit.js` + `STYLE`) and any Google Font
 - [ ] Automatic burned-in captions
 - [x] Narrated video: voice (ElevenLabs or your recording) → word-by-word text, HUD, bloom, living camera ([`examples/narrado`](examples/narrado))
+- [x] Real soundtrack (external track or ElevenLabs Music) with BPM, beats and ducking under the voice
 - [ ] Continuous stage: elements that travel across scenes and a camera that "dives" into them
 - [ ] UI component library (code editor, timeline, charts, phone, chat)
 - [ ] "Filmed screen" mode: the video mapped onto a real monitor filmed by the user

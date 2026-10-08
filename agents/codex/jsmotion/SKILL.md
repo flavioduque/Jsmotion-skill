@@ -31,6 +31,8 @@ Arquivos da skill (abaixo `$SK` — ver "Neste agente"):
 - `scripts/brand_palette.py` — **paleta da marca a partir da logo** (e de outros materiais) quando não há site: cores
   reais, papéis do `STYLE`, contraste conferido e amostra `palette.png` para mostrar ao usuário
 - `scripts/get_font.py` — baixa **qualquer** família do Google Fonts (a fonte vem da direção de arte, não é fixa)
+- `scripts/music.py` — **trilha de verdade**: faixa do usuário/biblioteca/gerada (ou ElevenLabs Music com a duração
+  exata) → volume normalizado + BPM + batidas (`music.json`); o kit encaixa as trocas de cena na batida
 - `scripts/voice.py` — **vídeo narrado**: narração (`narracao.txt` com `[marcadores]` e `*destaques*`) → voz + linha do
   tempo por palavra (`words.json`) — ElevenLabs, áudio pronto (alinhado com faster-whisper) ou estimativa sem voz
 - `templates/kit.js` — **KIT DE CENAS, motor sem estilo próprio**: o visual vem do objeto `STYLE` (paleta, fontes,
@@ -191,8 +193,15 @@ pergunte se não houver nenhuma fonte ou se a logo for só preto/branco.
 4. **Frase de abertura (gancho dos 3 primeiros segundos)** — 3 frases no idioma do vídeo: uma pergunta provocativa, uma afirmação forte, uma promessa de velocidade/resultado.
 5. **Elemento que acompanha o vídeo todo** (só se a direção de arte pedir um; senão pule — a moldura da marca e as
    metáforas do tema fazem esse papel) — ex.: faísca de luz que "liga" cada tela · anel de luz · linha que se desenha (inspire-se no da referência).
-6. **Som** — 3 climas coerentes com a direção (premium · energético · calmo · épico · minimalista), recomendando o que
-   combina com o tom.
+6. **Trilha** — de onde vem a música (o clima — premium · energético · calmo · épico · minimalista — sai da direção de
+   arte e vira a descrição da trilha). Antes, veja se há ElevenLabs (`voice.py --check` ou conector no agente) e
+   recomende a melhor opção disponível:
+   1. **ElevenLabs Music** (só se disponível; gasta créditos dele) — trilha instrumental gerada com a duração exata do vídeo.
+   2. **Sua faixa** — um arquivo dele ou de biblioteca grátis com uso comercial (Pixabay Music, YouTube Audio Library).
+   3. **Trilha criada aqui** (sintetizada no código, grátis) — **avise que a qualidade é inferior** à de uma faixa real.
+   4. **Sem trilha no arquivo** — ele coloca o som em alta no Instagram/TikTok (bom para alcance); o vídeo sai com voz e efeitos.
+   Sem ElevenLabs, ofereça: "Se você tiver conta no ElevenLabs, dá para gerar uma trilha profissional na duração exata."
+   Os efeitos (whooshes, impactos, subidas, tiques) são sempre criados aqui, em qualquer opção.
 7. **Chamada final** (logo + CTA por 2,5s) — 3 frases; recomende a que "fecha" o gancho.
 8. **Copy para postar** (só se o vídeo for para redes sociais) — "Quer que eu entregue também a legenda pronta
    para postar (gancho, texto, chamada e hashtags, uma versão por rede)?" · 1. **Sim, com emojis** · 2. Sim, sem
@@ -236,7 +245,11 @@ promessa ~12% · final logo+CTA **2,5s fixos**. Menos de 15s: junte virada+conte
      Confira os tempos de cada marcador que ele imprime. No `SCRIPT`, use `mark:'nome'` em cada cena (`fala`,
      `gigante`, `caixa`, `contador` ou qualquer cena pronta/própria) e defina no `STYLE` os tokens `kinetic`, `post`,
      `hud`, `camera` e `sound.duck` coerentes com a direção (mono do HUD: `get_font.py "…" --role mono`).
-3. Crie `config.json` (no narrado, com `"voice": "$WORK/voice/words.json"`) e rode `python3 $SK/scripts/prep_assets.py config.json $WORK/assets.js`
+   - **Trilha** (pergunta 6): `python3 $SK/scripts/music.py --file trilha.mp3 [--start 12]` (faixa dele, de biblioteca ou
+     gerada por um conector) · `--elevenlabs "descrição: gênero, clima, instrumentos, BPM" --dur <duração do vídeo>` (com
+     `ELEVENLABS_API_KEY`) → `$WORK/music/music.json`. Trilha criada aqui: não rode nada (`STYLE.sound.mood` e `bpm`
+     fazem). Sem trilha no arquivo (som em alta no app): `STYLE.sound.bed:false` (só efeitos; com voz, a voz fica).
+3. Crie `config.json` (no narrado, com `"voice": "$WORK/voice/words.json"`; com trilha, `"music": "$WORK/music/music.json"`) e rode `python3 $SK/scripts/prep_assets.py config.json $WORK/assets.js`
    (clipes de vídeo: trechos de 1,5–3,5s a 15 fps; mantenha o total < ~8 MB).
 4. Monte os .html de todos os formatos pedidos (sem renderizar ainda):
    `python3 $SK/scripts/pack.py $WORK/anim.js $WORK/assets.js <nome> "<Título>" --formats 9x16,1x1,16x9 --html-only`

@@ -59,5 +59,15 @@ with sync_playwright() as p:
 shutil.rmtree(tmp,ignore_errors=True)
 print(f'{dst} pronto em {round(time.time()-T0)}s')
 if norm:
-    i,tp=loud(dst); print(f"volume: {i:.1f} LUFS (alvo {lufs:g}) · pico {tp:.1f} dBTP (máx {TP:g})")
+    i,tp=loud(dst)
+    if tp>TP:   # o AAC às vezes cria picos acima do limitador (comum com trilha externa): baixa só o áudio, vídeo intacto
+        fx=dst+'.fix.mp4'; lim2=10**((TP-1.0-(tp-TP)-0.5)/20)   # limitador mais baixo na diferença do excesso
+        af=f'aresample=192000,alimiter=limit={lim2:.4f}:level=disabled:attack=0.5:release=50,aresample=48000'
+        subprocess.run(['ffmpeg','-loglevel','error','-y','-i',dst,'-c:v','copy','-af',af,'-c:a','aac','-b:a','192k',
+                        '-movflags','+faststart',fx],check=True); os.replace(fx,dst); i,tp=loud(dst)
+        g=min(lufs-i, TP-0.4-tp)                          # devolve o volume perdido, sem passar do pico
+        if g>0.2:
+            subprocess.run(['ffmpeg','-loglevel','error','-y','-i',dst,'-c:v','copy','-af',f'volume={g:.2f}dB','-c:a','aac','-b:a','192k',
+                            '-movflags','+faststart',fx],check=True); os.replace(fx,dst); i,tp=loud(dst)
+    print(f"volume: {i:.1f} LUFS (alvo {lufs:g}) · pico {tp:.1f} dBTP (máx {TP:g})")
 if shutil.which('ffprobe'): subprocess.run(['ffprobe','-v','error','-show_entries','format=duration,size:stream=codec_name,width,height','-of','compact',dst])

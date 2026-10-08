@@ -293,6 +293,9 @@ Para vídeos que **explicam, opinam ou contam um bastidor**, a voz conduz tudo �
   (bloom), aberração cromática nos impactos, varredura de luz, câmera que nunca para, desfoque de movimento no render
   final e trilha que **abaixa sozinha** enquanto alguém fala.
 - **Prévia antes do render.** Uma prévia rápida (metade da resolução, 15 fps) para aprovar ritmo e sincronia.
+- **Trilha de verdade.** ElevenLabs Music (na duração exata do vídeo), a sua faixa ou uma de biblioteca grátis — o
+  `music.py` acha o BPM e as batidas, e as trocas de cena caem na batida. A trilha criada no código continua como
+  opção grátis (qualidade inferior), e os efeitos sonoros seguem sintetizados.
 
 Guia: [`references/narrado.md`](references/narrado.md) · exemplo: [`examples/narrado`](examples/narrado).
 
@@ -497,6 +500,7 @@ jsmotion/
 │   ├── scrape_site.py       🌐 cores, fontes, textos de marketing (títulos, preços, números), imagens e vídeos do site (funciona com SPA)
 │   ├── brand_palette.py     🎨 paleta da marca a partir da logo (sem site): papéis, contraste e amostra
 │   ├── get_font.py          🔤 baixa qualquer família do Google Fonts para a direção de arte
+│   ├── music.py             🎵 trilha de verdade (sua faixa, biblioteca grátis ou ElevenLabs Music) → BPM e batidas
 │   ├── voice.py             🎙️ narração → voz + linha do tempo por palavra (ElevenLabs, sua gravação ou sem voz)
 │   ├── prep_assets.py       🧳 logo, imagens, clipes e fonte → data URIs (assets.js); tira fundo liso de logo sem transparência
 │   ├── build_html.py        🧱 junta shell + assets + animação num .html único e offline
@@ -621,6 +625,7 @@ Sim — não existe fonte padrão. O Claude escolhe o par tipográfico na direç
 - [x] Motor de cenas sem estilo (`kit.js` + `STYLE`) e qualquer fonte do Google Fonts
 - [ ] Legendas automáticas queimadas no vídeo
 - [x] Vídeo narrado: voz (ElevenLabs ou gravação) → texto palavra por palavra, HUD, bloom, câmera viva ([`examples/narrado`](examples/narrado))
+- [x] Trilha de verdade (faixa externa ou ElevenLabs Music) com BPM, batidas e ducking sob a voz
 - [ ] Palco contínuo: elementos que atravessam cenas e câmera que "entra" neles
 - [ ] Biblioteca de componentes de interface (editor de código, timeline, gráficos, celular, chat)
 - [ ] Modo "tela filmada": o vídeo aplicado na tela de um monitor real filmado pelo usuário
