@@ -1,73 +1,90 @@
-"""Uso: python3 render.py pagina.html saida.mp4 [--lufs -14 | --no-norm] [--draft] [--mb 4] [--shutter 0.5]
-Renderiza quadro a quadro (determinístico via render(t)) no Chromium headless + áudio do OfflineAudioContext -> MP4 H.264/AAC.
-O áudio é masterizado para -14 LUFS (padrão de Instagram, TikTok e YouTube) com pico real abaixo de -1,5 dBTP:
-ganho + limitador com superamostragem (192 kHz), ajustado em poucas iterações até bater o alvo.
---draft: prévia rápida (metade da resolução, 15 fps) para aprovar ritmo e sincronia da voz antes do render final.
---mb N: desfoque de movimento (N subquadros por quadro, obturador --shutter 0,5 quadro): mais cinematográfico, N× mais lento.
-CHROMIUM_PATH=/caminho/chrome usa um Chromium já instalado (evita "playwright install")."""
-import base64,subprocess,sys,time,os,shutil,json,re,tempfile
-from playwright.sync_api import sync_playwright
-args=sys.argv[1:]; lufs=-14.0; norm=True
-if '--no-norm' in args: norm=False; args.remove('--no-norm')
-if '--lufs' in args: i=args.index('--lufs'); lufs=float(args[i+1]); del args[i:i+2]
-draft='--draft' in args
-if draft: args.remove('--draft')
-mb,shutter=1,0.5
-if '--mb' in args: i=args.index('--mb'); mb=int(args[i+1]); del args[i:i+2]
-if '--shutter' in args: i=args.index('--shutter'); shutter=float(args[i+1]); del args[i:i+2]
-if draft: mb=1
-page,dst=args[0],args[1]; T0=time.time(); TP=-1.5
-tmp=tempfile.mkdtemp(prefix='jsmotion_render_')  # único por execução: renders em paralelo não se atropelam
-wav=os.path.join(tmp,'audio.wav')
+"""Render do projeto Remotion (o motor da jsmotion).
 
-def loud(path):
-    """Mede LUFS integrado e pico real (dBTP) com o loudnorm do ffmpeg."""
-    r=subprocess.run(['ffmpeg','-hide_banner','-nostats','-i',path,'-af',f'loudnorm=I={lufs}:TP={TP}:print_format=json','-f','null','-'],
-        capture_output=True,text=True)
-    m=json.loads(re.findall(r'\{[^{}]*\}',r.stderr)[-1]); return float(m['input_i']),float(m['input_tp'])
+  python3 render.py PROJ NOME --stills 0.5 2 4.2 …  [--format 9x16] [--ref $WORK/ref/sheet.jpg] [-o folha.jpg]
+        → folha de revisão com os instantes pedidos (veja antes de renderizar o vídeo)
+  python3 render.py PROJ NOME --formats 9x16,1x1,16x9 [--draft]
+        → $OUT/NOME_9x16.mp4 … (H.264, áudio masterizado em −14 LUFS / pico −1,5 dBTP)
+        --draft = prévia rápida em meia resolução ($OUT/NOME_9x16_previa.mp4) para aprovar ritmo e sincronia
 
-def master(src,dst):
-    """Leva o áudio a `lufs` sem estourar: ganho + limitador (teto 1 dB abaixo de TP, margem para o AAC).
-    O limitador "come" parte do ganho, então o ajuste usa o método da secante (converge em 2–4 passos)."""
-    lim=10**((TP-1.0)/20)
-    def apply(g):
-        af=f'volume={g:.2f}dB,aresample=192000,alimiter=limit={lim:.4f}:level=disabled:attack=1:release=60,aresample=48000'
-        subprocess.run(['ffmpeg','-loglevel','error','-y','-i',src,'-af',af,dst],check=True); return loud(dst)[0]
-    g0=lufs-loud(src)[0]; r0=apply(g0); g1=g0+(lufs-r0)
-    if abs(lufs-r0)<0.15: return
-    for _ in range(5):
-        r1=apply(g1)
-        if abs(lufs-r1)<0.15: return
-        k=min(1,max(0.2,(r1-r0)/(g1-g0))) if g1!=g0 else 1
-        g0,r0,g1=g1,r1,g1+(lufs-r1)/k
+Chromium: usa REMOTION_BROWSER/CHROMIUM_PATH ou o do Playwright, se existir; senão o Remotion baixa o dele.
+Render longo? Rode em segundo plano (nohup … &) e acompanhe o log até aparecer "total:"."""
+import os, sys, glob, json, shutil, subprocess, tempfile, time, re
+from _paths import workdir, outdir
 
-with sync_playwright() as p:
-    b=p.chromium.launch(executable_path=os.environ.get('CHROMIUM_PATH') or None); pg=b.new_page()
-    pg.goto('file://'+os.path.abspath(page)); pg.wait_for_function('window.READY===true',timeout=180000)
-    DUR,FPS=pg.evaluate('[DUR,FPS]')
-    open(wav,'wb').write(base64.b64decode(pg.evaluate('getWav()')))
-    if norm:
-        nw=os.path.join(tmp,'audio_master.wav'); master(wav,nw); wav=nw
-    step=2 if draft else 1; vf=['-vf','scale=iw/2:-2'] if draft else []
-    enc=['-preset','veryfast','-crf','26'] if draft else ['-preset','slow','-crf','17']
-    ff=subprocess.Popen(['ffmpeg','-loglevel','error','-y','-f','image2pipe','-framerate',str(FPS/step),'-c:v','mjpeg','-i','-','-i',wav,
-        *vf,'-c:v','libx264',*enc,'-pix_fmt','yuv420p','-profile:v','high','-c:a','aac','-b:a','192k',
-        '-movflags','+faststart','-shortest',dst],stdin=subprocess.PIPE)
-    for f in range(0,round(DUR*FPS),step):
-        d=pg.evaluate(f'renderFrameMB({f/FPS},{mb},{shutter})'); ff.stdin.write(base64.b64decode(d.split(',')[1]))
-    ff.stdin.close(); ff.wait(); b.close()
-shutil.rmtree(tmp,ignore_errors=True)
-print(f'{dst} pronto em {round(time.time()-T0)}s')
-if norm:
-    i,tp=loud(dst)
-    if tp>TP:   # o AAC às vezes cria picos acima do limitador (comum com trilha externa): baixa só o áudio, vídeo intacto
-        fx=dst+'.fix.mp4'; lim2=10**((TP-1.0-(tp-TP)-0.5)/20)   # limitador mais baixo na diferença do excesso
-        af=f'aresample=192000,alimiter=limit={lim2:.4f}:level=disabled:attack=0.5:release=50,aresample=48000'
-        subprocess.run(['ffmpeg','-loglevel','error','-y','-i',dst,'-c:v','copy','-af',af,'-c:a','aac','-b:a','192k',
-                        '-movflags','+faststart',fx],check=True); os.replace(fx,dst); i,tp=loud(dst)
-        g=min(lufs-i, TP-0.4-tp)                          # devolve o volume perdido, sem passar do pico
-        if g>0.2:
-            subprocess.run(['ffmpeg','-loglevel','error','-y','-i',dst,'-c:v','copy','-af',f'volume={g:.2f}dB','-c:a','aac','-b:a','192k',
-                            '-movflags','+faststart',fx],check=True); os.replace(fx,dst); i,tp=loud(dst)
-    print(f"volume: {i:.1f} LUFS (alvo {lufs:g}) · pico {tp:.1f} dBTP (máx {TP:g})")
-if shutil.which('ffprobe'): subprocess.run(['ffprobe','-v','error','-show_entries','format=duration,size:stream=codec_name,width,height','-of','compact',dst])
+a = sys.argv[1:]
+def opt(flag, default=None, many=False):
+    if flag not in a: return default
+    i = a.index(flag)
+    if many:
+        j = i + 1
+        while j < len(a) and not a[j].startswith('--') and a[j] != '-o': j += 1
+        v = a[i + 1:j]; del a[i:j]; return v
+    v = a[i + 1]; del a[i:i + 2]; return v
+stills = opt('--stills', None, many=True); fmt1 = opt('--format', '9x16'); ref = opt('--ref'); sheet = opt('-o')
+formats = opt('--formats', '9x16').split(','); draft = '--draft' in a
+a = [x for x in a if x != '--draft']
+if len(a) < 2: sys.exit(__doc__)
+proj, name = os.path.abspath(a[0]), a[1]
+
+def browser():
+    for e in ('REMOTION_BROWSER', 'CHROMIUM_PATH'):
+        if os.environ.get(e): return os.environ[e]
+    roots = [os.environ.get('PLAYWRIGHT_BROWSERS_PATH', ''), '/opt/pw-browsers', os.path.expanduser('~/.cache/ms-playwright')]
+    for r in roots:
+        for pat in ('chromium_headless_shell-*/chrome-linux/headless_shell', 'chromium_headless_shell-*/chrome-*/headless_shell',
+                    'chromium-*/chrome-linux/chrome'):
+            hit = sorted(glob.glob(os.path.join(r, pat)))
+            if r and hit: return hit[-1]
+env = dict(os.environ); b = browser()
+if b: env['REMOTION_BROWSER'] = b
+npx = ['npx', '--no-install', 'remotion']
+def run(cmd):
+    p = subprocess.run(cmd, cwd=proj, env=env, capture_output=True, text=True)
+    if p.returncode: sys.exit(f'❌ {" ".join(cmd[:4])}…\n{(p.stdout + p.stderr)[-3000:]}')
+    return p.stdout
+
+t0 = time.time()
+build = os.path.join(proj, '.bundle')
+run(npx + ['bundle', 'src/index.ts', '--out-dir', build])       # empacota uma vez; stills e formatos usam o mesmo
+conc = str(max(1, min(os.cpu_count() or 2, 4)))
+
+if stills:
+    tmp = tempfile.mkdtemp(prefix='jsm_st_'); shots = []
+    for s in stills:
+        f = os.path.join(tmp, f'{float(s):07.2f}.jpg')
+        run(npx + ['still', build, f'v{fmt1}', f, f'--frame={round(float(s) * 30)}', '--jpeg-quality=80'] + (['--browser-executable', b] if b else []))
+        shots.append((s, f))
+    from PIL import Image, ImageDraw
+    ims = [Image.open(f) for _, f in shots]; w0, h0 = ims[0].size; tw = 300; th = round(h0 * tw / w0)
+    cols = min(8, len(ims)); rows = -(-len(ims) // cols)
+    top = None
+    if ref and os.path.exists(ref):
+        top = Image.open(ref).convert('RGB'); top = top.resize((tw * cols, round(top.height * tw * cols / top.width)))
+    out = Image.new('RGB', (tw * cols, th * rows + 26 * rows + (top.height if top else 0)), (18, 18, 18))
+    y0 = 0
+    if top: out.paste(top, (0, 0)); y0 = top.height
+    d = ImageDraw.Draw(out)
+    for i, ((s, _), im) in enumerate(zip(shots, ims)):
+        x, y = (i % cols) * tw, y0 + (i // cols) * (th + 26)
+        out.paste(im.convert('RGB').resize((tw, th)), (x, y + 26)); d.text((x + 6, y + 6), f'{float(s):.2f}s', fill=(240, 240, 240))
+    sheet = sheet or os.path.join(workdir(), f'review_{fmt1}.jpg'); out.save(sheet, quality=85)
+    shutil.rmtree(tmp, ignore_errors=True)
+    print(f'✅ folha de revisão → {sheet}  ({len(ims)} instantes, {time.time() - t0:.0f}s)')
+    sys.exit(0)
+
+os.makedirs(outdir(), exist_ok=True)
+for f in formats:
+    raw = os.path.join(proj, f'.raw_{f}.mp4')
+    cmd = npx + ['render', build, f'v{f}', raw, f'--concurrency={conc}', f'--crf={26 if draft else 16}', '--log=error']
+    if draft: cmd += ['--scale=0.5']
+    if b: cmd += ['--browser-executable', b]
+    t1 = time.time(); run(cmd)
+    dst = os.path.join(outdir(), f'{name}_{f}{"_previa" if draft else ""}.mp4')
+    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', raw, '-c:v', 'libx264', '-crf', '24' if draft else '20', '-preset', 'medium',
+                    '-pix_fmt', 'yuv420p', '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-ar', '48000', '-c:a', 'aac', '-b:a', '192k',
+                    '-movflags', '+faststart', dst], check=True)
+    os.remove(raw)
+    m = subprocess.run(['ffmpeg', '-nostats', '-i', dst, '-af', 'ebur128=peak=true', '-f', 'null', '-'], capture_output=True, text=True).stderr
+    lufs = re.findall(r'I:\s+(-?[\d.]+) LUFS', m); pk = re.findall(r'Peak:\s+(-?[\d.]+) dBFS', m)
+    print(f'✅ {dst}  {os.path.getsize(dst) / 1e6:.1f} MB · {f"{lufs[-1]} LUFS · pico {pk[-1]} dBFS" if lufs else "sem áudio"} · {time.time() - t1:.0f}s')
+print(f'total: {time.time() - t0:.0f}s')

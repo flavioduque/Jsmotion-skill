@@ -1,7 +1,7 @@
 """Uso: python3 music.py (--file trilha.mp3 | --elevenlabs "descrição da trilha" --dur 25) [opções]
-Prepara uma TRILHA DE VERDADE para o vídeo (no lugar da trilha sintetizada, que fica só com os efeitos):
-normaliza o volume, acha o andamento (BPM) e as batidas — o kit encaixa as trocas de cena e os pulsos na batida
-e abaixa a trilha sozinho quando alguém fala.
+Prepara a TRILHA do vídeo (public/trilha.mp3 via assets.py music):
+normaliza o volume, acha o andamento (BPM) e as batidas — as trocas de cena do Video.tsx se encaixam nessas batidas (src/music.json)
+o <Soundtrack> do kit abaixa a trilha sozinho quando alguém fala.
 
 Origens:
   --file arquivo        qualquer faixa: do usuário, de biblioteca grátis com uso comercial (Pixabay Music,
@@ -83,6 +83,6 @@ bpm, beats = beats_of(x)
 res = {'method': method, 'audio': 'trilha.mp3', 'dur': round(total, 3), 'start': round(start, 3), 'bpm': bpm, 'beats': beats}
 if dur: res['target'] = dur
 json.dump(res, open(os.path.join(out, 'music.json'), 'w'), indent=0)
-aviso = f' · ⚠️ a faixa ({total:.1f}s) é mais curta que o vídeo ({dur:g}s): o kit repete o final' if dur and total < dur else ''
+aviso = f' · ⚠️ a faixa ({total:.1f}s) é mais curta que o vídeo ({dur:g}s): gere de novo com --dur ou escolha outra faixa' if dur and total < dur else ''
 print(f'✅ trilha {total:.1f}s · {bpm or "?"} BPM · {len(beats)} batidas · início {start:.2f}s na faixa · {method}{aviso}')
 print(f'   → {os.path.join(out, "music.json")}')

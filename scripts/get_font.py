@@ -1,7 +1,7 @@
-"""Uso: python3 get_font.py "Nome da Família" [--role display|text|mono] [--out PASTA]   (mono = rótulos do HUD)
+"""Uso: python3 get_font.py "Nome da Família" [--role display|text|serif|mono] [--out PASTA]   (mono = rótulos do HUD)
 Baixa QUALQUER família do Google Fonts (recorte latino, woff2) — normal e itálico, se existir —
 para a direção de arte usar a fonte certa para a marca, em vez de uma fonte fixa.
-Imprime o trecho para o "fonts" do config.json. Ex.:
+Imprime o trecho para o STYLE.fonts (src/style.ts). Use --out $WORK/video/public/fonts. Ex.:
   python3 get_font.py "DM Serif Display" --role display
   python3 get_font.py "Space Grotesk" --role text
 Licenças: as fontes do Google Fonts são livres (OFL/Apache) para uso comercial em vídeo."""
@@ -56,4 +56,5 @@ for style, src in files.items():
         f.write(r.read())
     cfg[role if style == 'normal' else f'{role}_italic'] = path
     print(f'✅ {family} ({style}) → {path} ({os.path.getsize(path)//1024} KB)')
-print('"fonts" do config.json (junte display + text):', json.dumps(cfg, ensure_ascii=False))
+files_ts = ', '.join(f"{{file: 'fonts/{os.path.basename(p)}', weight: '100 900', style: '{'italic' if k.endswith('_italic') else 'normal'}'}}" for k, p in cfg.items())
+print(f"STYLE.fonts.{role} (src/style.ts): {{family: '{family}', weight: 600, files: [{files_ts}]}}")
