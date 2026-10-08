@@ -1,9 +1,9 @@
 ---
 name: jsmotion
-description: "Creates studio-quality motion-design videos in JavaScript: company, brand, product and app promos, Reels/TikTok/Shorts/YouTube/LinkedIn. Delivers ready MP4s (9:16, 1:1, 4:5 and 16:9 from the same code) with a soundtrack mastered to -14 LUFS, plus an .html with a \"Download MP4\" button. Also makes NARRATED videos: the voice (ElevenLabs, the user's recording or none) becomes a per-word timeline and the text appears as it is spoken (kinetic typography). Also REAL-FOOTAGE + 3D videos: the brand's own clips full screen, captions and real 3D keywords/numbers, never inventing scenes. Studies the reference and the brand site, asks a few questions, shows the script, then produces it. Use whenever the user asks for an animated, motion or narrated video, kinetic typography, a video of their company/brand/app, a Reels/TikTok video, \"jsmotion\", or attaches a reference video asking for something similar. PT: vídeo animado, motion, vídeo narrado, tipografia cinética, vídeo da minha empresa/marca/app, vídeo para Reels/TikTok."
+description: "Creates studio-quality motion-design videos in JavaScript: company, brand, product and app promos, Reels/TikTok/Shorts/YouTube/LinkedIn. Delivers ready MP4s (9:16, 1:1, 4:5 and 16:9 from the same code) with a soundtrack mastered to -14 LUFS, plus an .html with a \"Download MP4\" button. Also makes NARRATED videos: the voice (ElevenLabs, the user's recording or none) becomes a per-word timeline and the text appears as it is spoken (kinetic typography). Studies the reference and the brand site, asks a few questions, shows the script, then produces it. Use whenever the user asks for an animated, motion or narrated video, kinetic typography, a video of their company/brand/app, a Reels/TikTok video, \"jsmotion\", or attaches a reference video asking for something similar. PT: vídeo animado, motion, vídeo narrado, tipografia cinética, vídeo da minha empresa/marca/app, vídeo para Reels/TikTok."
 license: MIT
 metadata:
-  version: "1.3.0"
+  version: "1.3.1"
   author: Flavio Duque
 ---
 <!-- GERADO por tools/build_agents.py a partir do SKILL.md — não edite aqui. -->
@@ -35,9 +35,6 @@ Arquivos da skill (abaixo `$SK` — ver "Neste agente"):
 - `scripts/get_font.py` — baixa **qualquer** família do Google Fonts (a fonte vem da direção de arte, não é fixa)
 - `scripts/music.py` — **trilha de verdade**: faixa do usuário/biblioteca/gerada (ou ElevenLabs Music com a duração
   exata) → volume normalizado + BPM + batidas (`music.json`); o kit encaixa as trocas de cena na batida
-- `scripts/real3d.py` — **modo mídia real + 3D**: spec `real3d.json` (clipes reais, voz, palavras 3D, assinatura, CTA)
-  → revisão (`--still`) e MP4 em −14 LUFS; motor Remotion + three.js em `templates/real3d/` (fontes 3D via
-  `scripts/tofont.cjs`)
 - `scripts/voice.py` — **vídeo narrado**: narração (`narracao.txt` com `[marcadores]` e `*destaques*`) → voz + linha do
   tempo por palavra (`words.json`) — ElevenLabs, áudio pronto (alinhado com faster-whisper) ou estimativa sem voz
 - `templates/kit.js` — **KIT DE CENAS, motor sem estilo próprio**: o visual vem do objeto `STYLE` (paleta, fontes,
@@ -54,8 +51,6 @@ Arquivos da skill (abaixo `$SK` — ver "Neste agente"):
 - `references/copy.md` — **copy para postagem** (legenda por rede, gancho, CTA, hashtags, emojis ou não)
 - `references/narrado.md` — **vídeo narrado**: modelos de roteiro falado, marcação, voz, cenas `fala`/`gigante`/`caixa`/
   `contador`, tipografia cinética, HUD, pós (bloom, aberração, varredura), câmera, ducking, prévia e checklist
-- `references/real3d.md` — **mídia real + 3D**: regras de ouro (só referências reais), preparo dos clipes (upscale fiel,
-  recorte vertical), clipes de IA só a partir de referências reais e conferência de cortes, spec, revisão e render
 - `examples/narrado/` (no repositório) — exemplo completo de vídeo narrado (`narracao.txt` + `anim.js`)
 
 ---
@@ -93,8 +88,7 @@ Se o seu modelo não enxerga imagens, peça ao usuário para abrir `$WORK/review
 2. **IA de imagem/vídeo só a partir dessas referências** — e confira cada plano gerado; plano inventado sai do corte.
 3. **Roteiro/narração aprovados antes de produzir** (Passo 3). Nada de produzir "para testar" sem o "ok".
 4. **Números e fatos verificados** (site, material do cliente ou fonte pública citada); na dúvida, pergunte.
-5. **3D só onde soma**: palavras-chave, números e gráficos — nunca recriando cenário que a mídia real mostra.
-6. **Não refaça o que já foi aprovado/entregue**: confira o que já existe antes de renderizar de novo.
+5. **Não refaça o que já foi aprovado/entregue**: confira o que já existe antes de renderizar de novo.
 
 ## Passo 0 — Preparar o ambiente (silencioso)
 
@@ -200,9 +194,7 @@ pergunte se não houver nenhuma fonte ou se a logo for só preto/branco.
 
 0. **Tipo de vídeo** (pule se a referência ou o pedido já deixarem claro) — 1. **Narrado com tipografia cinética**
    (a voz conduz, o texto entra palavra por palavra; explicar, opinar, bastidor; 30–90 s) · 2. **Encarte animado**
-   (produtos, provas, preço, CTA; 15–40 s) · 3. **Texto cinético sem voz** (no ritmo da trilha) · 4. **Mídia real + 3D** (clipes reais em tela cheia, narração,
-   legendas e palavras/números em 3D de verdade; imóveis, produto físico, lugar, evento — ver `references/real3d.md`).
-   Recomende 4 quando o usuário tiver vídeos/renders reais do que vende; recomende 1 se a
+   (produtos, provas, preço, CTA; 15–40 s) · 3. **Texto cinético sem voz** (no ritmo da trilha). Recomende 1 se a
    referência for narrada ou com texto palavra por palavra, ou se o assunto precisa de explicação; 2 para catálogo/promoção.
    No narrado, **antes** de perguntar a voz, veja se o ElevenLabs está disponível: `python3 $SK/scripts/voice.py --check`
    (chave `ELEVENLABS_API_KEY`) **ou** ferramentas do conector ElevenLabs no seu agente (ex.: `creative_list_voices` /
@@ -254,10 +246,6 @@ gancho ~12% · virada/revelação ~12% · conteúdo (serviços/features) ~20% ·
 promessa ~12% · final logo+CTA **2,5s fixos**. Menos de 15s: junte virada+conteúdo e mostre até 3 itens.
 
 ## Passo 4 — Construção
-
-**Mídia real + 3D (tipo 4):** siga `references/real3d.md` — prepare os clipes, gere a voz e os tempos (`voice.py`),
-escreva `$WORK/real3d.json` com as cores/fontes do `estilo.md`, revise com `real3d.py … --still` e renderize com
-`real3d.py … --name <nome>` (o kit de canvas abaixo não é usado neste tipo).
 
 1. Leia `references/kit.md` (tokens, cenas, padrão de qualidade), `references/formats.md` e o seu `$WORK/ref/estilo.md`.
 2. `cp $SK/templates/kit.js $WORK/anim.js` e:

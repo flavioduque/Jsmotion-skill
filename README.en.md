@@ -306,19 +306,6 @@ For videos that **explain, take a stance or show behind the scenes**, the voice 
 
 Guide (Portuguese): [`references/narrado.md`](references/narrado.md) · example: [`examples/narrado`](examples/narrado).
 
-## 🏙️ New: real footage + 3D (real estate, products, places)
-
-For anything the customer needs to **actually see**: your own clips and renders full screen, narration, synced
-captions, a fixed signature band and **real 3D keywords and numbers** (extruded, bevelled, lit gold text with
-counting numbers), built with Remotion + three.js.
-
-- **Golden rules:** real references only — no invented scenes, places or people; AI video only from your own files,
-  checking every shot; script approved first; numbers with a source.
-- Low or horizontal clips become full-screen vertical with faithful upscaling and a camera-move crop.
-- One spec (`real3d.json`) describes it all; `scripts/real3d.py` renders review stills (`--still`) and the MP4 at −14 LUFS.
-
-Guide (PT): [`references/real3d.md`](references/real3d.md).
-
 ## 🎥 How it works
 
 ```mermaid

@@ -304,19 +304,6 @@ Para vídeos que **explicam, opinam ou contam um bastidor**, a voz conduz tudo �
 
 Guia: [`references/narrado.md`](references/narrado.md) · exemplo: [`examples/narrado`](examples/narrado).
 
-## 🏙️ Novo: mídia real + 3D (imóveis, produtos, lugares)
-
-Para quem vende algo que o cliente precisa **ver de verdade**: os seus próprios vídeos e renders em tela cheia,
-narração, legendas sincronizadas, assinatura fixa e **palavras-chave e números em 3D de verdade** (texto dourado
-extrudado, chanfrado e iluminado, com contador nos números), feito com Remotion + three.js.
-
-- **Regras de ouro:** só referências reais — nada de cenas, lugares ou pessoas inventadas; IA de vídeo só a partir
-  dos seus arquivos, conferindo cada plano; roteiro aprovado antes; números com fonte.
-- Clipes baixos ou horizontais viram tela cheia com upscale fiel e recorte vertical com movimento de câmera.
-- Uma spec (`real3d.json`) descreve tudo; `scripts/real3d.py` faz a revisão (`--still`) e o MP4 em −14 LUFS.
-
-Guia: [`references/real3d.md`](references/real3d.md).
-
 ## 🎥 Como funciona
 
 ```mermaid
@@ -541,7 +528,6 @@ jsmotion/
 │   ├── kit.md               🧩 tokens do STYLE, cenas, cenas próprias e padrão de qualidade
 │   ├── copy.md              📝 copy para postar: gancho, CTA, hashtags, emojis, uma versão por rede
 │   ├── narrado.md           🎙️ vídeo narrado: roteiro falado, voz, tipografia cinética, HUD, pós, prévia
-│   ├── real3d.md            🏙️ mídia real + 3D: regras de ouro, clipes, spec, revisão e render
 │   ├── engine.md            🧠 anatomia do motor
 │   └── formats.md           📐 tamanhos, áreas seguras e como adaptar o layout
 ├── agents/                  🤖 variantes prontas: codex · gemini · hermes · openclaw · universal (geradas, não editar)
@@ -645,7 +631,6 @@ Sim — não existe fonte padrão. O Claude escolhe o par tipográfico na direç
 - [x] Motor de cenas sem estilo (`kit.js` + `STYLE`) e qualquer fonte do Google Fonts
 - [ ] Legendas automáticas queimadas no vídeo
 - [x] Vídeo narrado: voz (ElevenLabs ou gravação) → texto palavra por palavra, HUD, bloom, câmera viva ([`examples/narrado`](examples/narrado))
-- [x] Mídia real + 3D: clipes reais em tela cheia, legendas da fala e palavras/números em 3D de verdade ([`references/real3d.md`](references/real3d.md))
 - [x] Trilha de verdade (faixa externa ou ElevenLabs Music) com BPM, batidas e ducking sob a voz
 - [ ] Palco contínuo: elementos que atravessam cenas e câmera que "entra" neles
 - [ ] Biblioteca de componentes de interface (editor de código, timeline, gráficos, celular, chat)

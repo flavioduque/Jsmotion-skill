@@ -12,14 +12,13 @@ import os, re, sys, shutil, zipfile, filecmp, tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RES = ['scripts', 'templates', 'references']          # recursos copiados em toda variante
-VERSION = '1.3.0'
+VERSION = '1.3.1'
 
 DESC = ('Creates studio-quality motion-design videos in JavaScript: company, brand, product '
         'and app promos, Reels/TikTok/Shorts/YouTube/LinkedIn. Delivers ready MP4s (9:16, 1:1, 4:5 and 16:9 '
         'from the same code) with a soundtrack mastered to -14 LUFS, plus an .html with a "Download MP4" button. '
         'Also makes NARRATED videos: the voice (ElevenLabs, the user\'s recording or none) becomes a per-word timeline '
-        'and the text appears as it is spoken (kinetic typography). Also REAL-FOOTAGE + 3D videos: the brand\'s own clips '
-        'full screen, captions and real 3D keywords/numbers, never inventing scenes. '
+        'and the text appears as it is spoken (kinetic typography). '
         'Studies the reference and the brand site, asks a few questions, shows the script, then produces it. '
         'Use whenever the user asks for an animated, motion or narrated video, kinetic '
         'typography, a video of their company/brand/app, a Reels/TikTok video, "jsmotion", or attaches a reference '
