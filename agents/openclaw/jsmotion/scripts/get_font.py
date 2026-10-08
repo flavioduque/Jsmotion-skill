@@ -1,4 +1,4 @@
-"""Uso: python3 get_font.py "Nome da Família" [--role display|text] [--out PASTA]
+"""Uso: python3 get_font.py "Nome da Família" [--role display|text|mono] [--out PASTA]   (mono = rótulos do HUD)
 Baixa QUALQUER família do Google Fonts (recorte latino, woff2) — normal e itálico, se existir —
 para a direção de arte usar a fonte certa para a marca, em vez de uma fonte fixa.
 Imprime o trecho para o "fonts" do config.json. Ex.:
@@ -26,8 +26,13 @@ def css(query):
         return None
 
 fam = urllib.parse.quote_plus(family)
-# tenta a versão variável (todos os pesos) com itálico; senão só variável; senão a família simples
-text = (css(f'{fam}:ital,wght@0,100..900;1,100..900') or css(f'{fam}:wght@100..900')
+# tenta a versão variável com todos os pesos que a família tiver (o Google recusa faixas maiores que as da fonte,
+# ex.: Space Grotesk vai de 300 a 700) — com itálico e sem; senão pesos fixos; senão a família simples (só 400)
+def variable():
+    for lo, hi in [(100,900),(200,900),(300,900),(100,800),(200,800),(300,800),(400,900),(400,800),(300,700),(200,700),(400,700)]:
+        t = css(f'{fam}:ital,wght@0,{lo}..{hi};1,{lo}..{hi}') or css(f'{fam}:wght@{lo}..{hi}')
+        if t: return t
+text = (variable() or css(f'{fam}:wght@400;700;900') or css(f'{fam}:wght@400;700')
         or css(f'{fam}:ital@0;1') or css(fam))
 if not text:
     sys.exit(f'❌ "{family}" não encontrada no Google Fonts (confira o nome em fonts.google.com)')

@@ -280,12 +280,28 @@ arquivo ou link:
 
 ---
 
+## 🎙️ Novo: vídeo narrado (tipografia cinética)
+
+Para vídeos que **explicam, opinam ou contam um bastidor**, a voz conduz tudo — como nos Reels de motion mais vistos:
+
+- **A voz vira a linha do tempo.** Você aprova o texto da narração; a voz vem do ElevenLabs (com o tempo exato de cada
+  letra), da **sua gravação** (alinhada palavra por palavra com faster-whisper) ou de lugar nenhum (texto cinético no
+  ritmo da trilha). Cada cena começa no seu `[marcador]` do texto.
+- **Tipografia cinética.** Cada palavra entra no instante em que é falada (`blurIn`, `rise`, `pop`, `decode`, `type`,
+  `stretch`), a `*palavra-chave*` acende na cor de destaque, e o clímax vira uma palavra **gigante** com subida de som e impacto.
+- **Acabamento de estúdio.** HUD fixo (código da cena, `REC 00:00:12:04`, cantos, grade), brilho que vaza da luz
+  (bloom), aberração cromática nos impactos, varredura de luz, câmera que nunca para, desfoque de movimento no render
+  final e trilha que **abaixa sozinha** enquanto alguém fala.
+- **Prévia antes do render.** Uma prévia rápida (metade da resolução, 15 fps) para aprovar ritmo e sincronia.
+
+Guia: [`references/narrado.md`](references/narrado.md) · exemplo: [`examples/narrado`](examples/narrado).
+
 ## 🎥 Como funciona
 
 ```mermaid
 flowchart LR
     A["📎 Logo + site<br/>+ vídeo de referência"] --> B["👀 Estuda<br/>referência e site"]
-    B --> C["💬 Até 8 perguntas<br/>com opções"]
+    B --> C["💬 Até 9 perguntas<br/>com opções"]
     C --> D["📝 Roteiro cena a cena<br/>espera o seu ok"]
     D --> E["🧑‍💻 Anima em JS<br/>+ compõe a trilha"]
     E --> F["🔍 Revisa com fotos<br/>das cenas e corrige"]
@@ -305,7 +321,7 @@ flowchart LR
 <details open>
 <summary><b>2 · Pergunta pouco, e com opções</b></summary>
 
-No máximo **8 perguntas, uma por vez**, cada uma com 3 opções + *"Não sei, escolha por mim"* + a recomendação do Claude:
+No máximo **9 perguntas, uma por vez** (a primeira: vídeo narrado ou encarte), cada uma com 3 opções + *"Não sei, escolha por mim"* + a recomendação do Claude:
 
 | # | Pergunta | Exemplos de opções |
 |---|---|---|
@@ -481,6 +497,7 @@ jsmotion/
 │   ├── scrape_site.py       🌐 cores, fontes, textos de marketing (títulos, preços, números), imagens e vídeos do site (funciona com SPA)
 │   ├── brand_palette.py     🎨 paleta da marca a partir da logo (sem site): papéis, contraste e amostra
 │   ├── get_font.py          🔤 baixa qualquer família do Google Fonts para a direção de arte
+│   ├── voice.py             🎙️ narração → voz + linha do tempo por palavra (ElevenLabs, sua gravação ou sem voz)
 │   ├── prep_assets.py       🧳 logo, imagens, clipes e fonte → data URIs (assets.js); tira fundo liso de logo sem transparência
 │   ├── build_html.py        🧱 junta shell + assets + animação num .html único e offline
 │   ├── snap.py              📸 fotos de instantes para revisão + erros do console
@@ -494,11 +511,13 @@ jsmotion/
 │   ├── shell.html           ▶️ página com prévia, botão "Baixar MP4" e ganchos de render
 │   └── saira.woff2          🔤 Saira (usada pelo exemplo)
 ├── examples/
-│   └── promo/               🎞️ o vídeo de apresentação do próprio jsmotion — 16:9 e 9:16, PT e EN
+│   ├── promo/               🎞️ o vídeo de apresentação do próprio jsmotion — 16:9 e 9:16, PT e EN
+│   └── narrado/             🎙️ vídeo narrado com tipografia cinética, HUD e bloom
 ├── references/
 │   ├── direcao-de-arte.md   🎨 o método: o estilo nasce da marca, do tema e da referência
 │   ├── kit.md               🧩 tokens do STYLE, cenas, cenas próprias e padrão de qualidade
 │   ├── copy.md              📝 copy para postar: gancho, CTA, hashtags, emojis, uma versão por rede
+│   ├── narrado.md           🎙️ vídeo narrado: roteiro falado, voz, tipografia cinética, HUD, pós, prévia
 │   ├── engine.md            🧠 anatomia do motor
 │   └── formats.md           📐 tamanhos, áreas seguras e como adaptar o layout
 ├── agents/                  🤖 variantes prontas: codex · gemini · hermes · openclaw · universal (geradas, não editar)
@@ -601,7 +620,10 @@ Sim — não existe fonte padrão. O Claude escolhe o par tipográfico na direç
 - [x] Direção de arte por análise (marca, tema, público, referência) — sem estilo pré-definido
 - [x] Motor de cenas sem estilo (`kit.js` + `STYLE`) e qualquer fonte do Google Fonts
 - [ ] Legendas automáticas queimadas no vídeo
-- [ ] Narração por voz sintetizada
+- [x] Vídeo narrado: voz (ElevenLabs ou gravação) → texto palavra por palavra, HUD, bloom, câmera viva ([`examples/narrado`](examples/narrado))
+- [ ] Palco contínuo: elementos que atravessam cenas e câmera que "entra" neles
+- [ ] Biblioteca de componentes de interface (editor de código, timeline, gráficos, celular, chat)
+- [ ] Modo "tela filmada": o vídeo aplicado na tela de um monitor real filmado pelo usuário
 - [x] Exemplo nativo em 16:9 e 9:16 com o mesmo código ([`examples/promo`](examples/promo))
 - [x] Pacote multiformato (9:16, 4:5, 1:1 e 16:9) do mesmo código, renderizado em paralelo
 - [x] Áudio masterizado em −14 LUFS

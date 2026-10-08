@@ -1,6 +1,6 @@
 ---
 name: jsmotion
-description: Cria vídeos de motion design em JavaScript (canvas + Web Audio) nível estúdio — apresentação de empresa, marca, produto, lançamento, promo para Reels/TikTok/Shorts/YouTube/LinkedIn — e entrega o MP4 pronto com trilha e efeitos sonoros, mais um .html com botão "Baixar MP4". Instala e usa a skill watch para estudar um vídeo de referência, visita o site da marca para extrair cores, projetos, imagens e vídeos, cria uma direção de arte própria a partir da marca, do tema e da referência (sem estilo pré-definido), faz perguntas com opções (formato, duração, direção de arte, gancho, elemento condutor, som, chamada final), mostra o roteiro e só então produz. Use SEMPRE que o usuário pedir "animação em JavaScript", "vídeo animado", "motion", "vídeo da minha empresa/marca/app", "vídeo para Reels/TikTok", "vídeo com minha logo", "jsmotion", ou anexar um vídeo de referência pedindo algo parecido — mesmo sem dizer "skill".
+description: Cria vídeos de motion design em JavaScript (canvas + Web Audio) nível estúdio — apresentação de empresa, marca, produto, promo para Reels/TikTok/Shorts/YouTube/LinkedIn — e entrega o MP4 pronto com trilha, mais um .html com botão "Baixar MP4". Faz também VÍDEO NARRADO: a voz (ElevenLabs, gravação do usuário ou sem voz) vira linha do tempo por palavra e o texto entra no ritmo da fala (tipografia cinética), com HUD, brilho e câmera viva. Estuda o vídeo de referência (skill watch) e o site da marca (cores, fotos, textos), cria uma direção de arte própria, faz perguntas com opções, mostra o roteiro e só então produz. Use SEMPRE que o usuário pedir "vídeo animado", "motion", "vídeo narrado", "tipografia cinética", "vídeo da minha empresa/marca/app", "vídeo para Reels/TikTok", "vídeo com minha logo", "jsmotion", ou anexar um vídeo de referência pedindo algo parecido.
 ---
 
 # jsmotion — vídeo de motion design em JavaScript, do briefing ao MP4
@@ -26,6 +26,8 @@ Arquivos da skill (caminho = pasta desta SKILL.md, abaixo `$SK`):
 - `scripts/brand_palette.py` — **paleta da marca a partir da logo** (e de outros materiais) quando não há site: cores
   reais, papéis do `STYLE`, contraste conferido e amostra `palette.png` para mostrar ao usuário
 - `scripts/get_font.py` — baixa **qualquer** família do Google Fonts (a fonte vem da direção de arte, não é fixa)
+- `scripts/voice.py` — **vídeo narrado**: narração (`narracao.txt` com `[marcadores]` e `*destaques*`) → voz + linha do
+  tempo por palavra (`words.json`) — ElevenLabs, áudio pronto (alinhado com faster-whisper) ou estimativa sem voz
 - `templates/kit.js` — **KIT DE CENAS, motor sem estilo próprio**: o visual vem do objeto `STYLE` (paleta, fontes,
   destaque, cantos, movimento, transições, textura, som) que VOCÊ define na direção de arte; o vídeo é a lista
   `SCRIPT`; cenas próprias para as metáforas do tema. É a base de todo vídeo.
@@ -38,6 +40,9 @@ Arquivos da skill (caminho = pasta desta SKILL.md, abaixo `$SK`):
 - `references/direcao-de-arte.md` — **como o estilo nasce da análise** (leia sempre, antes do Passo 2)
 - `references/kit.md` — tokens do `STYLE`, cenas prontas, cenas próprias e o **padrão de qualidade**
 - `references/copy.md` — **copy para postagem** (legenda por rede, gancho, CTA, hashtags, emojis ou não)
+- `references/narrado.md` — **vídeo narrado**: modelos de roteiro falado, marcação, voz, cenas `fala`/`gigante`/`caixa`/
+  `contador`, tipografia cinética, HUD, pós (bloom, aberração, varredura), câmera, ducking, prévia e checklist
+- `examples/narrado/` (no repositório) — exemplo completo de vídeo narrado (`narracao.txt` + `anim.js`)
 
 ---
 
@@ -45,7 +50,7 @@ Arquivos da skill (caminho = pasta desta SKILL.md, abaixo `$SK`):
 
 ```bash
 source $SK/scripts/paths.sh        # WORK = pasta de trabalho · OUT = pasta de entregas
-bash $SK/scripts/install_watch.sh
+bash $SK/scripts/install_watch.sh          # vídeo narrado com voz pronta: install_watch.sh --voz (alinhamento)
 ```
 Não anuncie a instalação; só avise se algo falhar. No claude.ai, `WORK=/home/claude` e `OUT=/mnt/user-data/outputs`;
 fora dele, `./jsmotion-work` e `./jsmotion-out` (ou o que estiver em `JSMOTION_WORKDIR` / `JSMOTION_OUTDIR`).
@@ -121,7 +126,7 @@ Prepare 3 direções para a pergunta de estilo do Passo 2. Com referência, a 1�
 com a identidade da marca; as outras duas são variações dela (ex.: mais calma / mais enérgica), nunca estilos
 desligados da referência. Sem referência, 3 direções diferentes geradas pela análise.
 
-## Passo 2 — Perguntas (no máximo 8, UMA por vez)
+## Passo 2 — Perguntas (no máximo 9, UMA por vez)
 
 Use a ferramenta de opções tocáveis (`ask_user_input_v0`) quando existir; senão, texto numerado.
 Cada pergunta: 3 opções numeradas + "Não sei, escolha por mim" + **sua recomendação** no enunciado.
@@ -129,6 +134,13 @@ Pule a pergunta se a resposta já estiver clara na conversa. "Não sei" → esco
 Cores: não pergunte se já tirou do site/logo — mas **mostre** a paleta (hex + origem) no resumo do Passo 1; só
 pergunte se não houver nenhuma fonte ou se a logo for só preto/branco.
 
+0. **Tipo de vídeo** (pule se a referência ou o pedido já deixarem claro) — 1. **Narrado com tipografia cinética**
+   (a voz conduz, o texto entra palavra por palavra; explicar, opinar, bastidor; 30–90 s) · 2. **Encarte animado**
+   (produtos, provas, preço, CTA; 15–40 s) · 3. **Texto cinético sem voz** (no ritmo da trilha). Recomende 1 se a
+   referência for narrada ou com texto palavra por palavra, ou se o assunto precisa de explicação; 2 para catálogo/promoção.
+   No narrado, pergunte também a **voz**: 1. **Gerar com ElevenLabs** (você escolhe entre 3 vozes que eu sugiro) ·
+   2. **Sua voz** (grava no celular e me manda o áudio) · 3. Sem voz. E siga `references/narrado.md` em tudo.
+   No narrado, a pergunta 2 (duração) vem do texto (~2,5 palavras/s), a 4 (gancho) vira a 1ª frase da narração e a 5 se pula.
 1. **É para redes sociais? Onde vai postar (formatos)** — 1. **Pacote completo: 9:16 + 1:1 + 16:9** (Reels/TikTok + feed/LinkedIn + YouTube/site, tudo do mesmo vídeo) · 2. Só vertical 9:16 (Reels/TikTok/Shorts) · 3. Outro formato ou combinação (4:5, 1:1, 16:9 — ex.: site, apresentação, TV). Guarde **em quais redes** ele vai postar (vale para a pergunta 8). Recomende o pacote (padrão); se ele citar um destino só, recomende o formato dele. O formato **principal** (o primeiro) é o que você revisa com mais cuidado.
 2. **Duração** — ofereça 3 opções coerentes com o formato (ex.: 15s · 25s · 40s) e diga que ele pode **digitar qualquer duração** (aceite de 6s a 90s). Padrão 25s. Diga quanto conteúdo cabe em cada uma.
 3. **Direção de arte** — as 3 direções que você criou no Passo 1B (nome + paleta + fontes + conceito em 1 frase),
@@ -152,7 +164,11 @@ Mostre o roteiro cena por cena, linguagem simples, com os tempos, os textos exat
 e o som. O começo precisa prender nos 3 primeiros segundos. Termine com a forma de entrega e
 **espere o "ok"** (ou ajustes) antes de programar.
 
-Distribuição de tempo (escale proporcionalmente à duração escolhida):
+**Vídeo narrado:** mostre primeiro o **texto da narração** com os `[marcadores]` e `*destaques*` (modelos em
+`references/narrado.md`), e para cada marcador o que aparece na tela (cena, texto, imagem, efeito). Só gere a voz depois
+do "ok" no texto — mudar o texto depois exige gerar a voz de novo.
+
+Distribuição de tempo do encarte (escale proporcionalmente à duração escolhida):
 gancho ~12% · virada/revelação ~12% · conteúdo (serviços/features) ~20% · provas/projetos ~34% ·
 promessa ~12% · final logo+CTA **2,5s fixos**. Menos de 15s: junte virada+conteúdo e mostre até 3 itens.
 
@@ -171,7 +187,13 @@ promessa ~12% · final logo+CTA **2,5s fixos**. Menos de 15s: junte virada+conte
      cena, legível no celular, números animados, final acionável, metáforas do tema.
    - Efeitos que o kit não tem (telas de UI flutuando, partícula condutora, clipes de vídeo): veja como o
      `templates/example_anim.js` faz (`references/engine.md`) e traga a técnica para uma cena própria — sem trazer o visual.
-3. Crie `config.json` e rode `python3 $SK/scripts/prep_assets.py config.json $WORK/assets.js`
+   - **Vídeo narrado** (`references/narrado.md`): salve o texto aprovado em `$WORK/narracao.txt` e gere a linha do
+     tempo: `python3 $SK/scripts/voice.py $WORK/narracao.txt --elevenlabs <VOICE_ID>` (com `ELEVENLABS_API_KEY`) ·
+     `--audio voz.mp3` (voz do usuário ou gerada em outra ferramenta, ex.: conector do ElevenLabs) · `--estimate` (sem voz).
+     Confira os tempos de cada marcador que ele imprime. No `SCRIPT`, use `mark:'nome'` em cada cena (`fala`,
+     `gigante`, `caixa`, `contador` ou qualquer cena pronta/própria) e defina no `STYLE` os tokens `kinetic`, `post`,
+     `hud`, `camera` e `sound.duck` coerentes com a direção (mono do HUD: `get_font.py "…" --role mono`).
+3. Crie `config.json` (no narrado, com `"voice": "$WORK/voice/words.json"`) e rode `python3 $SK/scripts/prep_assets.py config.json $WORK/assets.js`
    (clipes de vídeo: trechos de 1,5–3,5s a 15 fps; mantenha o total < ~8 MB).
 4. Monte os .html de todos os formatos pedidos (sem renderizar ainda):
    `python3 $SK/scripts/pack.py $WORK/anim.js $WORK/assets.js <nome> "<Título>" --formats 9x16,1x1,16x9 --html-only`
@@ -195,8 +217,10 @@ Compare com a referência atual: `python3 $SK/scripts/snap.py $OUT/<nome>_9x16.h
 ritmo, transições e tratamento de foto precisam ser reconhecíveis como **desta** referência; se lembrarem o exemplo
 da skill, uma referência anterior ou "um estilo genérico", refaça antes de entregar. Sem referência, confira com o
 `estilo.md`: se trocar a logo por outra e o vídeo continuar "servindo", falta marca — acrescente as metáforas do tema.
+Vídeo narrado: fotografe cada marcador (+0,5 s e +1,5 s), o `gigante` e o final, e mande uma **prévia rápida**
+(`pack.py … --formats 9x16 --draft` → `<nome>_9x16_previa.mp4`) para o usuário aprovar ritmo e sincronia antes do render final.
 Veja as folhas com `view`. No formato principal, revise tudo; nos outros, confira principalmente as cenas com
-texto longo (no 16:9 o texto fica numa coluna à direita; no 1:1 tudo fica menor). Procure: texto de uma cena vazando para outra, palavras
+texto longo (no 16:9 o texto fica numa coluna à direita — no narrado, centralizado; no 1:1 tudo fica menor). Procure: texto de uma cena vazando para outra, palavras
 sobrepostas nas trocas, texto perto da borda, elementos cortados, logo alterada, faísca cobrindo texto,
 cenas vazias. Corrija, reconstrua e revise de novo. Problemas comuns já resolvidos no exemplo:
 `word()` multiplica `globalAlpha` (para fades de cena funcionarem) e as saídas de texto usam `outDur` curto.
@@ -207,6 +231,7 @@ cenas vazias. Corrija, reconstrua e revise de novo. Problemas comuns já resolvi
 python3 $SK/scripts/pack.py $WORK/anim.js $WORK/assets.js <nome> "<Título>" --formats 9x16,1x1,16x9
 ```
 Renderiza os formatos **em paralelo** (~5 min por formato de 25s; com 4 núcleos, 3 formatos levam ~7 min).
+`--mb 3` acrescenta desfoque de movimento (mais cinematográfico; ~3× mais lento) — use no final quando houver tempo.
 Avise o usuário do tempo antes de começar. O áudio sai **masterizado em −14 LUFS** (padrão das redes) com pico
 abaixo de −1,5 dBTP; o pack imprime o volume de cada MP4 — confira se está a ±0,5 LU do alvo.
 Faça uma folha de contato do MP4 principal e veja uma última vez.

@@ -12,16 +12,18 @@ import os, re, sys, shutil, zipfile, filecmp, tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RES = ['scripts', 'templates', 'references']          # recursos copiados em toda variante
-VERSION = '1.1.0'
+VERSION = '1.2.0'
 
 DESC = ('Creates studio-quality motion-design videos in JavaScript (canvas + Web Audio): company, brand, product '
-        'and app promos, launches, Reels/TikTok/Shorts/YouTube/LinkedIn. Delivers ready MP4s (9:16, 1:1, 4:5 and 16:9 '
+        'and app promos, Reels/TikTok/Shorts/YouTube/LinkedIn. Delivers ready MP4s (9:16, 1:1, 4:5 and 16:9 '
         'from the same code) with a soundtrack mastered to -14 LUFS, plus an .html with a "Download MP4" button. '
-        'Studies a reference video and the brand website (colors, projects, images), asks a few multiple-choice '
-        'questions, shows the script, then produces and reviews it. Use whenever the user asks for an animated or '
-        'motion video, a video of their company/brand/app, a video with their logo, a Reels/TikTok video, "jsmotion", '
-        'or attaches a reference video asking for something similar. PT: vídeo animado, motion, vídeo da minha '
-        'empresa/marca/app, vídeo para Reels/TikTok, vídeo com minha logo.')
+        'Also makes NARRATED videos: the voice (ElevenLabs, the user\'s recording or none) becomes a per-word timeline '
+        'and the text appears as it is spoken (kinetic typography), with HUD, bloom and a living camera. '
+        'Studies a reference video and the brand website, asks a few multiple-choice questions, shows the script, '
+        'then produces and reviews it. Use whenever the user asks for an animated, motion or narrated video, kinetic '
+        'typography, a video of their company/brand/app, a Reels/TikTok video, "jsmotion", or attaches a reference '
+        'video asking for something similar. PT: vídeo animado, motion, vídeo narrado, tipografia cinética, vídeo da '
+        'minha empresa/marca/app, vídeo para Reels/TikTok.')
 assert len(DESC) <= 1024, len(DESC)   # limite do padrão Agent Skills
 
 TOOLS = """## Ferramentas por agente

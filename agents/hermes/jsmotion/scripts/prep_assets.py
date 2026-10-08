@@ -16,8 +16,10 @@ config.json:
                                             # sem transparência (JPG, PNG com fundo branco/liso)? o fundo liso que toca
                                             # as bordas é removido sozinho; para manter: {"src": "/logo.jpg", "keep_bg": true};
                                             # miolos das letras também: {"src": "/logo.jpg", "holes": true}
- "fonts": {"display": "/f.woff2", "display_italic": "/fi.woff2", "text": "/t.woff2"}   # da direção de arte (get_font.py);
+ "fonts": {"display": "/f.woff2", "display_italic": "/fi.woff2", "text": "/t.woff2", "mono": "/m.woff2"}
+                                            # da direção de arte (get_font.py); "mono" = rótulos do HUD (opcional)
                                             # "playfair-inter" = atalho para as fontes embutidas em templates/fonts
+ "voice": "/caminho/voice/words.json"       # vídeo narrado: saída do voice.py (palavras + marcadores + a voz em MP3)
 }"""
 import base64, subprocess, glob, os, json, io, sys, tempfile
 from PIL import Image, ImageDraw, ImageFilter, ImageChops
@@ -96,6 +98,11 @@ if fc:
     if fc in ('playfair-inter','editorial'):
         fc={'display':os.path.join(fd,'playfair-display-normal.woff2'),'display_italic':os.path.join(fd,'playfair-display-italic.woff2'),'text':os.path.join(fd,'inter-normal.woff2')}
     out['fonts']={k:b64(v,'font/woff2') for k,v in fc.items()}
+vc=cfg.get('voice')
+if vc:                                     # narração: linha do tempo por palavra + a voz (MP3) embutida
+    v=json.load(open(vc,encoding='utf-8'))
+    if v.get('audio'): v['audio']=b64(os.path.join(os.path.dirname(os.path.abspath(vc)),v['audio']),'audio/mpeg')
+    out['voice']=v
 js='window.ASSETS='+json.dumps(out)+';'; open(dst,'w').write(js)
 import shutil; shutil.rmtree(tmp,ignore_errors=True)
-print(f'{dst}: {len(js)/1e6:.2f} MB | imagens {len(out["projects"])} | fotos {len(out.get("photos",{}))} | logos {len(out.get("logos",{}))} | fontes {list(out.get("fonts",{}))} | clips',{k:len(v) for k,v in out['seq'].items()})
+print(f'{dst}: {len(js)/1e6:.2f} MB | imagens {len(out["projects"])} | fotos {len(out.get("photos",{}))} | logos {len(out.get("logos",{}))} | fontes {list(out.get("fonts",{}))} | clips',{k:len(v) for k,v in out['seq'].items()},'| voz',(f"{len(out['voice']['words'])} palavras" if out.get('voice') else 'não'))

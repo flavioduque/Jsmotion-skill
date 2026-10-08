@@ -282,12 +282,28 @@ file or a link:
 
 ---
 
+## 🎙️ New: narrated video (kinetic typography)
+
+For videos that **explain, take a stance or show behind the scenes**, the voice drives everything — like the most-watched motion Reels:
+
+- **The voice becomes the timeline.** You approve the narration text; the voice comes from ElevenLabs (with the exact
+  timing of every character), from **your own recording** (aligned word by word with faster-whisper) or from nowhere
+  (kinetic text on the beat). Each scene starts at its `[marker]` in the text.
+- **Kinetic typography.** Each word appears the moment it is spoken (`blurIn`, `rise`, `pop`, `decode`, `type`,
+  `stretch`), the `*keyword*` lights up in the accent color, and the climax becomes one **giant** word with a riser and a hit.
+- **Studio finish.** Fixed HUD (scene code, `REC 00:00:12:04`, corners, grid), light bloom, chromatic aberration on
+  hits, light sweeps, a camera that never stops, motion blur on the final render and music that **ducks by itself**
+  while someone speaks.
+- **Preview before rendering.** A fast preview (half resolution, 15 fps) to approve pacing and sync.
+
+Guide (Portuguese): [`references/narrado.md`](references/narrado.md) · example: [`examples/narrado`](examples/narrado).
+
 ## 🎥 How it works
 
 ```mermaid
 flowchart LR
     A["📎 Logo + website<br/>+ reference video"] --> B["👀 Studies the<br/>reference and site"]
-    B --> C["💬 Up to 8 questions<br/>with options"]
+    B --> C["💬 Up to 9 questions<br/>with options"]
     C --> D["📝 Scene-by-scene script<br/>waits for your ok"]
     D --> E["🧑‍💻 Animates in JS<br/>+ composes the music"]
     E --> F["🔍 Reviews scene<br/>snapshots and fixes"]
@@ -307,7 +323,7 @@ flowchart LR
 <details open>
 <summary><b>2 · Few questions, all multiple-choice</b></summary>
 
-At most **8 questions, one at a time**, each with 3 options + *"I don't know, you choose"* + Claude's recommendation:
+At most **9 questions, one at a time** (the first one: narrated or flyer-style video), each with 3 options + *"I don't know, you choose"* + Claude's recommendation:
 
 | # | Question | Example options |
 |---|---|---|
@@ -482,6 +498,7 @@ jsmotion/
 │   ├── scrape_site.py       🌐 colors, fonts, marketing copy (headlines, prices, numbers), images and videos from the site (SPA-friendly)
 │   ├── brand_palette.py     🎨 brand palette from the logo (no website): roles, contrast and swatch
 │   ├── get_font.py          🔤 downloads any Google Fonts family for the art direction
+│   ├── voice.py             🎙️ narration → voice + per-word timeline (ElevenLabs, your recording or no voice)
 │   ├── prep_assets.py       🧳 logo, images, clips and font → data URIs (assets.js); removes flat backgrounds from non-transparent logos
 │   ├── build_html.py        🧱 merges shell + assets + animation into one offline .html
 │   ├── snap.py              📸 review snapshots + console errors
@@ -495,11 +512,13 @@ jsmotion/
 │   ├── shell.html           ▶️ page with preview, "Download MP4" button and render hooks
 │   └── saira.woff2          🔤 Saira (used by the example)
 ├── examples/
-│   └── promo/               🎞️ jsmotion's own promo video — 16:9 and 9:16, PT and EN
+│   ├── promo/               🎞️ jsmotion's own promo video — 16:9 and 9:16, PT and EN
+│   └── narrado/             🎙️ narrated video with kinetic typography, HUD and bloom
 ├── references/
 │   ├── direcao-de-arte.md   🎨 the method: style comes from the brand, topic and reference
 │   ├── kit.md               🧩 STYLE tokens, scenes, custom scenes and quality bar
 │   ├── copy.md              📝 post copy: hook, CTA, hashtags, emojis, one version per network
+│   ├── narrado.md           🎙️ narrated video: spoken script, voice, kinetic typography, HUD, post, preview
 │   ├── engine.md            🧠 engine anatomy
 │   └── formats.md           📐 sizes, safe areas and how to adapt the layout
 ├── agents/                  🤖 ready-made variants: codex · gemini · hermes · openclaw · universal (generated, don't edit)
@@ -602,7 +621,10 @@ Yes — there is no default font. Claude picks the type pairing during art direc
 - [x] Art direction by analysis (brand, topic, audience, reference) — no predefined style
 - [x] Style-less scene engine (`kit.js` + `STYLE`) and any Google Font
 - [ ] Automatic burned-in captions
-- [ ] Synthesized voice-over
+- [x] Narrated video: voice (ElevenLabs or your recording) → word-by-word text, HUD, bloom, living camera ([`examples/narrado`](examples/narrado))
+- [ ] Continuous stage: elements that travel across scenes and a camera that "dives" into them
+- [ ] UI component library (code editor, timeline, charts, phone, chat)
+- [ ] "Filmed screen" mode: the video mapped onto a real monitor filmed by the user
 - [x] Native 16:9 and 9:16 example from the same code ([`examples/promo`](examples/promo))
 - [x] Multi-format pack (9:16, 4:5, 1:1 and 16:9) from the same code, rendered in parallel
 - [x] Audio mastered to −14 LUFS

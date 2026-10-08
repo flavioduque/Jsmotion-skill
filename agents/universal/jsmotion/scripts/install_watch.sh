@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Instala a skill /watch (claude-watch) e dependências no ambiente atual. Idempotente.
+# --voz: também instala o faster-whisper (alinhamento da narração no vídeo narrado).
 set -e
 source "$(dirname "$0")/paths.sh"
 DIR="${WATCH_DIR:-$WORK/watch}"
@@ -10,4 +11,6 @@ command -v yt-dlp >/dev/null 2>&1 || pip install -q yt-dlp --break-system-packag
 command -v ffmpeg >/dev/null 2>&1 || (apt-get install -y -qq ffmpeg >/dev/null 2>&1 || true)
 pip show brotli >/dev/null 2>&1 || pip install -q brotli --break-system-packages
 python3 -c "import playwright" 2>/dev/null || pip install -q playwright --break-system-packages
+# vídeo narrado: alinhamento palavra por palavra da voz (voice.py --audio). Só com --voz (é pesado).
+if [ "$1" = "--voz" ]; then python3 -c "import faster_whisper" 2>/dev/null || pip install -q faster-whisper --break-system-packages; fi
 echo "watch pronto em $DIR · trabalho: $WORK · entregas: $OUT"
