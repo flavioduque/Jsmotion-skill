@@ -1,7 +1,7 @@
 # Anatomia do motor (templates/example_anim.js)
 
 > Vídeo narrado (voz → palavras → cenas, tipografia cinética, HUD, bloom, câmera, ducking): está no `templates/kit.js`
-> e em `references/narrado.md`. O shell também expõe `renderFrameMB(t, n, obturador)` (desfoque de movimento, `render.py --mb`).
+> e em `references/narrado.md`. Trilha de verdade (faixa externa com BPM e batidas, `music.py`): também no `kit.js`. O shell também expõe `renderFrameMB(t, n, obturador)` (desfoque de movimento, `render.py --mb`).
 
 Tudo é desenhado por `render(ctx, t)` (t em segundos). Ordem por quadro:
 `drawBackground` → cenas (`scene1..6`) → `drawSpark` (elemento condutor) → `transitions` → `drawNoise` → fade-in inicial.

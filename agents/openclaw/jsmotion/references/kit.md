@@ -30,6 +30,11 @@ O kit anima, faz transições, contadores, som e os 4 formatos (9:16, 4:5, 1:1, 
 | `hud` | `{label, rec, corners, grid, meta, right, color, alpha}` | interface fixa em fonte mono (código da cena, REC, cantos, grade); `hud:false` numa cena esconde |
 | `camera` | 0–0.08 | aproximação lenta e contínua em toda cena (`cam` por cena) |
 | `sound.duck` / `voice` / `wordTicks` | 0.25–0.4 / 1 / bool | trilha abaixa sob a voz · volume da voz · tique em cada palavra |
+| `sound.music` / `snap` / `bed` | 0.9 / bool / bool | com trilha externa (`music.py` → `"music"` no config): volume da faixa · trocas de cena na batida (sem voz; padrão sim) · `bed:false` = sem base musical, só efeitos (música entra no app) |
+
+**Trilha:** com `"music"` no `config.json` (saída do `music.py`), o sintetizador não toca a base musical — só os efeitos
+(whooshes, impactos, subidas, tiques) — e o `BEAT` passa a ser o da faixa. A trilha sintetizada (sem `"music"`) continua
+disponível, mas tem qualidade inferior a uma faixa real: avise o usuário quando ela for a escolha.
 
 Sobre foto, o texto fica sempre claro (a foto é escurecida embaixo), qualquer que seja a paleta.
 

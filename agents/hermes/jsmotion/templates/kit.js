@@ -77,7 +77,9 @@ const LIGHT = isLight(C.bg);            // fundo claro: sombras e gradientes mud
 let INK = C.ink, SOFT = C.soft, ONPHOTO = false;
 
 // ================= linha do tempo =================
-const BEAT = 60/((STYLE.sound&&STYLE.sound.bpm)||100);
+// Trilha de verdade (music.py): window.ASSETS.music = {audio, bpm, beats:[s…], dur} — no lugar da trilha sintetizada
+const MUSIC = (typeof window!=='undefined' && window.ASSETS && window.ASSETS.music) || null;
+const BEAT = 60/((MUSIC&&MUSIC.bpm) || (STYLE.sound&&STYLE.sound.bpm) || 100);
 const TR = STYLE.transition==='cut' ? 0.001 : 0.5*SP;
 // Voz (vídeo narrado): window.ASSETS.voice = saída do voice.py {words:[{w,t0,t1,hl,br}], marks:{nome:índice}, dur, lead, audio}
 const VOICE = (typeof window!=='undefined' && window.ASSETS && window.ASSETS.voice) || null;
@@ -106,6 +108,12 @@ function estWords(txt, t0){ let t=t0, hl=false; const out=[];
     out.push({w, hl:hl?1:0, br:0, t, t1:t+d}); t+=d + (/[.!?…]$/.test(w)?0.3:/[,;:]$/.test(w)?0.12:0);
     if (tok.replace(/[.,!?;:…"']+$/,'').endsWith('*')) hl=false; }
   return out; }
+// com trilha e sem voz: cada troca de cena cai na batida mais próxima (STYLE.sound.snap:false desliga)
+if (MUSIC && MUSIC.beats && MUSIC.beats.length && !VOICE && !(STYLE.sound && STYLE.sound.snap===false)){
+  const B=MUSIC.beats, near=t=>B.reduce((a,b)=>Math.abs(b-t)<Math.abs(a-t)?b:a, B[0]);
+  for (let i=1;i<SCN.length;i++){ const b=near(SCN[i].start); if (Math.abs(b-SCN[i].start)<=BEAT*0.6 && b>SCN[i-1].start+0.6) SCN[i].start=b; }
+  for (let i=0;i<SCN.length-1;i++) SCN[i].dur=SCN[i+1].start-SCN[i].start;
+}
 const _last = SCN[SCN.length-1];
 const DUR = Math.round((_last.start + _last.dur + 0.4)*10)/10;
 const WH = SCN.slice(1).map(s=>s.start);                    // whoosh nas trocas
@@ -120,7 +128,7 @@ SCN.forEach(s=>{ if(s.type==='hook'||s.type==='price') for(let k=0;k<14;k++) TIC
 // ================= carregamento =================
 const IMG = {ph:{}, logo:{}};
 const FAM = { display:'JSDisplay', text:'JSText', mono:'JSMono' };
-let VOICE_BUF = null;                                       // a voz decodificada (tocada em sincronia no buildAudio)
+let VOICE_BUF = null, MUSIC_BUF = null;                     // voz e trilha decodificadas (tocadas no buildAudio)
 function loadImg(src){return new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=src;});}
 async function loadAssets(){
   const A = window.ASSETS || {}, F = A.fonts || {};
@@ -140,6 +148,8 @@ async function loadAssets(){
   nc.putImageData(id,0,0); IMG.noise=n;
   if (VOICE && VOICE.audio){ const ab=await (await fetch(VOICE.audio)).arrayBuffer();
     VOICE_BUF = await new OfflineAudioContext(1,1,48000).decodeAudioData(ab); }
+  if (MUSIC && MUSIC.audio){ const ab=await (await fetch(MUSIC.audio)).arrayBuffer();
+    MUSIC_BUF = await new OfflineAudioContext(2,1,48000).decodeAudioData(ab); }
 }
 const DF = STYLE.font.display||{}, TF = STYLE.font.text||{};
 const fDisplay=(size,w=DF.weight||600,it=false)=>`${it?'italic ':''}${w} ${Math.round(size*(DF.scale||1))}px ${FAM.display}, Georgia, serif`;
@@ -627,17 +637,28 @@ function render(ctx, t){
 
 // ================= SOM — clima definido por STYLE.sound.mood =================
 function buildAudio(ac, dest){
-  const mood=(STYLE.sound&&STYLE.sound.mood)||'premium'; if(mood==='none') return;
+  // mood 'none' = sem trilha nem efeitos (só voz/trilha externa, se houver) · com trilha externa (MUSIC) o sintetizador
+  // não toca a base musical: fica só com os efeitos (whooshes, impactos, subidas, tiques), que é onde ele é bom
+  const mood=(STYLE.sound&&STYLE.sound.mood)||'premium', NOS=mood==='none';
   const r=rng(11), sr=ac.sampleRate, hz=m=>440*Math.pow(2,(m-69)/12);
   const M={ premium:{pad:0.014,kick:0.42,hat:0.05,bass:0.09,pluck:0.035,padType:'triangle',cut:1100},
             energetic:{pad:0.010,kick:0.6,hat:0.09,bass:0.13,pluck:0.03,clap:0.12,padType:'sawtooth',cut:1600},
             calm:{pad:0.016,kick:0,hat:0,bass:0.05,pluck:0.04,padType:'sine',cut:900},
             epic:{pad:0.02,kick:0.5,hat:0,bass:0.12,pluck:0,padType:'sawtooth',cut:650,boom:1},
             minimal:{pad:0,kick:0.18,hat:0.04,bass:0,pluck:0.02,padType:'sine',cut:900} }[mood] || {};
+  const NOBED = MUSIC_BUF || NOS || (STYLE.sound && STYLE.sound.bed===false);   // bed:false = só efeitos (música entra no app)
+  if (NOBED) Object.assign(M, {pad:0,kick:0,hat:0,bass:0,pluck:0,clap:0});
   const master=ac.createGain(); master.gain.setValueAtTime(0.0001,0); master.gain.linearRampToValueAtTime(0.85,0.3);
   master.gain.setValueAtTime(0.85,DUR-1.0); master.gain.linearRampToValueAtTime(0.0001,DUR);
   const comp=ac.createDynamicsCompressor(); comp.threshold.value=-16; comp.ratio.value=3;
   const duck=ac.createGain(); master.connect(duck); duck.connect(comp); comp.connect(dest);
+  if (NOS) master.gain.value=0;
+  if (MUSIC_BUF){   // trilha externa: entra suave, repete se for curta, sai junto com o vídeo; passa pelo ducking
+    const ms=ac.createBufferSource(); ms.buffer=MUSIC_BUF; if (MUSIC_BUF.duration < DUR) ms.loop=true;
+    const mg=ac.createGain(), G=(STYLE.sound&&STYLE.sound.music!=null)?STYLE.sound.music:0.9;
+    mg.gain.setValueAtTime(0.0001,0); mg.gain.linearRampToValueAtTime(G,0.25); mg.gain.setValueAtTime(G,Math.max(0.3,DUR-1.4)); mg.gain.linearRampToValueAtTime(0.0001,DUR);
+    ms.connect(mg); mg.connect(duck); ms.start(0);
+  }
   if (VOICE_BUF){   // voz por cima; a trilha abaixa (ducking) enquanto alguém fala
     const vs=ac.createBufferSource(); vs.buffer=VOICE_BUF; const vg=ac.createGain(); vg.gain.value=(STYLE.sound&&STYLE.sound.voice)||1.0;
     vs.connect(vg); vg.connect(dest); vs.start(VOICE.lead||0);
@@ -685,7 +706,7 @@ function buildAudio(ac, dest){
     const g=ac.createGain(); env(g,w.t0,0.001,0.012,0.04); o.connect(g); g.connect(master); o.start(w.t0); o.stop(w.t0+0.06); });
   TICKS.forEach(t=>{const o=ac.createOscillator(); o.type='square'; o.frequency.value=2400; const f=ac.createBiquadFilter(); f.type='highpass'; f.frequency.value=1800;
     const g=ac.createGain(); env(g,t,0.001,0.018,0.03); o.connect(f); f.connect(g); g.connect(master); o.start(t); o.stop(t+0.05);});
-  const tl=SCN[SCN.length-1].start+0.2; [48,55,59,64,67].forEach(m=>{const o=ac.createOscillator(); o.type='triangle'; o.frequency.value=hz(m+12);
+  const tl=SCN[SCN.length-1].start+0.2; if (!NOBED) [48,55,59,64,67].forEach(m=>{const o=ac.createOscillator(); o.type='triangle'; o.frequency.value=hz(m+12);
     const g=ac.createGain(); g.gain.setValueAtTime(0.0001,tl); g.gain.linearRampToValueAtTime(0.03,tl+0.1); g.gain.exponentialRampToValueAtTime(0.0001,DUR);
     o.connect(g); g.connect(master); g.connect(rev); o.start(tl); o.stop(DUR);});
 }

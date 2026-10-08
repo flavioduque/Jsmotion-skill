@@ -139,6 +139,8 @@ sound:   { mood:'premium', bpm:100, duck:0.3, voice:1.0, wordTicks:false },
   tech/IA/dados/bastidor; para marcas suaves (moda, gastronomia, saúde acolhedora) desligue ou use só `corners`.
   `hud:false` numa cena esconde o HUD nela.
 - **camera**: aproximação lenta e contínua em toda cena (`cam` por cena; 0 = parada). Nunca deixe a tela 100% parada.
+- **Trilha:** prefira uma faixa real (`music.py`: ElevenLabs Music com a duração exata, faixa do usuário ou biblioteca
+  grátis) — a trilha sintetizada tem qualidade inferior. Ela também abaixa sob a voz.
 - **sound.duck**: volume da trilha enquanto alguém fala (0,25–0,4). A voz entra por cima, sem compressão da trilha.
   `wordTicks`: tique sutil em cada palavra (bom com `type`/`decode`). Antes de cada `gigante` o kit põe uma subida
   (riser) e um impacto.

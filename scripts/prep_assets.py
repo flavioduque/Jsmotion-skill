@@ -19,7 +19,8 @@ config.json:
  "fonts": {"display": "/f.woff2", "display_italic": "/fi.woff2", "text": "/t.woff2", "mono": "/m.woff2"}
                                             # da direção de arte (get_font.py); "mono" = rótulos do HUD (opcional)
                                             # "playfair-inter" = atalho para as fontes embutidas em templates/fonts
- "voice": "/caminho/voice/words.json"       # vídeo narrado: saída do voice.py (palavras + marcadores + a voz em MP3)
+ "voice": "/caminho/voice/words.json",      # vídeo narrado: saída do voice.py (palavras + marcadores + a voz em MP3)
+ "music": "/caminho/music/music.json"       # trilha de verdade: saída do music.py (faixa + BPM + batidas)
 }"""
 import base64, subprocess, glob, os, json, io, sys, tempfile
 from PIL import Image, ImageDraw, ImageFilter, ImageChops
@@ -103,6 +104,10 @@ if vc:                                     # narração: linha do tempo por pala
     v=json.load(open(vc,encoding='utf-8'))
     if v.get('audio'): v['audio']=b64(os.path.join(os.path.dirname(os.path.abspath(vc)),v['audio']),'audio/mpeg')
     out['voice']=v
+mc=cfg.get('music')
+if mc:                                     # trilha externa (no lugar da base sintetizada) + andamento e batidas
+    m=json.load(open(mc,encoding='utf-8'))
+    m['audio']=b64(os.path.join(os.path.dirname(os.path.abspath(mc)),m['audio']),'audio/mpeg'); out['music']=m
 js='window.ASSETS='+json.dumps(out)+';'; open(dst,'w').write(js)
 import shutil; shutil.rmtree(tmp,ignore_errors=True)
-print(f'{dst}: {len(js)/1e6:.2f} MB | imagens {len(out["projects"])} | fotos {len(out.get("photos",{}))} | logos {len(out.get("logos",{}))} | fontes {list(out.get("fonts",{}))} | clips',{k:len(v) for k,v in out['seq'].items()},'| voz',(f"{len(out['voice']['words'])} palavras" if out.get('voice') else 'não'))
+print(f'{dst}: {len(js)/1e6:.2f} MB | imagens {len(out["projects"])} | fotos {len(out.get("photos",{}))} | logos {len(out.get("logos",{}))} | fontes {list(out.get("fonts",{}))} | clips',{k:len(v) for k,v in out['seq'].items()},'| voz',(f"{len(out['voice']['words'])} palavras" if out.get('voice') else 'não'),'| trilha',(f"{out['music']['bpm']} BPM" if out.get('music') else 'sintetizada'))

@@ -30,6 +30,10 @@ cat > config.json <<J
 J
 python3 $SK/scripts/prep_assets.py config.json assets.js
 
+# (opcional) trilha de verdade — sem ela, a trilha sintetizada (qualidade inferior)
+python3 $SK/scripts/music.py --file trilha.mp3          # ou --elevenlabs "lo-fi tech, synth pads, 100 BPM" --dur 24
+#    e no config.json: "music": "jsmotion-work/music/music.json"
+
 # 3. prévia rápida → aprovar → render final com desfoque de movimento
 python3 $SK/scripts/pack.py anim.js assets.js narrado "jsmotion narrado" --formats 9x16 --draft
 python3 $SK/scripts/pack.py anim.js assets.js narrado "jsmotion narrado" --formats 9x16,1x1,16x9 --mb 3
