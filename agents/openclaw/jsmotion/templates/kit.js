@@ -544,7 +544,7 @@ function drawHud(ctx, t, cur){
   if (U.grid){ ctx.save(); ctx.globalAlpha*=U.grid/0.75; ctx.lineWidth=1; const st=SIDE?120:108; ctx.beginPath();
     for(let x=mx;x<W-mx;x+=st){ctx.moveTo(x,top);ctx.lineTo(x,bot);} for(let y=top;y<bot;y+=st){ctx.moveTo(mx,y);ctx.lineTo(W-mx,y);} ctx.stroke(); ctx.restore(); }
   if (U.corners!==false){ ctx.lineWidth=2; const k=14; [[mx,top],[W-mx,top],[mx,bot],[W-mx,bot]].forEach(([x,y])=>{ ctx.beginPath(); ctx.moveTo(x-k,y); ctx.lineTo(x+k,y); ctx.moveTo(x,y-k); ctx.lineTo(x,y+k); ctx.stroke(); }); }
-  ctx.textAlign='left'; ctx.fillText(`${String(U.label||'MOTION').toUpperCase()} / ${String(cur.i+1).padStart(3,'0')}`, mx+28, top+44);
+  ctx.textAlign='left'; if (U.label!==false) ctx.fillText(`${String(U.label||'MOTION').toUpperCase()} / ${String(cur.i+1).padStart(3,'0')}`, mx+28, top+44);
   if (U.rec!==false){ ctx.textAlign='right'; ctx.fillText(`REC ${tc(t)}`, W-mx-28, top+44);
     if (Math.floor(t*1.6)%2===0){ ctx.beginPath(); ctx.fillStyle=U.recColor||'#FF3B30'; const tw=ctx.measureText(`REC ${tc(t)}`).width; ctx.arc(W-mx-28-tw-18, top+36, 7, 0, 6.28); ctx.fill(); ctx.fillStyle=col; } }
   ctx.textAlign='left'; if (U.meta) ctx.fillText(String(U.meta).toUpperCase(), mx+28, bot-24);

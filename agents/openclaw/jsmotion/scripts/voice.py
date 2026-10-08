@@ -15,6 +15,8 @@ Opções: --lead 0.5 (segundos de respiro antes da 1ª palavra) · --wpm 160 (s�
 Marcação do texto (narracao.txt):
   [nome]       marcador de cena: a cena do SCRIPT com mark:'nome' começa na palavra seguinte
   *palavra*    destaque (pode cobrir várias palavras: *After Effects*)
+  {exibido|falado}  o que aparece na tela × o que a voz fala — números, telefones, siglas:
+               {24 horas|vinte e quatro horas} · {(45) 99928-9200|quarenta e cinco, nove nove nove dois oito, nove dois zero zero}
   # comentário linha ignorada · linha em branco = pausa maior (só no --estimate)
 Saída: PASTA/words.json {method, lead, dur, audio, words:[{w,t0,t1,hl,br}], marks:{nome:índice}}
        + PASTA/narracao.mp3 (voz normalizada, quando houver voz)."""
@@ -60,9 +62,15 @@ for raw in open(args[0], encoding='utf-8').read().splitlines():
     if not line:
         if words: pause_after.add(len(words) - 1)
         continue
-    for tok in re.findall(r'\[[^\]]+\]|\S+', line):
+    for tok in re.findall(r'\[[^\]]+\]|\*?\{[^}]*\}\*?[.,!?;:…]*|\S+', line):
         m = re.fullmatch(r'\[([^\]]+)\]', tok)
         if m: marks[m.group(1).strip()] = len(words); continue
+        g = re.fullmatch(r'(\*?)\{([^|}]*)\|([^}]*)\}(\*?)([.,!?;:…]*)', tok)
+        if g:                                          # {exibido|falado}: a voz fala as palavras, a tela mostra o exibido
+            sh = g.group(2).strip() + g.group(5); gid = len(words)
+            for k, sw in enumerate(g.group(3).split()):
+                words.append({'w': sw, 'hl': int(hl or bool(g.group(1))), 'br': 0, 'grp': gid, 'show': sh if k == 0 else None})
+            continue
         start, end = tok.startswith('*'), tok.rstrip('.,!?;:…"\'').endswith('*')
         if start: hl = True
         w = tok.replace('*', '')
@@ -140,7 +148,7 @@ if audio_in and not method:
         pcm = subprocess.run(['ffmpeg', '-loglevel', 'error', '-i', voice_mp3, '-f', 'f32le', '-ac', '1', '-ar', '16000', '-'],
                              capture_output=True, check=True).stdout
         segs, _ = WhisperModel(model, device='cpu', compute_type='int8').transcribe(
-            np.frombuffer(pcm, np.float32), language=lang, word_timestamps=True, initial_prompt=text[:200])
+            np.frombuffer(pcm, np.float32), language=lang, word_timestamps=True)   # sem initial_prompt: ele causa repetições
         rec = [(norm(x.word), x.start, x.end) for s in segs for x in s.words if norm(x.word)]
         ts = [None] * len(words)
         sm = difflib.SequenceMatcher(a=[norm(w['w']) for w in words], b=[r[0] for r in rec], autojunk=False)
@@ -184,6 +192,17 @@ if estimate:
 
 # ---------- 3. grava ----------
 for w, (a, b) in zip(words, ts): w['t0'] = round(a + lead, 3); w['t1'] = round(max(b, a + 0.05) + lead, 3)
+# {exibido|falado}: junta as palavras faladas numa só palavra exibida (do início da 1ª ao fim da última)
+merged, remap = [], {}
+for i, w in enumerate(words):
+    if 'grp' in w and w['grp'] != i:
+        merged[-1]['t1'] = w['t1']; remap[i] = len(merged) - 1; continue
+    remap[i] = len(merged)
+    if 'grp' in w: w = {'w': w['show'], 'hl': w['hl'], 'br': w['br'], 't0': w['t0'], 't1': w['t1']}
+    merged.append(w)
+for i, w in enumerate(words):
+    if w.get('br') and remap[i] < len(merged): merged[remap[i]]['br'] = 1
+marks = {k: remap[v] for k, v in marks.items()}; words = merged
 total = (dur_of(voice_mp3) if voice_mp3 else words[-1]['t1'] - lead) + lead
 res = {'method': method, 'lead': lead, 'dur': round(total, 3), 'audio': os.path.basename(voice_mp3) if voice_mp3 else None,
        'words': words, 'marks': marks}

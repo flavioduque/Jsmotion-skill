@@ -39,6 +39,9 @@ em Reels ("Comenta MOTION que eu te mando…") · números e nomes SEMPRE reais 
 ```
 - `[nome]` = **marcador de cena**: a cena do `SCRIPT` com `mark:'nome'` começa na palavra seguinte.
 - `*palavra*` = destaque (pode cobrir várias: `*After Effects*`). Na voz, os marcadores e asteriscos somem.
+- `{exibido|falado}` = o que aparece na tela × o que a voz fala — números, telefones, siglas:
+  `*{24 horas|vinte e quatro horas}*` · `{(45) 99928-9200|quarenta e cinco, nove nove nove dois oito, nove dois zero zero}`.
+  Gere a voz com o texto FALADO (o `voice.py` imprime/usa a versão falada) e alinhe com `--audio`; a tela mostra o exibido.
 - Linha em branco = pausa maior (só no modo sem voz).
 
 **Mostre ao usuário o texto da narração (com o que aparece em cada marcador) e espere o "ok" ANTES de gerar a voz** —
@@ -127,7 +130,7 @@ se passar de `maxLines`, e anima cada palavra no seu instante. `o`: `preset`, `s
 ```js
 kinetic: { preset:'blurIn', size:110, upper:false, ghost:0, maxLines:4, breaks:'sentence' },
 post:    { bloom:0.6, radius:28, threshold:0.8, contrast:2.6, ca:0.6, caBase:0, sweep:true },
-hud:     { label:'MARCA', rec:true, corners:true, grid:0.04, meta:'TEXTO PEQUENO', right:null, color:null, alpha:0.75 },
+hud:     { label:'MARCA' /* false = sem rótulo (ex.: logo no canto) */, rec:true, corners:true, grid:0.04, meta:'TEXTO PEQUENO', right:null, color:null, alpha:0.75 },
 camera:  0.04,
 sound:   { mood:'premium', bpm:100, duck:0.3, voice:1.0, wordTicks:false },
 ```
