@@ -40,7 +40,8 @@ $WORK/video/                      ← criado por: python3 $SK/scripts/assets.py 
 | `<Caption t a y>` + `<Hl>` | frase de apoio (fonte de texto) com trecho destacado |
 | `<Pill t a y fill>` | selo/rótulo em pílula (borda no destaque, ou cheio) |
 | `<Counter t a to decimals prefix suffix y>` | número subindo com impacto (só números reais) |
-| `<Scene t a b>` | monta a cena só entre `a` e `b`, com entrada e saída |
+| `<Scene t a b>` | monta a cena só entre `a` e `b`, com entrada e saída; os vídeos dentro dela começam no instante `a` (`Shot.from` = ponto do clipe no início da cena) |
+| `<Cut t a b base>` | o mesmo, com corte seco; dentro de outra Scene/Cut, `base` = o início dela |
 | `<Converge t a shots hero>` | cartões voam das bordas e se juntam; o `hero` cresce |
 | `<Orbit t a center shots lock>` | cartões girando em volta de um cartão central; anel acende em `lock` |
 | `<Wall t t0 shots dim>` | parede inclinada de cartões rolando (fundo de impacto) |
@@ -82,4 +83,5 @@ python3 $SK/scripts/render.py $WORK/video nome --formats 9x16,1x1,16x9          
 
 Erros comuns: arquivo que não existe em `public/` (o render para com "404"), fonte com nome diferente do `family`
 do `STYLE` (o texto cai numa fonte padrão — confira na folha), vídeo curto demais para a cena (use `from` menor ou
-outro trecho; o Remotion congela no último quadro), e textos que passam da borda no 16:9 (use `wide`).
+outro trecho; o Remotion congela no último quadro), e vídeo fora de `Scene`/`Cut` (ele corre no tempo absoluto do
+vídeo e congela cedo), e textos que passam da borda no 16:9 (use `wide`).
