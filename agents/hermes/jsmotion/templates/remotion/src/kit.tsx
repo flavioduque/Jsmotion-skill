@@ -122,11 +122,21 @@ export const Counter: React.FC<{t: number; a: number; to: number; d?: number; de
 };
 
 // ---------- cenas e transições ----------
-/** monta a cena só entre a e b, com entrada (escala + fade) e saída (desfoque) rápidas */
+/** monta a cena só entre a e b, com entrada (escala + fade) e saída (desfoque) rápidas.
+ *  Os vídeos (<Media>) dentro dela começam no instante a (Sequence): Shot.from = ponto do clipe no início da cena. */
 export const Scene: React.FC<{t: number; a: number; b: number; children: React.ReactNode}> = ({t, a, b, children}) => {
+  const {fps} = useVideoConfig();
   if (t < a - 0.01 || t > b + 0.01) return null;
   const i = k(t, [a, a + 0.35], [0, 1]), o = k(t, [b - 0.3, b], [0, 1], Easing.in(Easing.cubic));
-  return <AbsoluteFill style={{opacity: Math.min(i, 1 - o), transform: `scale(${1.04 - 0.04 * i - 0.05 * o})`, filter: o > 0.02 ? `blur(${o * 16}px)` : undefined}}>{children}</AbsoluteFill>;
+  return <Sequence from={Math.round(a * fps)} layout="none">
+    <AbsoluteFill style={{opacity: Math.min(i, 1 - o), transform: `scale(${1.04 - 0.04 * i - 0.05 * o})`, filter: o > 0.02 ? `blur(${o * 16}px)` : undefined}}>{children}</AbsoluteFill>
+  </Sequence>;
+};
+/** como Scene, sem transição (corte seco). Dentro de outra Scene/Cut, passe base = o início dela (Sequences somam). */
+export const Cut: React.FC<{t: number; a: number; b: number; base?: number; children: React.ReactNode}> = ({t, a, b, base = 0, children}) => {
+  const {fps} = useVideoConfig();
+  if (t < a || t >= b) return null;
+  return <Sequence from={Math.round((a - base) * fps)} layout="none"><AbsoluteFill>{children}</AbsoluteFill></Sequence>;
 };
 /** cartões voam das bordas e se juntam; o `hero` cresce e fica (os outros somem) */
 export const Converge: React.FC<{t: number; a: number; shots: Shot[]; hero: number; y?: number}> = ({t, a, shots, hero, y = 0.4}) => {
