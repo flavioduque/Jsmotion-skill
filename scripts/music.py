@@ -49,6 +49,8 @@ if start is None:
     start = float(m.group(2)) if m and float(m.group(1)) <= 0.05 else 0.0
 
 dst = os.path.join(out, 'trilha.mp3')
+if os.path.abspath(src) == os.path.abspath(dst):        # entrada = saída: o ffmpeg truncaria a faixa ao ler e gravar
+    raw = dst + '.orig.mp3'; os.replace(dst, raw); src = raw
 subprocess.run(['ffmpeg', '-loglevel', 'error', '-y', '-ss', f'{start:.3f}', '-i', src, '-af', 'loudnorm=I=-16:TP=-2:LRA=11',
                 '-ar', '44100', '-b:a', '192k', dst], check=True)
 if os.path.exists(raw): os.remove(raw)
