@@ -14,6 +14,10 @@ $WORK/video/                      ← criado por: python3 $SK/scripts/assets.py 
   public/fonts/   ← fontes (get_font.py --out …/public/fonts)   public/voz.mp3, public/trilha.mp3
 ```
 
+Junto com este arquivo, a skill oficial **`remotion-best-practices`** é obrigatória (instalada no Passo 0 por
+`scripts/ensure_remotion_skill.sh`): consulte as regras dela de markup (timing, sequências, áudio, fontes,
+transições, vídeo) ao escrever as cenas. Onde as duas divergirem, valem a SKILL.md da jsmotion e as regras abaixo.
+
 ## Regras de ouro do código
 
 - **Tudo é função do tempo** `t` (segundos): `const {t} = useT()`. Nada de `Math.random()` solto, `setTimeout`,

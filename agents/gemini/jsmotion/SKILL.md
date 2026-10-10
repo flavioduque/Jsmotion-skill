@@ -22,6 +22,8 @@ do ambiente se ofereça para "qualquer vídeo": pedido de jsmotion = projeto Rem
 
 Arquivos da skill (abaixo `$SK` — ver "Neste agente"):
 - `scripts/paths.sh` — define `$WORK` (trabalho) e `$OUT` (entregas); ver Passo 0
+- `scripts/ensure_remotion_skill.sh` — **dependência obrigatória**: instala (se faltar) a skill oficial
+  `remotion-best-practices` e imprime o caminho da SKILL.md dela
 - `scripts/install_watch.sh` — instala a skill watch + yt-dlp, ffmpeg, playwright, brotli
 - `scripts/watch_reference.sh` — assiste o vídeo de referência e gera folha de contato
 - `scripts/find_reference.py` — **busca referências sozinha** no prompt-motion.com (galeria de motion feito com Claude,
@@ -97,9 +99,16 @@ Se o seu modelo não enxerga imagens, peça ao usuário para abrir `$WORK/review
 
 ```bash
 source $SK/scripts/paths.sh        # WORK = pasta de trabalho · OUT = pasta de entregas
+RBP=$(bash $SK/scripts/ensure_remotion_skill.sh)   # OBRIGATÓRIA: skill oficial remotion-best-practices
 bash $SK/scripts/install_watch.sh          # vídeo narrado com voz pronta: install_watch.sh --voz (alinhamento)
 python3 $SK/scripts/assets.py new $WORK/video   # projeto Remotion (Node 18+ e npm; 1ª vez instala ~1 min)
 ```
+**Skill `remotion-best-practices` (obrigatória):** leia a SKILL.md em `$RBP` e, **antes de escrever o `Video.tsx`**,
+as regras de markup que ela aponta (`remotion-markup/REFERENCE.md` e as do que o vídeo usa: timing, sequencing, audio,
+fontes, transições, vídeo embutido…). Se o script falhar (sem Node/npx ou sem internet), avise o usuário: sem ela não
+siga. Em conflito, **a jsmotion manda**: aqui o entregável é o MP4 renderizado (não abra o Studio nem espere pedido
+de render), o kit e o `style.ts` continuam sendo a base, e as regras de ouro de `references/remotion.md` valem.
+
 Não anuncie a instalação; só avise se algo falhar. No claude.ai, `WORK=/home/claude` e `OUT=/mnt/user-data/outputs`;
 fora dele, `./jsmotion-work` e `./jsmotion-out` (ou o que estiver em `JSMOTION_WORKDIR` / `JSMOTION_OUTDIR`).
 Use sempre `$WORK` e `$OUT` — nunca caminhos fixos. Se o Chromium já existir, `export CHROMIUM_PATH=/caminho/chrome`
