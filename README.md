@@ -72,13 +72,13 @@ Uma conversa. Zero timeline. Zero keyframe manual.
 2. No claude.ai: **Configurações → Capacidades → Skills → `+`** e envie o arquivo.
 3. Ative **"Execução de código e criação de arquivos"**.
 
-Pronto. ✅ A skill obrigatória **[`remotion-best-practices`](https://github.com/remotion-dev/skills)** (oficial do Remotion) é instalada sozinha na primeira vez que a jsmotion roda.
+Pronto. ✅ As skills obrigatórias **[`remotion-best-practices`](https://github.com/remotion-dev/skills)** (oficial do Remotion) e **[`r3f-skills`](https://github.com/EnzeD/r3f-skills) (11 skills de React Three Fiber para as cenas 3D)** são instaladas sozinhas na primeira vez que a jsmotion roda.
 
 ### Opção B — Claude Code
 
 ```bash
 git clone https://github.com/flavioduque/Jsmotion-skill.git && cd Jsmotion-skill
-./install.sh claude     # instala a jsmotion + a skill obrigatória remotion-best-practices
+./install.sh claude     # instala a jsmotion + as skills obrigatórias remotion-best-practices e r3f-*
 ```
 
 > [!NOTE]
@@ -118,8 +118,8 @@ Sem clonar: `curl -fsSL https://raw.githubusercontent.com/flavioduque/Jsmotion-s
 
 **Requisitos em todos:** Linux ou macOS (no Windows, use o WSL), **Python 3**, **Node 18+ (npx)**, **git** e
 **internet** na primeira vez. O `install.sh` também instala a skill **obrigatória**
-[`remotion-best-practices`](https://github.com/remotion-dev/skills) (`npx skills add https://github.com/remotion-dev/skills --skill remotion-best-practices -g`);
-se ela faltar, a jsmotion instala no Passo 0. O `install_watch.sh` instala ffmpeg, Playwright e yt-dlp se faltarem. Com Chromium já instalado, use
+[`remotion-best-practices`](https://github.com/remotion-dev/skills) (`npx skills add https://github.com/remotion-dev/skills --skill remotion-best-practices -g`) e as [`r3f-skills`](https://github.com/EnzeD/r3f-skills) (11 skills de React Three Fiber para as cenas 3D) (`npx skills add https://github.com/EnzeD/r3f-skills --skill '*' -g`);
+se faltarem, a jsmotion instala no Passo 0. O `install_watch.sh` instala ffmpeg, Playwright e yt-dlp se faltarem. Com Chromium já instalado, use
 `CHROMIUM_PATH=/caminho/chrome`. Os arquivos vão para `./jsmotion-work` e `./jsmotion-out` na pasta em que o
 agente estiver (ou `JSMOTION_WORKDIR` / `JSMOTION_OUTDIR`).
 
@@ -462,7 +462,7 @@ Só Remotion: a skill não usa HyperFrames, After Effects nem outro motor.
 jsmotion/
 ├── SKILL.md                 🧠 o passo a passo que o Claude segue
 ├── scripts/
-│   ├── ensure_remotion_skill.sh  📦 instala a skill obrigatória remotion-best-practices (se faltar)
+│   ├── ensure_skills.sh     📦 instala as skills obrigatórias remotion-best-practices e r3f-* (se faltarem)
 │   ├── install_watch.sh     📦 instala a skill watch + yt-dlp, ffmpeg, Playwright, brotli (idempotente)
 │   ├── watch_reference.sh   🎞️ assiste a referência e gera a folha de contato
 │   ├── find_reference.py    🔎 acha referências sozinho no prompt-motion.com

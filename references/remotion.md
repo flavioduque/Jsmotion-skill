@@ -14,9 +14,10 @@ $WORK/video/                      ← criado por: python3 $SK/scripts/assets.py 
   public/fonts/   ← fontes (get_font.py --out …/public/fonts)   public/voz.mp3, public/trilha.mp3
 ```
 
-Junto com este arquivo, a skill oficial **`remotion-best-practices`** é obrigatória (instalada no Passo 0 por
-`scripts/ensure_remotion_skill.sh`): consulte as regras dela de markup (timing, sequências, áudio, fontes,
-transições, vídeo) ao escrever as cenas. Onde as duas divergirem, valem a SKILL.md da jsmotion e as regras abaixo.
+Junto com este arquivo são obrigatórias (instaladas no Passo 0 por `scripts/ensure_skills.sh`) a skill oficial
+**`remotion-best-practices`** (regras de markup: timing, sequências, áudio, fontes, transições, vídeo) e as skills
+**`r3f-*`** de React Three Fiber, que você consulta em toda cena 3D. Onde divergirem, valem a SKILL.md da jsmotion e
+as regras abaixo.
 
 ## Regras de ouro do código
 
@@ -56,6 +57,12 @@ transições, vídeo) ao escrever as cenas. Onde as duas divergirem, valem a SKI
 **Cenas próprias** (as metáforas do tema) são componentes React comuns: recebem `t`, leem o `STYLE`, usam `k`/`on`.
 Ex.: uma rota tracejada em SVG que se desenha (`strokeDashoffset` em função de `t`), um selo circular que gira e
 assenta, palavras que viram estrutura. Escreva no próprio `Video.tsx` ou num arquivo novo em `src/`.
+
+**Cenas 3D** (palavras de impacto, números, gráficos): `npm i @remotion/three@<versão do remotion> @react-three/fiber@8
+three` e `<ThreeCanvas width height>` do `@remotion/three`. Leia antes as skills `r3f-*` do que a cena usa
+(fundamentals, geometry, materials, lighting…). Animação **só pelo quadro** (`useCurrentFrame` → `t` → `k`/`on`):
+nada de `useFrame`, damping, relógio ou física, que não se repetem igual quadro a quadro no render. Cores e fontes
+do `STYLE`; 3D é ênfase pontual, nunca substitui a mídia real.
 
 ## Padrão de qualidade (obrigatório)
 1. **Gancho no 1º segundo**: número + benefício ou pergunta forte. Nunca abrir só com a logo.

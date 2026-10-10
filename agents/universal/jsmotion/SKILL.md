@@ -22,8 +22,8 @@ do ambiente se ofereça para "qualquer vídeo": pedido de jsmotion = projeto Rem
 
 Arquivos da skill (abaixo `$SK` — ver "Neste agente"):
 - `scripts/paths.sh` — define `$WORK` (trabalho) e `$OUT` (entregas); ver Passo 0
-- `scripts/ensure_remotion_skill.sh` — **dependência obrigatória**: instala (se faltar) a skill oficial
-  `remotion-best-practices` e imprime o caminho da SKILL.md dela
+- `scripts/ensure_skills.sh` — **dependências obrigatórias**: instala (se faltarem) a skill oficial
+  `remotion-best-practices` e as 11 skills `r3f-*` (React Three Fiber, para 3D) e imprime a pasta onde elas estão
 - `scripts/install_watch.sh` — instala a skill watch + yt-dlp, ffmpeg, playwright, brotli
 - `scripts/watch_reference.sh` — assiste o vídeo de referência e gera folha de contato
 - `scripts/find_reference.py` — **busca referências sozinha** no prompt-motion.com (galeria de motion feito com Claude,
@@ -97,15 +97,24 @@ Se o seu modelo não enxerga imagens, peça ao usuário para abrir `$WORK/review
 
 ```bash
 source $SK/scripts/paths.sh        # WORK = pasta de trabalho · OUT = pasta de entregas
-RBP=$(bash $SK/scripts/ensure_remotion_skill.sh)   # OBRIGATÓRIA: skill oficial remotion-best-practices
+SKD=$(bash $SK/scripts/ensure_skills.sh)   # OBRIGATÓRIAS: remotion-best-practices + r3f-* (pasta das skills)
 bash $SK/scripts/install_watch.sh          # vídeo narrado com voz pronta: install_watch.sh --voz (alinhamento)
 python3 $SK/scripts/assets.py new $WORK/video   # projeto Remotion (Node 18+ e npm; 1ª vez instala ~1 min)
 ```
-**Skill `remotion-best-practices` (obrigatória):** leia a SKILL.md em `$RBP` e, **antes de escrever o `Video.tsx`**,
-as regras de markup que ela aponta (`remotion-markup/REFERENCE.md` e as do que o vídeo usa: timing, sequencing, audio,
-fontes, transições, vídeo embutido…). Se o script falhar (sem Node/npx ou sem internet), avise o usuário: sem ela não
-siga. Em conflito, **a jsmotion manda**: aqui o entregável é o MP4 renderizado (não abra o Studio nem espere pedido
-de render), o kit e o `style.ts` continuam sendo a base, e as regras de ouro de `references/remotion.md` valem.
+**Skills obrigatórias** (se o script falhar por falta de Node/npx ou de internet, avise o usuário: sem elas não siga):
+- **`remotion-best-practices`**: leia `$SKD/remotion-best-practices/SKILL.md` e, **antes de escrever o `Video.tsx`**,
+  as regras de markup que ela aponta (`remotion-markup/REFERENCE.md` e as do que o vídeo usa: timing, sequencing,
+  audio, fontes, transições, vídeo embutido…).
+- **`r3f-*`** (React Three Fiber): sempre que uma cena tiver **3D** (palavras de impacto, números ou gráficos em 3D com
+  `<ThreeCanvas>` do `@remotion/three`), leia antes a `SKILL.md` das que a cena usa em `$SKD/r3f-<tema>/`:
+  `fundamentals` (sempre), `geometry`, `materials`, `lighting`, `textures`, `loaders`, `shaders`, `postprocessing`.
+  `animation` só pela parte de transições; `interaction` e `physics` não servem para vídeo renderizado.
+
+Em conflito, **a jsmotion manda**: o entregável é o MP4 renderizado (não abra o Studio nem espere pedido de render);
+o kit e o `style.ts` continuam sendo a base; as regras de ouro de `references/remotion.md` valem; no 3D, **tudo se move
+pelo quadro** (`useCurrentFrame`/`t`), nunca por `useFrame`, relógio, damping ou física em tempo real (o render pula
+quadros); e valem as versões do projeto (React 18 + `@react-three/fiber` 8 com `@remotion/three`), não as dos
+exemplos das skills r3f (Fiber 9 / React 19).
 
 Não anuncie a instalação; só avise se algo falhar. No claude.ai, `WORK=/home/claude` e `OUT=/mnt/user-data/outputs`;
 fora dele, `./jsmotion-work` e `./jsmotion-out` (ou o que estiver em `JSMOTION_WORKDIR` / `JSMOTION_OUTDIR`).
