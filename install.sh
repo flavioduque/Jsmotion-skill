@@ -42,10 +42,10 @@ for d in scripts templates references agents; do
 done
 chmod +x "$DEST"/scripts/*.sh 2>/dev/null || true
 echo "✅ jsmotion instalada para $AGENT em: $DEST"
-# dependência obrigatória: skill oficial do Remotion (remotion-best-practices)
-if [ "$SCOPE" = project ]; then RBP=$(bash "$DEST/scripts/ensure_remotion_skill.sh" --project "$PROJ")
-else RBP=$(bash "$DEST/scripts/ensure_remotion_skill.sh"); fi || { echo "❌ a jsmotion precisa da skill remotion-best-practices (veja o erro acima)"; exit 1; }
-echo "✅ remotion-best-practices (obrigatória) em: $(dirname "$RBP")"
+# dependências obrigatórias: remotion-best-practices (oficial do Remotion) + r3f-* (React Three Fiber)
+if [ "$SCOPE" = project ]; then SKD=$(bash "$DEST/scripts/ensure_skills.sh" --project "$PROJ")
+else SKD=$(bash "$DEST/scripts/ensure_skills.sh"); fi || { echo "❌ a jsmotion precisa das skills remotion-best-practices e r3f-* (veja o erro acima)"; exit 1; }
+echo "✅ remotion-best-practices + 11 skills r3f-* (obrigatórias) em: $SKD"
 case "$AGENT" in
   claude)  echo "   Abra o Claude Code e peça: \"Quero um vídeo jsmotion da minha marca\"" ;;
   codex)   echo "   Reinicie o Codex. Use: \$jsmotion (ou peça um vídeo animado). Rede: aprove quando pedir." ;;

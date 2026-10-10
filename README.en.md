@@ -71,13 +71,13 @@ One conversation. Zero timeline. Zero manual keyframes.
 2. On claude.ai: **Settings → Capabilities → Skills → `+`** and upload the file.
 3. Turn on **"Code execution and file creation"**.
 
-Done. ✅ The required **[`remotion-best-practices`](https://github.com/remotion-dev/skills)** skill (official, by Remotion) installs itself the first time jsmotion runs.
+Done. ✅ The required **[`remotion-best-practices`](https://github.com/remotion-dev/skills)** skill (official, by Remotion) and **[`r3f-skills`](https://github.com/EnzeD/r3f-skills) (11 React Three Fiber skills for 3D scenes)** install themselves the first time jsmotion runs.
 
 ### Option B — Claude Code
 
 ```bash
 git clone https://github.com/flavioduque/Jsmotion-skill.git && cd Jsmotion-skill
-./install.sh claude     # installs jsmotion + the required remotion-best-practices skill
+./install.sh claude     # installs jsmotion + the required remotion-best-practices and r3f-* skills
 ```
 
 > [!NOTE]
@@ -123,7 +123,7 @@ first run. `install_watch.sh` installs ffmpeg, Playwright and yt-dlp if they're 
 installed, set `CHROMIUM_PATH=/path/to/chrome`. Files go to `./jsmotion-work` and `./jsmotion-out` in the agent's
 working folder (or `JSMOTION_WORKDIR` / `JSMOTION_OUTDIR`).
 
-`install.sh` also installs the **required** [`remotion-best-practices`](https://github.com/remotion-dev/skills) skill (`npx skills add https://github.com/remotion-dev/skills --skill remotion-best-practices -g`); if it is missing, jsmotion installs it in Step 0.
+`install.sh` also installs the **required** [`remotion-best-practices`](https://github.com/remotion-dev/skills) skill (`npx skills add https://github.com/remotion-dev/skills --skill remotion-best-practices -g`) and the [`r3f-skills`](https://github.com/EnzeD/r3f-skills) (11 React Three Fiber skills for 3D scenes) (`npx skills add https://github.com/EnzeD/r3f-skills --skill '*' -g`); if they are missing, jsmotion installs them in Step 0.
 
 <details>
 <summary><b>🟠 Claude — claude.ai and Claude Code</b></summary>
