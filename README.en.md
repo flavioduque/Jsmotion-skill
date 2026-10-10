@@ -71,12 +71,13 @@ One conversation. Zero timeline. Zero manual keyframes.
 2. On claude.ai: **Settings → Capabilities → Skills → `+`** and upload the file.
 3. Turn on **"Code execution and file creation"**.
 
-Done. ✅
+Done. ✅ The required **[`remotion-best-practices`](https://github.com/remotion-dev/skills)** skill (official, by Remotion) installs itself the first time jsmotion runs.
 
 ### Option B — Claude Code
 
 ```bash
-git clone https://github.com/flavioduque/Jsmotion-skill.git ~/.claude/skills/jsmotion
+git clone https://github.com/flavioduque/Jsmotion-skill.git && cd Jsmotion-skill
+./install.sh claude     # installs jsmotion + the required remotion-best-practices skill
 ```
 
 > [!NOTE]
@@ -117,10 +118,12 @@ tuned for that ([`agents/`](agents)).
 `--project` installs into the current project only (e.g. `./install.sh copilot --project` → `.github/skills/jsmotion`).
 Without cloning: `curl -fsSL https://raw.githubusercontent.com/flavioduque/Jsmotion-skill/main/install.sh | bash -s -- codex`.
 
-**Requirements everywhere:** Linux or macOS (on Windows, use WSL), **Python 3**, **git** and **internet** on the
+**Requirements everywhere:** Linux or macOS (on Windows, use WSL), **Python 3**, **Node 18+ (npx)**, **git** and **internet** on the
 first run. `install_watch.sh` installs ffmpeg, Playwright and yt-dlp if they're missing. If Chromium is already
 installed, set `CHROMIUM_PATH=/path/to/chrome`. Files go to `./jsmotion-work` and `./jsmotion-out` in the agent's
 working folder (or `JSMOTION_WORKDIR` / `JSMOTION_OUTDIR`).
+
+`install.sh` also installs the **required** [`remotion-best-practices`](https://github.com/remotion-dev/skills) skill (`npx skills add https://github.com/remotion-dev/skills --skill remotion-best-practices -g`); if it is missing, jsmotion installs it in Step 0.
 
 <details>
 <summary><b>🟠 Claude — claude.ai and Claude Code</b></summary>
