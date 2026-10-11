@@ -1,9 +1,9 @@
 ---
 name: jsmotion
-description: "Creates studio-quality motion-design videos in REMOTION (React): company, brand, product, real estate and app promos, Reels/TikTok/Shorts/YouTube/LinkedIn. Delivers ready MP4s (9:16, 1:1, 4:5 and 16:9 from the same code) with a soundtrack mastered to -14 LUFS. Always Remotion, never HyperFrames or other engines. Also makes NARRATED videos: the voice (ElevenLabs, the user's recording or none) becomes a per-word timeline and the text appears as it is spoken (kinetic typography). Studies the reference and the brand site, asks a few questions, shows the script, then produces it. Use whenever the user asks for an animated, motion or narrated video, kinetic typography, a video of their company/brand/app, a Reels/TikTok video, \"jsmotion\", or attaches a reference video asking for something similar. PT: vídeo animado, motion, vídeo narrado, tipografia cinética, vídeo da minha empresa/marca/app, vídeo para Reels/TikTok."
+description: "Creates studio-quality motion-design videos in REMOTION (React): company, brand, product, real estate and app promos, Reels/TikTok/Shorts/YouTube/LinkedIn. Delivers ready MP4s (9:16, 1:1, 4:5 and 16:9 from the same code) with a soundtrack mastered to -14 LUFS. Always Remotion, never HyperFrames or other engines. Also makes NARRATED videos: the voice (ElevenLabs, the user's recording or none) becomes a per-word timeline and the text appears as it is spoken (kinetic typography). Also edits talking-head/avatar videos (captions, cards, 3D, face-tracked frame, CTA). Studies the reference and the brand site, asks a few questions, shows the script, then produces it. Use whenever the user asks for an animated, motion or narrated video, kinetic typography, a video of their company/brand/app, a Reels/TikTok video, \"jsmotion\", or attaches a reference video asking for something similar. PT: vídeo animado, motion, vídeo narrado, tipografia cinética, vídeo da minha empresa/marca/app, Reels/TikTok, editar vídeo do avatar."
 license: MIT
 metadata:
-  version: "1.4.0"
+  version: "1.5.0"
   author: Flavio Duque
 ---
 <!-- GERADO por tools/build_agents.py a partir do SKILL.md — não edite aqui. -->
@@ -38,12 +38,17 @@ Arquivos da skill (abaixo `$SK` — ver "Neste agente"):
 - `scripts/get_font.py` — baixa **qualquer** família do Google Fonts (a fonte vem da direção de arte, não é fixa)
 - `scripts/music.py` — **trilha de verdade**: faixa do usuário/biblioteca/gerada (ou ElevenLabs Music com a duração
   exata) → volume normalizado + BPM + batidas (`music.json`); as trocas de cena encaixam na batida
+- `scripts/face_track.py` — **modo apresentador**: rastreia o rosto no vídeo da pessoa → `src/face.json`
+- `scripts/font3d.py` — fonte da direção de arte → fonte 3D do three.js (texto extrudado com `Text3D`)
 - `scripts/voice.py` — **vídeo narrado**: narração (`narracao.txt` com `[marcadores]` e `*destaques*`) → voz + linha do
-  tempo por palavra (`words.json`) — ElevenLabs, áudio pronto (alinhado com faster-whisper) ou estimativa sem voz
+  tempo por palavra (`words.json`) — ElevenLabs, áudio pronto (alinhado com faster-whisper) ou estimativa sem voz;
+  `--transcribe` transcreve a fala de quem já gravou (para revisar e alinhar)
 - `templates/remotion/` — **o projeto-modelo**: `src/style.ts` (a direção de arte: cores, degradê de destaque, fontes),
   `src/kit.tsx` (peças prontas: mídia com recorte, cartões, palavras no tempo da fala, selos, contador, cenas
   `Converge`/`Orbit`/`Wall`/`Expand`, flash, trilha que abaixa sob a voz), `src/Video.tsx` (o vídeo — você escreve) e
   `src/Root.tsx` (formatos 9x16, 1x1, 4x5, 16x9). Fontes livres de reserva em `public/fonts`.
+  Também: `src/presenter.tsx` (pessoa em tela cheia/moldura/fora com recorte que segue o rosto, legenda com a palavra
+  falada em destaque, vídeo de apoio) e `src/three.tsx` (3D: `Text3D`, `Bars3D`, `CoinStack`, `Env`, `Lights`).
 - `references/formats.md` — tamanhos por formato e como adaptar o layout
 - `references/remotion.md` — **o motor**: estrutura do projeto, regras do código, as peças do kit, o **padrão de
   qualidade** e o ciclo assets → stills → prévia → final (leia antes do Passo 4)
@@ -51,6 +56,14 @@ Arquivos da skill (abaixo `$SK` — ver "Neste agente"):
 - `references/copy.md` — **copy para postagem** (legenda por rede, gancho, CTA, hashtags, emojis ou não)
 - `references/narrado.md` — **vídeo narrado**: modelos de roteiro falado, marcação, voz, tipografia cinética
   sincronizada (`Say`/`Words`), momento gigante, ducking, prévia e checklist
+- `references/apresentador.md` — **modo apresentador**: editar vídeo de alguém falando (gravação ou avatar): direção
+  de edição por unidade de sentido, tela cheia × moldura × fora, rastreio e recorte, legenda, imagens de apoio, alfa
+- `references/lettering.md` — **texto como decisão editorial**: hierarquia, forma legível, animar a ideia, sincronia
+- `references/motion-explicativo.md` — **explicar com movimento**: estado → ação → estado, processo/comparação/causa,
+  dados reais, e quando e como usar **3D** (receitas que funcionam no render)
+- `references/referencia.md` — **referência a fundo**: observado × inferido × proposto, regras transferíveis, várias
+  referências e o **pacote de extração** (quando pedirem para extrair/guardar o estilo)
+- `references/variacoes.md` — **variações controladas** (A/B de abertura, título, CTA): hipótese, matriz, manifesto
 
 ---
 
@@ -92,13 +105,17 @@ Se o seu modelo não enxerga imagens, peça ao usuário para abrir `$WORK/review
    vídeo novo. Da referência vem só a linguagem de movimento — nunca a paleta dela.
 7. **O assunto em quadro**: enquadre o que se vende (no imóvel, o EDIFÍCIO; no produto, o produto). Figurantes,
    calçada e carros são contexto, não o foco.
+8. **Gasto só com autorização**: geração paga (vídeo/imagem por IA, música, voz) só depois do "ok" para aquele gasto,
+   com a estimativa de custo antes; serviço bloqueado ou sem saldo → avise, não troque de serviço pago por conta própria.
+9. **Técnica que existe de verdade**: recorte alfa só com silhueta real (máscara oval não é remoção de fundo); 3D só
+   com geometria real (plano girando não é 3D). Se usar uma alternativa, diga qual e por quê.
 
 ## Passo 0 — Preparar o ambiente (silencioso)
 
 ```bash
 source $SK/scripts/paths.sh        # WORK = pasta de trabalho · OUT = pasta de entregas
 SKD=$(bash $SK/scripts/ensure_skills.sh)   # OBRIGATÓRIAS: remotion-best-practices + r3f-* (pasta das skills)
-bash $SK/scripts/install_watch.sh          # vídeo narrado com voz pronta: install_watch.sh --voz (alinhamento)
+bash $SK/scripts/install_watch.sh          # narrado com voz pronta: --voz · vídeo de pessoa falando: --apresentador
 python3 $SK/scripts/assets.py new $WORK/video   # projeto Remotion (Node 18+ e npm; 1ª vez instala ~1 min)
 ```
 **Skills obrigatórias** (se o script falhar por falta de Node/npx ou de internet, avise o usuário: sem elas não siga):
@@ -172,6 +189,9 @@ Faça tudo o que for possível sozinho, para perguntar menos:
    vídeo (gancho, provas, preço, chamada), no idioma pedido; não invente preços, números nem depoimentos.
    **Separe as melhores fotos** (produto, ambiente, pessoa, resultado — ≥ 1080 px de largura): o vídeo profissional
    é feito de mídia real. Se não houver fotos boas, peça ao usuário (fotos do produto, renders, retrato, logo em PNG).
+2b. **Vídeo de alguém falando** (gravação do cliente ou avatar do HeyGen/afins) como material principal? É o **modo
+   apresentador**: assista inteiro, ouça o áudio, transcreva/alinhe a fala e rastreie o rosto já aqui
+   (`references/apresentador.md` §1). Separe também as filmagens reais que podem servir de apoio (o lugar, o produto).
 3. **Logo**: use o arquivo ORIGINAL enviado (nunca redesenhe; só recorte margem transparente e redimensione).
    Logo em JPG ou PNG com fundo branco/liso: o `assets.py logo` remove esse fundo sozinho (só o que toca as bordas;
    o branco dentro da logo fica). Miolos de letras com a cor do fundo: `assets.py logo … --holes`;
@@ -201,6 +221,8 @@ e som. **Não existe estilo padrão**: nunca parta do visual dos exemplos da ski
    As cores e fontes são SEMPRE as da marca (ou do design system já aprovado) — só use a paleta da referência se o
    usuário pedir isso com essas palavras.
    Anote no `estilo.md` o que veio da referência e o que veio da marca.
+   Referência com pessoa/edição (não só tipografia), várias referências ou pedido de "extrair/guardar o estilo":
+   siga `references/referencia.md` (observado × inferido × proposto, tabela de regras transferíveis, pacote de extração).
 2. **Sem referência → a análise decide**: marca (logo, site, fontes), tema, público e destino.
 
 Prepare 3 direções para a pergunta de estilo do Passo 2. Com referência, a 1ª (recomendada) é **fiel à referência**
@@ -218,8 +240,10 @@ pergunte se não houver nenhuma fonte ou se a logo for só preto/branco.
 
 0. **Tipo de vídeo** (pule se a referência ou o pedido já deixarem claro) — 1. **Narrado com tipografia cinética**
    (a voz conduz, o texto entra palavra por palavra; explicar, opinar, bastidor; 30–90 s) · 2. **Encarte animado**
-   (produtos, provas, preço, CTA; 15–40 s) · 3. **Texto cinético sem voz** (no ritmo da trilha). Recomende 1 se a
-   referência for narrada ou com texto palavra por palavra, ou se o assunto precisa de explicação; 2 para catálogo/promoção.
+   (produtos, provas, preço, CTA; 15–40 s) · 3. **Texto cinético sem voz** (no ritmo da trilha) · 4. **Editar vídeo de
+   alguém falando** (gravação ou avatar: legenda, cartões, 3D, moldura, apoio, final com CTA). Recomende 1 se a
+   referência for narrada ou com texto palavra por palavra, ou se o assunto precisa de explicação; 2 para catálogo/promoção;
+   4 sempre que o material principal for uma pessoa falando (aí pule a pergunta da voz: a voz é a dela).
    No narrado, **antes** de perguntar a voz, veja se o ElevenLabs está disponível: `python3 $SK/scripts/voice.py --check`
    (chave `ELEVENLABS_API_KEY`) **ou** ferramentas do conector ElevenLabs no seu agente (ex.: `creative_list_voices` /
    `creative_generate_speech`). Pergunta da **voz**:
@@ -260,6 +284,11 @@ Mostre o roteiro cena por cena, linguagem simples, com os tempos, os textos exat
 e o som. O começo precisa prender nos 3 primeiros segundos. Termine com a forma de entrega e
 **espere o "ok"** (ou ajustes) antes de programar.
 
+**Modo apresentador:** mostre o **roteiro de edição** (`references/apresentador.md` §2): por trecho da fala real, o
+tempo, a composição (tela cheia · moldura · fora), o que entra na tela (cartão, lettering, 3D, esquema), de onde vem
+cada imagem (filmagem do cliente · gerada · 3D) e o som; liste o que precisaria ser **gerado** e o custo estimado.
+Só gere mídia paga depois do "ok" para esse gasto.
+
 **Vídeo narrado:** mostre primeiro o **texto da narração** com os `[marcadores]` e `*destaques*` (modelos em
 `references/narrado.md`), e para cada marcador o que aparece na tela (cena, texto, imagem, efeito). Só gere a voz depois
 do "ok" no texto — mudar o texto depois exige gerar a voz de novo.
@@ -271,6 +300,10 @@ promessa ~12% · final logo+CTA **2,5s fixos**. Menos de 15s: junte virada+conte
 ## Passo 4 — Construção
 
 1. Leia `references/remotion.md` (motor, peças, padrão de qualidade), `references/formats.md` e o seu `$WORK/ref/estilo.md`.
+   Antes de escrever as cenas, leia também `references/lettering.md` (todo vídeo tem texto) e, se houver explicação,
+   processo, comparação ou números, `references/motion-explicativo.md`. Modo apresentador: `references/apresentador.md`.
+   Cena 3D: `python3 $SK/scripts/assets.py three $WORK/video` (fonte 3D = display do `style.ts`; rode depois de
+   escrever o `style.ts`) e use as peças de `src/three.tsx`.
 2. Coloque o material REAL no projeto (`$WORK/video`, criado no Passo 0):
    `python3 $SK/scripts/assets.py add $WORK/video <vídeos e fotos>` · `assets.py logo $WORK/video logo.png` (e assinatura,
    selos de parceiros) · fontes da direção: `python3 $SK/scripts/get_font.py "Família" --role display --out $WORK/video/public/fonts`
@@ -289,6 +322,12 @@ promessa ~12% · final logo+CTA **2,5s fixos**. Menos de 15s: junte virada+conte
 6. Escreva **`src/Video.tsx`**: `DURATION`, os recortes (`Shot`) de cada mídia enquadrando o assunto, e as cenas
    (`Scene` entre os instantes da fala — `wordAt(find('…'))`, `mark('…')`), usando as peças do kit e **cenas próprias
    para as metáforas do tema**. Siga os 10 itens do padrão de qualidade (`references/remotion.md`).
+
+**Modo apresentador** (`references/apresentador.md`): `src/Video.tsx` importa de `./presenter` — `KEYS` com os estados
+F/M/O nos tempos da fala, `<Presenter>` (recorte que segue o rosto), `<Captions>` (faixa própria, `mute` onde o
+lettering repete a frase), `<Clip>` para filmagem real/apoio atrás das explicações, cartões e 3D para o que a pessoa
+menciona, e o final acionável (logo, assinatura, CTA, WhatsApp, "CLIQUE AQUI" com seta). A voz é a do vídeo dela
+(`VOICE.audio` via `assets.py voice`).
 
 ### Regras técnicas (valem para qualquer estilo)
 - Tudo em função de `t` (segundos): determinístico, sem `Math.random()` solto, timers ou animação CSS automática.
@@ -312,6 +351,8 @@ acrescente as metáforas do tema.
 Vídeo narrado: fotografe cada marcador (+0,5 s e +1,5 s), o `gigante` e o final, e mande uma **prévia rápida**
 (`render.py $WORK/video <nome> --formats 9x16 --draft` → `<nome>_9x16_previa.mp4`) para o usuário aprovar ritmo e
 sincronia antes do render final.
+Modo apresentador: fotografe também o **meio de cada transição** de composição, o maior gesto e a maior inclinação de
+cabeça (a cabeça mantém folga, nada de testa cortada), cada inserção e o final; legenda nunca em cima do rosto.
 Abra as folhas com a ferramenta de imagem. No formato principal, revise tudo; nos outros, confira principalmente as cenas com
 texto longo (no 16:9 o texto fica numa coluna à direita — no narrado, centralizado; no 1:1 tudo fica menor). Procure: texto de uma cena vazando para outra, palavras
 sobrepostas nas trocas, texto perto da borda, elementos cortados, logo alterada,
@@ -325,7 +366,9 @@ python3 $SK/scripts/render.py $WORK/video <nome> --formats 9x16,1x1,16x9
 ```
 Renderiza cada formato (~1× a 2× a duração do vídeo por formato, conforme a máquina) → `$OUT/<nome>_9x16.mp4`…
 Avise o usuário do tempo antes de começar; render longo em segundo plano (`nohup … > $WORK/render.log 2>&1 &`) até
-aparecer `total:`. O áudio sai **masterizado em −14 LUFS** (padrão das redes) com pico abaixo de −1,5 dBTP; o
+aparecer `total:`. Vídeo com mais de 30 s sai **em blocos retomáveis** (`--chunks`, padrão 240 quadros): se a máquina
+ou o container reiniciar, rode **o mesmo comando** e ele continua de onde parou (blocos em `$WORK/video/.render`).
+3D sem GPU é lento (~4–6 min por bloco de 8 s, mais uma passada do áudio): conte isso no aviso de tempo. O áudio sai **masterizado em −14 LUFS** (padrão das redes) com pico abaixo de −1,5 dBTP; o
 `render.py` imprime o volume de cada MP4 — confira se está a ±0,5 LU do alvo.
 Faça uma folha de contato do MP4 principal e veja uma última vez.
 
@@ -335,11 +378,17 @@ Na resposta, em linguagem simples:
 - qual arquivo usar em cada rede (9:16 → Reels/TikTok/Shorts/Stories · 1:1 ou 4:5 → feed/LinkedIn · 16:9 → YouTube/site);
 - **3 sugestões de melhoria** concretas.
 
+**Variações** (A/B de abertura, título, CTA, versões para anúncio): siga `references/variacoes.md` — uma hipótese
+por versão, matriz antes do lote, base aprovada intacta, nomes que dizem a diferença.
+
 **Copy (se ele pediu na pergunta 8):** escreva seguindo `references/copy.md` — uma versão por rede que ele vai
 usar, gancho de impacto na 1ª linha, frases e números REAIS da marca (`$WORK/site/textos.md`), a mesma chamada do
 vídeo, hashtags certas e emojis exatamente como ele escolheu (com ou sem). Salve em `$OUT/<nome>_copy.md`, entregue
 junto com os arquivos e **cole também na resposta**, em blocos prontos para copiar (Instagram, TikTok, LinkedIn…),
 mais 2 variações de gancho e o texto da capa do Reels.
 
-Se não for possível renderizar aqui (sem Node/Chromium/ffmpeg), entregue o projeto `$WORK/video` compactado com as
-instruções: `npm install` e `npx remotion render src/index.ts v9x16 out.mp4` (ou `npx remotion studio` para ver).
+Se não for possível renderizar aqui (sem Node/Chromium/ffmpeg) — ou o usuário quiser renderizar/editar na máquina
+dele —, entregue o projeto `$WORK/video` **sem** `node_modules`, `.bundle` e `.render`, com um LEIA-ME: `npm install`,
+`npx remotion studio src/index.ts` (ver e mexer) e `npx remotion render src/index.ts v9x16 out/video.mp4`; com placa
+de vídeo, troque `'swangle'` por `'angle'` no `remotion.config.ts` (3D bem mais rápido). Arquivo grande demais para a
+transferência? Divida (`split -b 24m`) e explique como juntar (`cat parte-* > arquivo`).

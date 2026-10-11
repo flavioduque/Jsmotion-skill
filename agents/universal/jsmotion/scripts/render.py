@@ -5,6 +5,9 @@
   python3 render.py PROJ NOME --formats 9x16,1x1,16x9 [--draft]
         → $OUT/NOME_9x16.mp4 … (H.264, áudio masterizado em −14 LUFS / pico −1,5 dBTP)
         --draft = prévia rápida em meia resolução ($OUT/NOME_9x16_previa.mp4) para aprovar ritmo e sincronia
+        --chunks N = render em blocos de N quadros (padrão 240 em vídeos com mais de 30 s; 0 = de uma vez só).
+        Os blocos ficam em PROJ/.render/ e o render RETOMA de onde parou se a máquina/container reiniciar: é só rodar
+        o mesmo comando de novo. Mudou o código ou as mídias? Os blocos antigos são descartados sozinhos.
 
 Chromium: usa REMOTION_BROWSER/CHROMIUM_PATH ou o do Playwright, se existir; senão o Remotion baixa o dele.
 Render longo? Rode em segundo plano (nohup … &) e acompanhe o log até aparecer "total:"."""
@@ -21,7 +24,7 @@ def opt(flag, default=None, many=False):
         v = a[i + 1:j]; del a[i:j]; return v
     v = a[i + 1]; del a[i:i + 2]; return v
 stills = opt('--stills', None, many=True); fmt1 = opt('--format', '9x16'); ref = opt('--ref'); sheet = opt('-o')
-formats = opt('--formats', '9x16').split(','); draft = '--draft' in a
+formats = opt('--formats', '9x16').split(','); draft = '--draft' in a; chunk = opt('--chunks')
 a = [x for x in a if x != '--draft']
 if len(a) < 2: sys.exit(__doc__)
 proj, name = os.path.abspath(a[0]), a[1]
@@ -73,18 +76,55 @@ if stills:
     sys.exit(0)
 
 os.makedirs(outdir(), exist_ok=True)
+import hashlib
+def fingerprint():   # código empacotado + nome/tamanho das mídias: mudou → blocos antigos não servem mais
+    h = hashlib.sha1()
+    for r, _, fs in sorted(os.walk(build)):
+        for x in sorted(fs):
+            p = os.path.join(r, x)
+            h.update(p[len(build):].encode()); h.update(open(p, 'rb').read() if x.endswith('.js') else str(os.path.getsize(p)).encode())
+    return h.hexdigest()[:16]
+comps = []
+def frames_of(f):
+    if not comps: comps.append(run(npx + ['compositions', build] + (['--browser-executable', b] if b else [])))
+    m = re.search(rf'v{f}\s+(\d+)\s+\d+x\d+\s+(\d+)', comps[0])
+    return int(m.group(2)) if m else 0
+
+work = os.path.join(proj, '.render'); fp = fingerprint()
+if os.path.exists(os.path.join(work, 'fp')) and open(os.path.join(work, 'fp')).read() != fp: shutil.rmtree(work)
+os.makedirs(work, exist_ok=True); open(os.path.join(work, 'fp'), 'w').write(fp)
+bx = ['--browser-executable', b] if b else []
 for f in formats:
-    raw = os.path.join(proj, f'.raw_{f}.mp4')
-    cmd = npx + ['render', build, f'v{f}', raw, f'--concurrency={conc}', f'--crf={26 if draft else 16}', '--log=error']
-    if draft: cmd += ['--scale=0.5']
-    if b: cmd += ['--browser-executable', b]
-    t1 = time.time(); run(cmd)
+    t1 = time.time()
     dst = os.path.join(outdir(), f'{name}_{f}{"_previa" if draft else ""}.mp4')
-    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', raw, '-c:v', 'libx264', '-crf', '24' if draft else '20', '-preset', 'medium',
+    total = frames_of(f)
+    size = int(chunk) if chunk is not None else (240 if total > 900 else 0)
+    if draft or not size or total <= size:      # de uma vez (prévia ou vídeo curto)
+        raw = os.path.join(proj, f'.raw_{f}.mp4')
+        cmd = npx + ['render', build, f'v{f}', raw, f'--concurrency={conc}', f'--crf={26 if draft else 16}', '--log=error'] + bx
+        if draft: cmd += ['--scale=0.5']
+        run(cmd); ins = ['-i', raw]
+    else:                                       # em blocos retomáveis: vídeo mudo por bloco + o áudio inteiro numa passada
+        # (o áudio não pode ser cortado em blocos: volumes que dependem do quadro, como o abaixar da trilha sob a voz,
+        #  saem diferentes em cada bloco; por isso ele é renderizado inteiro, uma vez, e serve a todos os formatos)
+        cd = os.path.join(work, f); os.makedirs(cd, exist_ok=True); parts = []
+        for a0 in range(0, total, size):
+            a1 = min(total, a0 + size) - 1; part = os.path.join(cd, f'{a0:06d}.mp4'); parts.append(part)
+            if os.path.exists(part): continue
+            run(npx + ['render', build, f'v{f}', part + '.tmp.mp4', f'--frames={a0}-{a1}', '--muted', f'--concurrency={conc}', '--crf=16', '--log=error'] + bx)
+            os.replace(part + '.tmp.mp4', part)
+            print(f'  bloco {a0}-{a1} de {total} ok ({time.time() - t1:.0f}s)', flush=True)
+        wav = os.path.join(work, 'audio.wav')
+        if not os.path.exists(wav):
+            run(npx + ['render', build, f'v{f}', wav + '.tmp.wav', '--codec=wav', f'--concurrency={conc}', '--log=error'] + bx); os.replace(wav + '.tmp.wav', wav)
+        lst = os.path.join(cd, 'list.txt'); open(lst, 'w').write(''.join(f"file '{p}'\n" for p in parts))
+        raw = None; ins = ['-f', 'concat', '-safe', '0', '-i', lst, '-i', wav, '-map', '0:v', '-map', '1:a']
+    subprocess.run(['ffmpeg', '-v', 'error', '-y'] + ins + ['-c:v', 'libx264', '-crf', '24' if draft else '20', '-preset', 'medium',
                     '-pix_fmt', 'yuv420p', '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-ar', '48000', '-c:a', 'aac', '-b:a', '192k',
                     '-movflags', '+faststart', dst], check=True)
-    os.remove(raw)
+    if raw: os.remove(raw)
     m = subprocess.run(['ffmpeg', '-nostats', '-i', dst, '-af', 'ebur128=peak=true', '-f', 'null', '-'], capture_output=True, text=True).stderr
     lufs = re.findall(r'I:\s+(-?[\d.]+) LUFS', m); pk = re.findall(r'Peak:\s+(-?[\d.]+) dBFS', m)
     print(f'✅ {dst}  {os.path.getsize(dst) / 1e6:.1f} MB · {f"{lufs[-1]} LUFS · pico {pk[-1]} dBFS" if lufs else "sem áudio"} · {time.time() - t1:.0f}s')
+if not draft: shutil.rmtree(work, ignore_errors=True)   # entregue: libera o espaço dos blocos
 print(f'total: {time.time() - t0:.0f}s')
