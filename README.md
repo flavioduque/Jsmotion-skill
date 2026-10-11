@@ -307,6 +307,31 @@ Para vídeos que **explicam, opinam ou contam um bastidor**, a voz conduz tudo �
 
 Guia: [`references/narrado.md`](references/narrado.md).
 
+## 🧑‍💼 Novo: editar vídeo de alguém falando (gravação ou avatar)
+
+Mande o vídeo de uma pessoa falando para a câmera — gravação sua, de um cliente, ou **avatar do HeyGen** — e peça a
+edição. A jsmotion transforma a fala em um vídeo que explica:
+
+- **Direção de edição pela fala.** Cada ideia ganha uma decisão: tela cheia quando o rosto convence (gancho, opinião,
+  convite), **moldura** quando pessoa e explicação andam juntas, **demonstração em tela cheia** quando o conteúdo
+  precisa de área — a voz continua conduzindo.
+- **O rosto nunca é cortado.** O rosto é rastreado no vídeo original e o recorte é recalculado a cada quadro,
+  inclusive no meio da transição para a moldura.
+- **Legenda que acompanha a fala**, com a palavra falada em destaque, numa faixa própria em cada composição (nunca
+  em cima do rosto) e silenciada quando o lettering já diz a mesma frase.
+- **Cartões, esquemas e 3D com o que a pessoa menciona**: documento que percorre as etapas de um processo, rota que se
+  desenha, checklist que recebe ✓, palavras de impacto e gráficos em **3D de verdade** (three.js), números com fonte.
+- **Imagens de apoio** a partir das filmagens reais (em câmera lenta e recortes diferentes) e, com sua autorização e o
+  custo mostrado antes, clipes gerados por IA para cenas genéricas.
+- **Final acionável**: logo, assinatura, CTA da fala, WhatsApp e "CLIQUE AQUI" com seta.
+- **Render que não se perde**: vídeos longos saem em blocos; se a máquina reiniciar, ele continua de onde parou.
+
+Inclui também guias de **lettering com hierarquia**, **motion explicativo**, **análise de referência a fundo** (com
+pacote de extração para reutilizar o estilo) e **variações controladas** para testes A/B.
+Guias: [`apresentador.md`](references/apresentador.md) · [`lettering.md`](references/lettering.md) ·
+[`motion-explicativo.md`](references/motion-explicativo.md) · [`referencia.md`](references/referencia.md) ·
+[`variacoes.md`](references/variacoes.md).
+
 ## 🎥 Como funciona
 
 ```mermaid
@@ -469,15 +494,23 @@ jsmotion/
 │   ├── scrape_site.py       🌐 cores, fontes, textos e mídia do site da marca
 │   ├── brand_palette.py     🎨 paleta a partir da logo quando não há site
 │   ├── get_font.py          🔤 baixa qualquer família do Google Fonts
-│   ├── voice.py             🎙️ narração → linha do tempo por palavra (ElevenLabs, gravação ou estimativa)
+│   ├── voice.py             🎙️ narração → linha do tempo por palavra (ElevenLabs, gravação ou estimativa); transcreve
+│   ├── face_track.py        🙂 rastreia o rosto do apresentador (o recorte nunca corta a cabeça)
+│   ├── font3d.py            🔠 fonte da marca → fonte 3D do three.js
 │   ├── music.py             🎵 trilha de verdade: volume, BPM e batidas
 │   ├── assets.py            🧳 projeto Remotion: cria, coloca mídia/logo/voz/trilha/fontes (tira fundo liso de logo)
-│   └── render.py            🎬 folha de revisão, prévia e MP4 de cada formato (−14 LUFS)
-├── templates/remotion/      ⚛️ o projeto-modelo: style.ts (direção de arte), kit.tsx (peças), Video.tsx, Root.tsx
+│   └── render.py            🎬 folha de revisão, prévia e MP4 de cada formato (−14 LUFS; em blocos retomáveis)
+├── templates/remotion/      ⚛️ o projeto-modelo: style.ts (direção de arte), kit.tsx (peças), Video.tsx, Root.tsx,
+│                               presenter.tsx (modo apresentador) e three.tsx (peças 3D)
 ├── references/
 │   ├── remotion.md          ⚛️ o motor: peças do kit, regras do código, padrão de qualidade
 │   ├── direcao-de-arte.md   🎨 como o estilo nasce da análise
 │   ├── narrado.md           🎙️ vídeo narrado: roteiro falado, voz, sincronia
+│   ├── apresentador.md      🧑‍💼 editar vídeo de alguém falando (gravação ou avatar)
+│   ├── lettering.md         🔤 texto como decisão editorial
+│   ├── motion-explicativo.md 🧩 explicar com movimento (e quando usar 3D)
+│   ├── referencia.md        🔍 referência a fundo e pacote de extração
+│   ├── variacoes.md         🧪 variações controladas (A/B)
 │   ├── formats.md           📐 formatos e layout
 │   └── copy.md              ✍️ legenda pronta para postar
 ├── agents/                  🤖 variantes para Codex, Gemini, Hermes, OpenClaw e outros (geradas)

@@ -309,6 +309,31 @@ For videos that **explain, take a stance or show behind the scenes**, the voice 
 
 Guide (Portuguese): [`references/narrado.md`](references/narrado.md).
 
+## 🧑‍💼 New: edit a video of someone talking (recording or avatar)
+
+Send a video of a person talking to the camera — yours, a client's, or a **HeyGen avatar** — and ask for the edit.
+jsmotion turns the speech into a video that explains:
+
+- **Editing driven by the speech.** Every idea gets a decision: full screen when the face sells it (hook, opinion,
+  invite), a **frame** when person and explanation go together, a **full-screen demo** when the content needs room —
+  the voice keeps leading.
+- **The face is never cropped.** The face is tracked in the original video and the crop is recomputed every frame,
+  even mid-transition into the frame.
+- **Captions that follow the voice**, spoken word highlighted, in their own band for each layout (never over the
+  face) and muted when the lettering already says the same line.
+- **Cards, diagrams and 3D for what the person mentions**: a document moving through the steps of a process, a route
+  that draws itself, a checklist that gets ✓, impact words and charts in **real 3D** (three.js), numbers with sources.
+- **Supporting footage** from the real footage (slow motion, different crops) and — with your approval and the cost
+  shown first — AI-generated clips for generic scenes.
+- **Actionable end screen**: logo, signature, the CTA from the speech, WhatsApp and "CLICK HERE" with an arrow.
+- **Renders that don't get lost**: long videos render in blocks; if the machine restarts, it resumes where it stopped.
+
+Also includes guides for **lettering with hierarchy**, **explanatory motion**, **in-depth reference analysis** (with an
+extraction package to reuse a style) and **controlled variations** for A/B tests (Portuguese):
+[`apresentador.md`](references/apresentador.md) · [`lettering.md`](references/lettering.md) ·
+[`motion-explicativo.md`](references/motion-explicativo.md) · [`referencia.md`](references/referencia.md) ·
+[`variacoes.md`](references/variacoes.md).
+
 ## 🎥 How it works
 
 ```mermaid
@@ -457,10 +482,14 @@ Effects or other engines.
 jsmotion/
 ├── SKILL.md                 🧠 the step-by-step Claude follows
 ├── scripts/                 watch_reference.sh · find_reference.py · scrape_site.py · brand_palette.py · get_font.py
-│                            voice.py (narration → per-word timeline) · music.py (real soundtrack)
-│                            assets.py (Remotion project: media, logo, voice, music, fonts) · render.py (stills, preview, MP4)
-├── templates/remotion/      ⚛️ the project template: style.ts (art direction), kit.tsx (pieces), Video.tsx, Root.tsx
-├── references/              remotion.md · direcao-de-arte.md · narrado.md · formats.md · copy.md (Portuguese)
+│                            voice.py (narration → per-word timeline; transcription) · music.py (real soundtrack)
+│                            face_track.py (presenter face tracking) · font3d.py (brand font → three.js 3D font)
+│                            assets.py (Remotion project: media, logo, voice, music, fonts, presenter, 3D)
+│                            render.py (stills, preview, MP4; resumable blocks)
+├── templates/remotion/      ⚛️ the project template: style.ts (art direction), kit.tsx (pieces), Video.tsx, Root.tsx,
+│                            presenter.tsx (presenter mode) and three.tsx (3D pieces)
+├── references/              remotion.md · direcao-de-arte.md · narrado.md · formats.md · copy.md · apresentador.md ·
+│                            lettering.md · motion-explicativo.md · referencia.md · variacoes.md (Portuguese)
 ├── agents/                  🤖 variants for Codex, Gemini, Hermes, OpenClaw and others (generated)
 └── tools/build_agents.py    🔧 builds the variants from SKILL.md
 ```

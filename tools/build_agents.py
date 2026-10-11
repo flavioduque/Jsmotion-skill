@@ -12,18 +12,19 @@ import os, re, sys, shutil, zipfile, filecmp, tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RES = ['scripts', 'templates', 'references']          # recursos copiados em toda variante
-VERSION = '1.4.0'
+VERSION = '1.5.0'
 
 DESC = ('Creates studio-quality motion-design videos in REMOTION (React): company, brand, product, real estate '
         'and app promos, Reels/TikTok/Shorts/YouTube/LinkedIn. Delivers ready MP4s (9:16, 1:1, 4:5 and 16:9 '
         'from the same code) with a soundtrack mastered to -14 LUFS. Always Remotion, never HyperFrames or other engines. '
         'Also makes NARRATED videos: the voice (ElevenLabs, the user\'s recording or none) becomes a per-word timeline '
         'and the text appears as it is spoken (kinetic typography). '
+        'Also edits talking-head/avatar videos (captions, cards, 3D, face-tracked frame, CTA). '
         'Studies the reference and the brand site, asks a few questions, shows the script, then produces it. '
         'Use whenever the user asks for an animated, motion or narrated video, kinetic '
         'typography, a video of their company/brand/app, a Reels/TikTok video, "jsmotion", or attaches a reference '
         'video asking for something similar. PT: vídeo animado, motion, vídeo narrado, tipografia cinética, vídeo da '
-        'minha empresa/marca/app, vídeo para Reels/TikTok.')
+        'minha empresa/marca/app, Reels/TikTok, editar vídeo do avatar.')
 assert len(DESC) <= 1024, len(DESC)   # limite do padrão Agent Skills
 
 TOOLS = """## Ferramentas por agente

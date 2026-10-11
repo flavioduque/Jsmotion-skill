@@ -9,6 +9,12 @@
   python3 assets.py voice <PROJ> $WORK/voice/words.json   → narração (palavras + marcadores + MP3) para o kit (src/words.json)
   python3 assets.py music <PROJ> $WORK/music/music.json   → trilha (MP3 em public/trilha.mp3 + batidas)
   python3 assets.py font  <PROJ> fonte.woff2 [...]        → fontes em public/fonts/
+  python3 assets.py presenter <PROJ> video.mp4            → MODO APRESENTADOR: o vídeo da pessoa (gravação ou avatar) vira
+                                                        public/media/apresentador.mp4 (sem áudio; a fala vai pelo
+                                                        voice.py --audio) e o rosto é rastreado em src/face.json
+  python3 assets.py three <PROJ> [fonte.woff2] [--weight 800]
+                                                      → fonte 3D (public/three/display.json) para <Text3D> (src/three.tsx);
+                                                        sem arquivo, usa a 1ª fonte display do src/style.ts
 
 PROJ costuma ser $WORK/video. Dependências do npm ficam em cache ($WORK/.jsmotion-npm) e são reaproveitadas."""
 import os, sys, json, shutil, subprocess
@@ -58,9 +64,9 @@ def new(proj):
     else:
         shutil.copytree(TPL, proj, dirs_exist_ok=True)
     cache = os.path.join(workdir(), '.jsmotion-npm')
-    if not os.path.isdir(os.path.join(cache, 'node_modules', 'remotion')):
+    if not all(os.path.isdir(os.path.join(cache, 'node_modules', m)) for m in ('remotion', '@remotion/three', 'three')):
         os.makedirs(cache, exist_ok=True); shutil.copy(os.path.join(TPL, 'package.json'), cache)
-        print('📦 instalando Remotion (1ª vez, ~1 min)…')
+        print('📦 instalando Remotion + 3D (1ª vez, ~1 min)…')
         subprocess.run(['npm', 'install', '--no-audit', '--no-fund', '--loglevel=error'], cwd=cache, check=True)
     nm = os.path.join(proj, 'node_modules')
     if not os.path.exists(nm): os.symlink(os.path.join(cache, 'node_modules'), nm)
@@ -106,6 +112,27 @@ def font(proj, files):
     d = os.path.join(proj, 'public', 'fonts'); os.makedirs(d, exist_ok=True)
     for f in files: shutil.copy(f, d); print(f'🔤 fonts/{os.path.basename(f)}')
 
+def presenter(proj, f):
+    d = os.path.join(proj, 'public', 'media'); os.makedirs(d, exist_ok=True)
+    dst = os.path.join(d, 'apresentador.mp4')
+    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', f, '-an', '-c:v', 'libx264', '-crf', '17', '-preset', 'veryfast',
+                    '-pix_fmt', 'yuv420p', '-g', '15', dst], check=True)
+    print('🧑 media/apresentador.mp4 (sem áudio: a fala entra pelo voice.py --audio, com a linha do tempo por palavra)')
+    subprocess.run([sys.executable, os.path.join(HERE, 'face_track.py'), proj], check=True)
+
+def three(proj, f=None, weight=None):
+    if not f:   # a fonte display do style.ts (o arquivo normal, não o itálico)
+        import re
+        st = open(os.path.join(proj, 'src', 'style.ts'), encoding='utf-8').read()
+        line = next((l for l in st.splitlines() if l.strip().startswith('display:')), '')
+        files = re.findall(r"file:\s*'([^']+)'[^}]*?style:\s*'(\w+)'", line)
+        if not files: sys.exit('❌ não achei a fonte display no src/style.ts; passe o arquivo: assets.py three PROJ fonte.woff2')
+        f = os.path.join(proj, 'public', next((x for x, sty in files if sty == 'normal'), files[0][0]))
+        m = re.search(r"weight:\s*(\d+)", line); weight = weight or (m and m.group(1))
+    os.makedirs(os.path.join(proj, 'public', 'three'), exist_ok=True)
+    cmd = [sys.executable, os.path.join(HERE, 'font3d.py'), f, os.path.join(proj, 'public', 'three', 'display.json')]
+    subprocess.run(cmd + (['--weight', str(weight)] if weight else []), check=True)
+
 if __name__ == '__main__':
     a = sys.argv[1:]
     if len(a) < 2: sys.exit(__doc__)
@@ -118,4 +145,9 @@ if __name__ == '__main__':
     elif cmd == 'voice': voice(proj, rest[0])
     elif cmd == 'music': music(proj, rest[0])
     elif cmd == 'font': font(proj, rest)
+    elif cmd == 'presenter': presenter(proj, rest[0])
+    elif cmd == 'three':
+        w = rest[rest.index('--weight') + 1] if '--weight' in rest else None
+        files = [x for x in rest if x != '--weight' and x != w]
+        three(proj, files[0] if files else None, w)
     else: sys.exit(__doc__)

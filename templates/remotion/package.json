@@ -2,11 +2,16 @@
   "name": "jsmotion-video",
   "private": true,
   "description": "jsmotion — vídeo de motion design em Remotion (React)",
-  "scripts": {"studio": "remotion studio src/index.ts"},
+  "scripts": {
+    "studio": "remotion studio src/index.ts"
+  },
   "dependencies": {
+    "@react-three/fiber": "8.18.0",
     "@remotion/cli": "4.0.532",
+    "@remotion/three": "4.0.532",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "remotion": "4.0.532"
+    "remotion": "4.0.532",
+    "three": "0.186.1"
   }
 }

@@ -1,6 +1,9 @@
 """Uso: python3 voice.py narracao.txt  (--elevenlabs VOICE_ID | --audio voz.mp3 | --estimate)  [opções]
        python3 voice.py --check          (o que está disponível: chave do ElevenLabs, faster-whisper)
        python3 voice.py --voices pt      (lista vozes do ElevenLabs no idioma, para sugerir 3 ao usuário)
+       python3 voice.py --transcribe fala.mp3 [--lang pt] [--model small] [--out fala.txt]
+                                         (vídeo de alguém falando: transcreve para você REVISAR nomes, números e siglas
+                                          contra o áudio; depois: voice.py fala.txt --audio fala.mp3 --lead 0)
 Transforma o texto da narração em LINHA DO TEMPO POR PALAVRA (words.json) — é ela que dita o ritmo do vídeo narrado.
 
 Fontes da voz (escolha uma):
@@ -33,6 +36,19 @@ if args[:1] == ['--check']:
     except Exception: fw = False
     print(f"ElevenLabs (ELEVENLABS_API_KEY): {'sim' if EL_KEY else 'não'}")
     print(f"faster-whisper (alinhar voz pronta): {'sim' if fw else 'não — bash $SK/scripts/install_watch.sh --voz'}")
+    sys.exit(0)
+if args[:1] == ['--transcribe']:
+    def o(flag, d):
+        return args[args.index(flag) + 1] if flag in args else d
+    src = args[1]; dst = o('--out', os.path.splitext(src)[0] + '.txt')
+    try:
+        from faster_whisper import WhisperModel
+    except ImportError:
+        sys.exit('❌ falta o faster-whisper: bash $SK/scripts/install_watch.sh --voz')
+    segs, _ = WhisperModel(o('--model', 'small'), device='cpu', compute_type='int8').transcribe(src, language=o('--lang', 'pt'))
+    lines = [s.text.strip() for s in segs if s.text.strip()]
+    open(dst, 'w', encoding='utf-8').write('\n'.join(lines) + '\n')
+    print(f'📝 {len(lines)} frases → {dst}  (revise nomes, números e siglas ouvindo o áudio antes de alinhar)')
     sys.exit(0)
 if args[:1] == ['--voices']:
     if not EL_KEY: sys.exit('❌ sem ELEVENLABS_API_KEY')

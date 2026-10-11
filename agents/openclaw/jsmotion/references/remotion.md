@@ -9,6 +9,8 @@ $WORK/video/                      ← criado por: python3 $SK/scripts/assets.py 
   src/style.ts    ← a DIREÇÃO DE ARTE (cores, degradê de destaque, fontes, cantos, vinheta, volume da trilha)
   src/Video.tsx   ← O VÍDEO (você escreve: cenas, tempos, textos) + export DURATION
   src/kit.tsx     ← as peças prontas (não precisa editar; pode acrescentar peças próprias)
+  src/presenter.tsx ← modo apresentador (pessoa F/M/O, recorte pelo rosto, legenda, vídeo de apoio)
+  src/three.tsx   ← peças 3D (Text3D, Bars3D, CoinStack, Env, Lights) · public/three/display.json = fonte 3D
   src/words.json  ← a narração (assets.py voice) · src/Root.tsx ← formatos 9x16, 1x1, 4x5, 16x9
   public/media/   ← vídeos e fotos REAIS (assets.py add)   public/brand/ ← logos (assets.py logo)
   public/fonts/   ← fontes (get_font.py --out …/public/fonts)   public/voz.mp3, public/trilha.mp3
@@ -53,14 +55,18 @@ as regras abaixo.
 | `<Expand t a shot>` | cartão que abre até a tela cheia (revelação) |
 | `shake(t,[…])`, `<Flash t at>`, `<Finish t>` | tremida e flash nos impactos; brilho do topo + vinheta |
 | `<Soundtrack music="trilha.mp3" sfx={[['sfx/boom.mp3', 10.2, .5]]} end={DURATION} />` | voz + trilha (abaixa sob a voz) + efeitos |
+| `<Presenter t keys={KEYS} label push />` · `<Captions t keys mute />` · `<Clip t src a b rate dim />` | modo apresentador (`presenter.tsx`, ver `apresentador.md`) |
+| `<Text3D txt size maxW look />` · `<Bars3D items g t />` · `<CoinStack p t />` · `<Env />` `<Lights />` | 3D dentro de `<ThreeCanvas>` (`three.tsx`, ver `motion-explicativo.md`) |
 
 **Cenas próprias** (as metáforas do tema) são componentes React comuns: recebem `t`, leem o `STYLE`, usam `k`/`on`.
 Ex.: uma rota tracejada em SVG que se desenha (`strokeDashoffset` em função de `t`), um selo circular que gira e
 assenta, palavras que viram estrutura. Escreva no próprio `Video.tsx` ou num arquivo novo em `src/`.
 
-**Cenas 3D** (palavras de impacto, números, gráficos): `npm i @remotion/three@<versão do remotion> @react-three/fiber@8
-three` e `<ThreeCanvas width height>` do `@remotion/three`. Leia antes as skills `r3f-*` do que a cena usa
-(fundamentals, geometry, materials, lighting…). Animação **só pelo quadro** (`useCurrentFrame` → `t` → `k`/`on`):
+**Cenas 3D** (palavras de impacto, números, gráficos): o template já traz `@remotion/three`, `@react-three/fiber` 8 e
+`three`, o renderizador WebGL sem GPU (`swangle` no `remotion.config.ts`) e as peças de `src/three.tsx`; gere a fonte 3D
+com `assets.py three $WORK/video` e use `<ThreeCanvas linear width height camera gl={{alpha: true}}>` do `@remotion/three`.
+Leia antes as skills `r3f-*` do que a cena usa (fundamentals, geometry, materials, lighting…) e as receitas de
+`motion-explicativo.md`. Animação **só pelo quadro** (`useCurrentFrame` → `t` → `k`/`on`):
 nada de `useFrame`, damping, relógio ou física, que não se repetem igual quadro a quadro no render. Cores e fontes
 do `STYLE`; 3D é ênfase pontual, nunca substitui a mídia real.
 
@@ -90,6 +96,7 @@ python3 $SK/scripts/get_font.py "Montserrat" --out $WORK/video/public/fonts
 python3 $SK/scripts/render.py $WORK/video nome --stills 0.5 2 4.2 … --ref $WORK/ref/sheet.jpg   # folha de revisão
 python3 $SK/scripts/render.py $WORK/video nome --formats 9x16 --draft                          # prévia rápida
 python3 $SK/scripts/render.py $WORK/video nome --formats 9x16,1x1,16x9                         # final, −14 LUFS
+# (> 30 s: em blocos retomáveis; caiu no meio? rode o mesmo comando de novo)
 ```
 
 Erros comuns: arquivo que não existe em `public/` (o render para com "404"), fonte com nome diferente do `family`
