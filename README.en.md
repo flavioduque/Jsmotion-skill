@@ -71,13 +71,13 @@ One conversation. Zero timeline. Zero manual keyframes.
 2. On claude.ai: **Settings → Capabilities → Skills → `+`** and upload the file.
 3. Turn on **"Code execution and file creation"**.
 
-Done. ✅ The required **[`remotion-best-practices`](https://github.com/remotion-dev/skills)** skill (official, by Remotion) and **[`r3f-skills`](https://github.com/EnzeD/r3f-skills) (11 React Three Fiber skills for 3D scenes)** install themselves the first time jsmotion runs.
+Done. ✅ The required **[`remotion-best-practices`](https://github.com/remotion-dev/skills)** skill (official, by Remotion) , **[`r3f-skills`](https://github.com/EnzeD/r3f-skills) (11 React Three Fiber skills for 3D scenes)** and **[`effects`](https://github.com/Vibha-Ramprakash/claude-video-effects) (42 effects on the speaker's video)** install themselves the first time jsmotion runs.
 
 ### Option B — Claude Code
 
 ```bash
 git clone https://github.com/flavioduque/Jsmotion-skill.git && cd Jsmotion-skill
-./install.sh claude     # installs jsmotion + the required remotion-best-practices and r3f-* skills
+./install.sh claude     # installs jsmotion + the required remotion-best-practices, r3f-* and effects skills
 ```
 
 > [!NOTE]
@@ -123,7 +123,7 @@ first run. `install_watch.sh` installs ffmpeg, Playwright and yt-dlp if they're 
 installed, set `CHROMIUM_PATH=/path/to/chrome`. Files go to `./jsmotion-work` and `./jsmotion-out` in the agent's
 working folder (or `JSMOTION_WORKDIR` / `JSMOTION_OUTDIR`).
 
-`install.sh` also installs the **required** [`remotion-best-practices`](https://github.com/remotion-dev/skills) skill (`npx skills add https://github.com/remotion-dev/skills --skill remotion-best-practices -g`) and the [`r3f-skills`](https://github.com/EnzeD/r3f-skills) (11 React Three Fiber skills for 3D scenes) (`npx skills add https://github.com/EnzeD/r3f-skills --skill '*' -g`); if they are missing, jsmotion installs them in Step 0.
+`install.sh` also installs the **required** [`remotion-best-practices`](https://github.com/remotion-dev/skills) skill (`npx skills add https://github.com/remotion-dev/skills --skill remotion-best-practices -g`) and the [`r3f-skills`](https://github.com/EnzeD/r3f-skills) (11 React Three Fiber skills for 3D scenes) (`npx skills add https://github.com/EnzeD/r3f-skills --skill '*' -g`) and [`effects`](https://github.com/Vibha-Ramprakash/claude-video-effects) (`npx skills add https://github.com/Vibha-Ramprakash/claude-video-effects --skill effects -g`); if they are missing, jsmotion installs them in Step 0.
 
 <details>
 <summary><b>🟠 Claude — claude.ai and Claude Code</b></summary>
@@ -327,6 +327,10 @@ jsmotion turns the speech into a video that explains:
   shown first — AI-generated clips for generic scenes.
 - **Actionable end screen**: logo, signature, the CTA from the speech, WhatsApp and "CLICK HERE" with an arrow.
 - **Renders that don't get lost**: long videos render in blocks; if the machine restarts, it resumes where it stopped.
+- **Effects on the speaker** (the [`effects`](https://github.com/Vibha-Ramprakash/claude-video-effects) skill by
+  @vibha.in.progress): a giant word **behind their head**, a golden spotlight, an LED sign, a magazine cover, a liquid
+  glass graph, a checklist, iPhone toggles… 42 effects with real face tracking and person cut-out, in the brand colors.
+  Guide: [`efeitos.md`](references/efeitos.md).
 
 Also includes guides for **lettering with hierarchy**, **explanatory motion**, **in-depth reference analysis** (with an
 extraction package to reuse a style) and **controlled variations** for A/B tests (Portuguese):
@@ -489,7 +493,7 @@ jsmotion/
 ├── templates/remotion/      ⚛️ the project template: style.ts (art direction), kit.tsx (pieces), Video.tsx, Root.tsx,
 │                            presenter.tsx (presenter mode) and three.tsx (3D pieces)
 ├── references/              remotion.md · direcao-de-arte.md · narrado.md · formats.md · copy.md · apresentador.md ·
-│                            lettering.md · motion-explicativo.md · referencia.md · variacoes.md (Portuguese)
+│                            lettering.md · motion-explicativo.md · referencia.md · efeitos.md · variacoes.md (Portuguese)
 ├── agents/                  🤖 variants for Codex, Gemini, Hermes, OpenClaw and others (generated)
 └── tools/build_agents.py    🔧 builds the variants from SKILL.md
 ```

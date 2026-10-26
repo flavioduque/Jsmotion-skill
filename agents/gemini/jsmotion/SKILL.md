@@ -3,7 +3,7 @@ name: jsmotion
 description: "Creates studio-quality motion-design videos in REMOTION (React): company, brand, product, real estate and app promos, Reels/TikTok/Shorts/YouTube/LinkedIn. Delivers ready MP4s (9:16, 1:1, 4:5 and 16:9 from the same code) with a soundtrack mastered to -14 LUFS. Always Remotion, never HyperFrames or other engines. Also makes NARRATED videos: the voice (ElevenLabs, the user's recording or none) becomes a per-word timeline and the text appears as it is spoken (kinetic typography). Also edits talking-head/avatar videos (captions, cards, 3D, face-tracked frame, CTA). Studies the reference and the brand site, asks a few questions, shows the script, then produces it. Use whenever the user asks for an animated, motion or narrated video, kinetic typography, a video of their company/brand/app, a Reels/TikTok video, \"jsmotion\", or attaches a reference video asking for something similar. PT: vídeo animado, motion, vídeo narrado, tipografia cinética, vídeo da minha empresa/marca/app, Reels/TikTok, editar vídeo do avatar."
 license: MIT
 metadata:
-  version: "1.5.0"
+  version: "1.6.0"
   author: Flavio Duque
 ---
 <!-- GERADO por tools/build_agents.py a partir do SKILL.md — não edite aqui. -->
@@ -23,7 +23,8 @@ do ambiente se ofereça para "qualquer vídeo": pedido de jsmotion = projeto Rem
 Arquivos da skill (abaixo `$SK` — ver "Neste agente"):
 - `scripts/paths.sh` — define `$WORK` (trabalho) e `$OUT` (entregas); ver Passo 0
 - `scripts/ensure_skills.sh` — **dependências obrigatórias**: instala (se faltarem) a skill oficial
-  `remotion-best-practices` e as 11 skills `r3f-*` (React Three Fiber, para 3D) e imprime a pasta onde elas estão
+  `remotion-best-practices`, as 11 skills `r3f-*` (React Three Fiber, para 3D) e a skill `effects` (42 efeitos com
+  rosto e recorte reais no vídeo da pessoa) e imprime a pasta onde elas estão
 - `scripts/install_watch.sh` — instala a skill watch + yt-dlp, ffmpeg, playwright, brotli
 - `scripts/watch_reference.sh` — assiste o vídeo de referência e gera folha de contato
 - `scripts/find_reference.py` — **busca referências sozinha** no prompt-motion.com (galeria de motion feito com Claude,
@@ -63,6 +64,8 @@ Arquivos da skill (abaixo `$SK` — ver "Neste agente"):
   dados reais, e quando e como usar **3D** (receitas que funcionam no render)
 - `references/referencia.md` — **referência a fundo**: observado × inferido × proposto, regras transferíveis, várias
   referências e o **pacote de extração** (quando pedirem para extrair/guardar o estilo)
+- `references/efeitos.md` — **efeitos sobre a pessoa** (skill `effects`): palavra gigante atrás da cabeça, holofote,
+  letreiro de LED, capa de revista, gráfico de vidro, checklist… como encaixar na edição, regras e os 42 efeitos
 - `references/variacoes.md` — **variações controladas** (A/B de abertura, título, CTA): hipótese, matriz, manifesto
 
 ---
@@ -116,7 +119,7 @@ Se o seu modelo não enxerga imagens, peça ao usuário para abrir `$WORK/review
 
 ```bash
 source $SK/scripts/paths.sh        # WORK = pasta de trabalho · OUT = pasta de entregas
-SKD=$(bash $SK/scripts/ensure_skills.sh)   # OBRIGATÓRIAS: remotion-best-practices + r3f-* (pasta das skills)
+SKD=$(bash $SK/scripts/ensure_skills.sh)   # OBRIGATÓRIAS: remotion-best-practices + r3f-* + effects (pasta das skills)
 bash $SK/scripts/install_watch.sh          # narrado com voz pronta: --voz · vídeo de pessoa falando: --apresentador
 python3 $SK/scripts/assets.py new $WORK/video   # projeto Remotion (Node 18+ e npm; 1ª vez instala ~1 min)
 ```
@@ -128,6 +131,9 @@ python3 $SK/scripts/assets.py new $WORK/video   # projeto Remotion (Node 18+ e n
   `<ThreeCanvas>` do `@remotion/three`), leia antes a `SKILL.md` das que a cena usa em `$SKD/r3f-<tema>/`:
   `fundamentals` (sempre), `geometry`, `materials`, `lighting`, `textures`, `loaders`, `shaders`, `postprocessing`.
   `animation` só pela parte de transições; `interaction` e `physics` não servem para vídeo renderizado.
+- **`effects`** (efeitos no vídeo de uma pessoa falando, com rosto rastreado e recorte real da pessoa): no modo
+  apresentador, siga `references/efeitos.md` (setup: `bash $SKD/effects/scripts/setup.sh`, 1ª vez). Os efeitos são
+  aplicados no vídeo da pessoa ANTES do `assets.py presenter`; os textos e cores são os da marca, nunca os padrões dela.
 
 Em conflito, **a jsmotion manda**: o entregável é o MP4 renderizado (não abra o Studio nem espere pedido de render);
 o kit e o `style.ts` continuam sendo a base; as regras de ouro de `references/remotion.md` valem; no 3D, **tudo se move
@@ -328,7 +334,8 @@ promessa ~12% · final logo+CTA **2,5s fixos**. Menos de 15s: junte virada+conte
 **Modo apresentador** (`references/apresentador.md`): `src/Video.tsx` importa de `./presenter` — `KEYS` com os estados
 F/M/O nos tempos da fala, `<Presenter>` (recorte que segue o rosto), `<Captions>` (faixa própria, `mute` onde o
 lettering repete a frase), `<Clip>` para filmagem real/apoio atrás das explicações, cartões e 3D para o que a pessoa
-menciona, e o final acionável (logo, assinatura, CTA, WhatsApp, "CLIQUE AQUI" com seta). A voz é a do vídeo dela
+menciona, efeitos sobre a própria pessoa nos trechos em tela cheia (`references/efeitos.md`: palavra atrás da cabeça,
+holofote, letreiro, gráfico de vidro…), e o final acionável (logo, assinatura, CTA, WhatsApp, "CLIQUE AQUI" com seta). A voz é a do vídeo dela
 (`VOICE.audio` via `assets.py voice`).
 
 ### Regras técnicas (valem para qualquer estilo)

@@ -72,13 +72,13 @@ Uma conversa. Zero timeline. Zero keyframe manual.
 2. No claude.ai: **Configurações → Capacidades → Skills → `+`** e envie o arquivo.
 3. Ative **"Execução de código e criação de arquivos"**.
 
-Pronto. ✅ As skills obrigatórias **[`remotion-best-practices`](https://github.com/remotion-dev/skills)** (oficial do Remotion) e **[`r3f-skills`](https://github.com/EnzeD/r3f-skills) (11 skills de React Three Fiber para as cenas 3D)** são instaladas sozinhas na primeira vez que a jsmotion roda.
+Pronto. ✅ As skills obrigatórias **[`remotion-best-practices`](https://github.com/remotion-dev/skills)** (oficial do Remotion) , **[`r3f-skills`](https://github.com/EnzeD/r3f-skills) (11 skills de React Three Fiber para as cenas 3D)** e **[`effects`](https://github.com/Vibha-Ramprakash/claude-video-effects) (42 efeitos no vídeo de quem fala)** são instaladas sozinhas na primeira vez que a jsmotion roda.
 
 ### Opção B — Claude Code
 
 ```bash
 git clone https://github.com/flavioduque/Jsmotion-skill.git && cd Jsmotion-skill
-./install.sh claude     # instala a jsmotion + as skills obrigatórias remotion-best-practices e r3f-*
+./install.sh claude     # instala a jsmotion + as skills obrigatórias remotion-best-practices, r3f-* e effects
 ```
 
 > [!NOTE]
@@ -118,7 +118,7 @@ Sem clonar: `curl -fsSL https://raw.githubusercontent.com/flavioduque/Jsmotion-s
 
 **Requisitos em todos:** Linux ou macOS (no Windows, use o WSL), **Python 3**, **Node 18+ (npx)**, **git** e
 **internet** na primeira vez. O `install.sh` também instala a skill **obrigatória**
-[`remotion-best-practices`](https://github.com/remotion-dev/skills) (`npx skills add https://github.com/remotion-dev/skills --skill remotion-best-practices -g`) e as [`r3f-skills`](https://github.com/EnzeD/r3f-skills) (11 skills de React Three Fiber para as cenas 3D) (`npx skills add https://github.com/EnzeD/r3f-skills --skill '*' -g`);
+[`remotion-best-practices`](https://github.com/remotion-dev/skills) (`npx skills add https://github.com/remotion-dev/skills --skill remotion-best-practices -g`) e as [`r3f-skills`](https://github.com/EnzeD/r3f-skills) (11 skills de React Three Fiber para as cenas 3D) (`npx skills add https://github.com/EnzeD/r3f-skills --skill '*' -g`) e a [`effects`](https://github.com/Vibha-Ramprakash/claude-video-effects) (`npx skills add https://github.com/Vibha-Ramprakash/claude-video-effects --skill effects -g`);
 se faltarem, a jsmotion instala no Passo 0. O `install_watch.sh` instala ffmpeg, Playwright e yt-dlp se faltarem. Com Chromium já instalado, use
 `CHROMIUM_PATH=/caminho/chrome`. Os arquivos vão para `./jsmotion-work` e `./jsmotion-out` na pasta em que o
 agente estiver (ou `JSMOTION_WORKDIR` / `JSMOTION_OUTDIR`).
@@ -325,6 +325,10 @@ edição. A jsmotion transforma a fala em um vídeo que explica:
   custo mostrado antes, clipes gerados por IA para cenas genéricas.
 - **Final acionável**: logo, assinatura, CTA da fala, WhatsApp e "CLIQUE AQUI" com seta.
 - **Render que não se perde**: vídeos longos saem em blocos; se a máquina reiniciar, ele continua de onde parou.
+- **Efeitos sobre a própria pessoa** (skill [`effects`](https://github.com/Vibha-Ramprakash/claude-video-effects), de
+  @vibha.in.progress): palavra gigante **atrás da cabeça**, holofote com raios dourados, letreiro de LED, capa de revista,
+  gráfico de vidro, checklist, chaves do iPhone… 42 efeitos com rosto rastreado e recorte real da pessoa, nas cores da
+  marca. Guia: [`efeitos.md`](references/efeitos.md).
 
 Inclui também guias de **lettering com hierarquia**, **motion explicativo**, **análise de referência a fundo** (com
 pacote de extração para reutilizar o estilo) e **variações controladas** para testes A/B.
@@ -487,7 +491,7 @@ Só Remotion: a skill não usa HyperFrames, After Effects nem outro motor.
 jsmotion/
 ├── SKILL.md                 🧠 o passo a passo que o Claude segue
 ├── scripts/
-│   ├── ensure_skills.sh     📦 instala as skills obrigatórias remotion-best-practices e r3f-* (se faltarem)
+│   ├── ensure_skills.sh     📦 instala as skills obrigatórias remotion-best-practices, r3f-* e effects (se faltarem)
 │   ├── install_watch.sh     📦 instala a skill watch + yt-dlp, ffmpeg, Playwright, brotli (idempotente)
 │   ├── watch_reference.sh   🎞️ assiste a referência e gera a folha de contato
 │   ├── find_reference.py    🔎 acha referências sozinho no prompt-motion.com
@@ -510,6 +514,7 @@ jsmotion/
 │   ├── lettering.md         🔤 texto como decisão editorial
 │   ├── motion-explicativo.md 🧩 explicar com movimento (e quando usar 3D)
 │   ├── referencia.md        🔍 referência a fundo e pacote de extração
+│   ├── efeitos.md           ✨ efeitos sobre a pessoa (skill effects)
 │   ├── variacoes.md         🧪 variações controladas (A/B)
 │   ├── formats.md           📐 formatos e layout
 │   └── copy.md              ✍️ legenda pronta para postar
