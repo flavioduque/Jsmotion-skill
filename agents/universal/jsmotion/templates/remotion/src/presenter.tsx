@@ -79,19 +79,21 @@ export const Presenter: React.FC<{t: number; keys: Keys; src?: string; B?: Recor
 
 // legenda: frase da vez (quebra em . ? ! e em vírgula longa), palavra falada no destaque
 type Wd = {w: string; t0: number; t1: number};
-const CHUNKS: Wd[][] = (() => {
+const chunk = (max: number): Wd[][] => {
   const out: Wd[][] = []; let cur: Wd[] = [];
   VOICE.words.forEach((w) => {
     cur.push(w as Wd);
-    if (/[.?!]$/.test(w.w) || (/[,:;]$/.test(w.w) && cur.length >= 3) || cur.length >= 6) { out.push(cur); cur = []; }
+    if (/[.?!]$/.test(w.w) || (/[,:;]$/.test(w.w) && cur.length >= Math.min(3, max)) || cur.length >= max) { out.push(cur); cur = []; }
   });
   if (cur.length) out.push(cur);
   return out;
-})();
+};
 /** faixa (fração da altura) por composição: nunca em cima do rosto nem da explicação. mute = trechos em que o
  *  lettering/3D já mostra as mesmas palavras. Some enquanto a composição se move (texto não "viaja" com a moldura). */
-export const Captions: React.FC<{t: number; keys: Keys; B?: Record<St, Box>; mute?: [number, number][]; bands?: Record<St, number>; size?: number}> =
-  ({t, keys, B, mute = [], bands, size = 46}) => {
+export const Captions: React.FC<{t: number; keys: Keys; B?: Record<St, Box>; mute?: [number, number][]; bands?: Record<St, number>; size?: number;
+  maxWords?: number}> =
+  ({t, keys, B, mute = [], bands, size = 46, maxWords = 6}) => {
+    const CHUNKS = React.useMemo(() => chunk(maxWords), [maxWords]);   // maxWords 1–3 = legenda curta (palavra a palavra)
     const {W, H, u, vertical} = useT(), bx = B ?? boxes(W, H);
     const L = layout(t, keys, bx);
     if (L.moving || mute.some(([a, b]) => t >= a && t < b)) return null;

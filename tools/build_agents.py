@@ -12,7 +12,7 @@ import os, re, sys, shutil, zipfile, filecmp, tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RES = ['scripts', 'templates', 'references']          # recursos copiados em toda variante
-VERSION = '1.6.0'
+VERSION = '1.7.0'
 
 DESC = ('Creates studio-quality motion-design videos in REMOTION (React): company, brand, product, real estate '
         'and app promos, Reels/TikTok/Shorts/YouTube/LinkedIn. Delivers ready MP4s (9:16, 1:1, 4:5 and 16:9 '

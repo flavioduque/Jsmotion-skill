@@ -330,6 +330,11 @@ edição. A jsmotion transforma a fala em um vídeo que explica:
   gráfico de vidro, checklist, chaves do iPhone… 42 efeitos com rosto rastreado e recorte real da pessoa, nas cores da
   marca. Guia: [`efeitos.md`](references/efeitos.md).
 
+**Modo imóvel** ([`imovel.md`](references/imovel.md)): o empreendimento explicado num mundo contínuo — a torre sobe
+andar por andar com o contador e funde no render real, a câmera vai para o **mapa real** e a rota se desenha até a
+referência ("8 min da Ponte"), a metragem e as tipologias entram na palavra exata e a **etiqueta de preço** desce e
+assenta quando a pessoa aponta para ela.
+
 Inclui também guias de **lettering com hierarquia**, **motion explicativo**, **análise de referência a fundo** (com
 pacote de extração para reutilizar o estilo) e **variações controladas** para testes A/B.
 Guias: [`apresentador.md`](references/apresentador.md) · [`lettering.md`](references/lettering.md) ·
@@ -500,6 +505,8 @@ jsmotion/
 │   ├── get_font.py          🔤 baixa qualquer família do Google Fonts
 │   ├── voice.py             🎙️ narração → linha do tempo por palavra (ElevenLabs, gravação ou estimativa); transcreve
 │   ├── face_track.py        🙂 rastreia o rosto do apresentador (o recorte nunca corta a cabeça)
+│   ├── tighten.py           ✂️ aperta a fala: corta pausas e trechos mal ditos, acelera com lábios sincronizados
+│   ├── map_osm.py           🗺️ mapa real (OpenStreetMap) nas cores da marca, com rota até uma referência
 │   ├── font3d.py            🔠 fonte da marca → fonte 3D do three.js
 │   ├── music.py             🎵 trilha de verdade: volume, BPM e batidas
 │   ├── assets.py            🧳 projeto Remotion: cria, coloca mídia/logo/voz/trilha/fontes (tira fundo liso de logo)
@@ -514,6 +521,7 @@ jsmotion/
 │   ├── lettering.md         🔤 texto como decisão editorial
 │   ├── motion-explicativo.md 🧩 explicar com movimento (e quando usar 3D)
 │   ├── referencia.md        🔍 referência a fundo e pacote de extração
+│   ├── imovel.md            🏢 modo imóvel: torre 3D, mapa real com rota, planta, etiqueta de preço
 │   ├── efeitos.md           ✨ efeitos sobre a pessoa (skill effects)
 │   ├── variacoes.md         🧪 variações controladas (A/B)
 │   ├── formats.md           📐 formatos e layout
