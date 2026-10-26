@@ -51,6 +51,9 @@ Arquivos da skill (abaixo `$SK` — ver "Neste agente"):
   exata) → volume normalizado + BPM + batidas (`music.json`); as trocas de cena encaixam na batida
 - `scripts/face_track.py` — **modo apresentador**: rastreia o rosto no vídeo da pessoa → `src/face.json`
 - `scripts/font3d.py` — fonte da direção de arte → fonte 3D do three.js (texto extrudado com `Text3D`)
+- `scripts/map_osm.py` — **mapa real** (OpenStreetMap) nas cores da marca, de A (imóvel/negócio) até B (referência), com rota
+- `scripts/tighten.py` — **aperta a fala** de quem gravou/avatar: corta pausas, tira trecho mal dito, acelera com lábios
+  sincronizados e marca os cortes (jump cuts)
 - `scripts/voice.py` — **vídeo narrado**: narração (`narracao.txt` com `[marcadores]` e `*destaques*`) → voz + linha do
   tempo por palavra (`words.json`) — ElevenLabs, áudio pronto (alinhado com faster-whisper) ou estimativa sem voz;
   `--transcribe` transcreve a fala de quem já gravou (para revisar e alinhar)
@@ -59,7 +62,8 @@ Arquivos da skill (abaixo `$SK` — ver "Neste agente"):
   `Converge`/`Orbit`/`Wall`/`Expand`, flash, trilha que abaixa sob a voz), `src/Video.tsx` (o vídeo — você escreve) e
   `src/Root.tsx` (formatos 9x16, 1x1, 4x5, 16x9). Fontes livres de reserva em `public/fonts`.
   Também: `src/presenter.tsx` (pessoa em tela cheia/moldura/fora com recorte que segue o rosto, legenda com a palavra
-  falada em destaque, vídeo de apoio) e `src/three.tsx` (3D: `Text3D`, `Bars3D`, `CoinStack`, `Env`, `Lights`).
+  falada em destaque, vídeo de apoio), `src/three.tsx` (3D: `Text3D`, `Bars3D`, `CoinStack`, `Env`, `Lights`) e
+  `src/imovel.tsx` (modo imóvel: marca que vira cabeçalho, prédio 3D subindo com contador, mapa com rota, etiqueta de preço).
 - `references/formats.md` — tamanhos por formato e como adaptar o layout
 - `references/remotion.md` — **o motor**: estrutura do projeto, regras do código, as peças do kit, o **padrão de
   qualidade** e o ciclo assets → stills → prévia → final (leia antes do Passo 4)
@@ -74,6 +78,9 @@ Arquivos da skill (abaixo `$SK` — ver "Neste agente"):
   dados reais, e quando e como usar **3D** (receitas que funcionam no render)
 - `references/referencia.md` — **referência a fundo**: observado × inferido × proposto, regras transferíveis, várias
   referências e o **pacote de extração** (quando pedirem para extrair/guardar o estilo)
+- `references/imovel.md` — **modo imóvel**: o imóvel explicado num mundo contínuo (torre sobe → render real → mapa real
+  com rota → planta → preço que assenta no gesto), dados e linguagem, avatar HeyGen (gestos, voz, regerar só a imagem),
+  apertar a fala, tour com fotos e IA a partir de foto real
 - `references/efeitos.md` — **efeitos sobre a pessoa** (skill `effects`): palavra gigante atrás da cabeça, holofote,
   letreiro de LED, capa de revista, gráfico de vidro, checklist… como encaixar na edição, regras e os 42 efeitos
 - `references/variacoes.md` — **variações controladas** (A/B de abertura, título, CTA): hipótese, matriz, manifesto
@@ -342,6 +349,8 @@ promessa ~12% · final logo+CTA **2,5s fixos**. Menos de 15s: junte virada+conte
 6. Escreva **`src/Video.tsx`**: `DURATION`, os recortes (`Shot`) de cada mídia enquadrando o assunto, e as cenas
    (`Scene` entre os instantes da fala — `wordAt(find('…'))`, `mark('…')`), usando as peças do kit e **cenas próprias
    para as metáforas do tema**. Siga os 10 itens do padrão de qualidade (`references/remotion.md`).
+
+**Imóvel / empreendimento com pessoa falando**: siga também `references/imovel.md` (peças de `./imovel`).
 
 **Modo apresentador** (`references/apresentador.md`): `src/Video.tsx` importa de `./presenter` — `KEYS` com os estados
 F/M/O nos tempos da fala, `<Presenter>` (recorte que segue o rosto), `<Captions>` (faixa própria, `mute` onde o

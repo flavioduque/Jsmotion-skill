@@ -332,6 +332,11 @@ jsmotion turns the speech into a video that explains:
   glass graph, a checklist, iPhone toggles… 42 effects with real face tracking and person cut-out, in the brand colors.
   Guide: [`efeitos.md`](references/efeitos.md).
 
+**Real estate mode** ([`imovel.md`](references/imovel.md)): the development explained in one continuous world — the
+tower rises floor by floor with the counter and blends into the real render, the camera moves to a **real map** and the
+route draws itself to a landmark, size and unit types land on the exact word, and a **price tag** drops and settles as
+the presenter points at it.
+
 Also includes guides for **lettering with hierarchy**, **explanatory motion**, **in-depth reference analysis** (with an
 extraction package to reuse a style) and **controlled variations** for A/B tests (Portuguese):
 [`apresentador.md`](references/apresentador.md) · [`lettering.md`](references/lettering.md) ·
@@ -487,13 +492,13 @@ jsmotion/
 ├── SKILL.md                 🧠 the step-by-step Claude follows
 ├── scripts/                 watch_reference.sh · find_reference.py · scrape_site.py · brand_palette.py · get_font.py
 │                            voice.py (narration → per-word timeline; transcription) · music.py (real soundtrack)
-│                            face_track.py (presenter face tracking) · font3d.py (brand font → three.js 3D font)
+│                            face_track.py (presenter face tracking) · font3d.py (brand font → three.js 3D font) · tighten.py (cut pauses) · map_osm.py (real map + route)
 │                            assets.py (Remotion project: media, logo, voice, music, fonts, presenter, 3D)
 │                            render.py (stills, preview, MP4; resumable blocks)
 ├── templates/remotion/      ⚛️ the project template: style.ts (art direction), kit.tsx (pieces), Video.tsx, Root.tsx,
 │                            presenter.tsx (presenter mode) and three.tsx (3D pieces)
 ├── references/              remotion.md · direcao-de-arte.md · narrado.md · formats.md · copy.md · apresentador.md ·
-│                            lettering.md · motion-explicativo.md · referencia.md · efeitos.md · variacoes.md (Portuguese)
+│                            lettering.md · motion-explicativo.md · referencia.md · imovel.md · efeitos.md · variacoes.md (Portuguese)
 ├── agents/                  🤖 variants for Codex, Gemini, Hermes, OpenClaw and others (generated)
 └── tools/build_agents.py    🔧 builds the variants from SKILL.md
 ```
